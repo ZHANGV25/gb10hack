@@ -57,6 +57,29 @@ export function MemoText({ text }: { text: string }) {
       flushPara(`p${i}`);
       return;
     }
+    if (/^([-*_])\1{2,}$/.test(line)) {
+      flushBullets(`u${i}`);
+      flushPara(`p${i}`);
+      blocks.push(
+        <hr
+          key={`r${i}`}
+          className="my-3 border-0 border-t"
+          style={{ borderColor: "var(--hairline)" }}
+        />,
+      );
+      return;
+    }
+    const heading = line.match(/^#{1,6}\s+(.*)$/);
+    if (heading) {
+      flushBullets(`u${i}`);
+      flushPara(`p${i}`);
+      blocks.push(
+        <p key={`h${i}`} className="mt-3 mb-1 text-[12px] font-semibold">
+          {inline(heading[1].replace(/\s*#+\s*$/, ""), `h${i}`)}
+        </p>,
+      );
+      return;
+    }
     const bullet = line.match(/^[-*•]\s+(.*)$/);
     if (bullet) {
       flushPara(`p${i}`);

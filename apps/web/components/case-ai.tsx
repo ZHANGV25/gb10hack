@@ -127,7 +127,9 @@ export function CaseAi({
             {stub ? (
               <div className="mt-3 rounded-md border border-hairline bg-surface-muted/70 px-3 py-2.5">
                 <Eyebrow>Last saved draft</Eyebrow>
-                <p className="mt-1 text-[13px] leading-[1.6]">{stub}</p>
+                <div className="mt-1">
+                  <MemoText text={stub} />
+                </div>
               </div>
             ) : null}
             <div className="mt-3">

@@ -10,9 +10,14 @@ import {
 import { z } from "zod";
 
 import { getAlert, searchCorpus } from "@/lib/exitplan";
+import { db } from "@/lib/mongo";
 import { judgeModel, ollama } from "@/lib/ollama";
 
 export const maxDuration = 300;
+
+/** The exact text the "Generate disposition" button sends. Keep in sync with case-ai.tsx. */
+const DRAFT_REQUEST =
+  "Write a short disposition memo for this case. Call retrievePolicy first. Cite source titles in brackets. Do not decide or file.";
 
 export async function POST(req: Request) {
   const { messages, alertId }: { messages: UIMessage[]; alertId?: string } =
@@ -32,6 +37,16 @@ export async function POST(req: Request) {
         }: ${h.reason}`,
     )
     .join("\n");
+
+  // Only the canned draft request is persisted as the case disposition;
+  // follow-up questions are conversation, not the memo on file.
+  const lastUser = [...messages].reverse().find((m) => m.role === "user");
+  const lastText = lastUser?.parts
+    .map((p) => (p.type === "text" ? p.text : ""))
+    .join("")
+    .trim();
+  const isDraftRequest = lastText === DRAFT_REQUEST;
+  const retrieved: { doc_id: string; title: string; source: string }[] = [];
 
   const result = streamText({
     model: ollama(judgeModel),
@@ -57,6 +72,41 @@ export async function POST(req: Request) {
     ].join("\n"),
     messages: await convertToModelMessages(messages),
     stopWhen: isStepCount(4),
+    onEnd: async ({ text }) => {
+      if (!alertId || !isDraftRequest) return;
+      const narrative = text?.trim();
+      if (!narrative) return;
+      const citations = [
+        ...new Map(retrieved.map((c) => [c.doc_id, c])).values(),
+      ];
+      try {
+        const database = await db();
+        const now = new Date();
+        await database.collection("dispositions").updateOne(
+          { alert_id: alertId },
+          {
+            $set: {
+              narrative,
+              citations,
+              drafted_at: now,
+              drafted_by: "drafter",
+            },
+          },
+          { upsert: true },
+        );
+        await database.collection("audit_log").insertOne({
+          agent: "drafter",
+          action: "draft",
+          alert_id: alertId,
+          rationale:
+            `Disposition drafted from ${citations.length} retrieved policy ` +
+            "passages. No decision taken.",
+          ts: now,
+        });
+      } catch (err) {
+        console.error("[draft] could not save the disposition", err);
+      }
+    },
     tools: {
       retrievePolicy: tool({
         description: "Search bank policy and EU rules related to this case.",
@@ -65,6 +115,13 @@ export async function POST(req: Request) {
         }),
         execute: async ({ query }) => {
           const hits = await searchCorpus(query, 4);
+          for (const h of hits) {
+            retrieved.push({
+              doc_id: String(h.doc_id),
+              title: String(h.title),
+              source: String(h.source),
+            });
+          }
           return hits.map((h) => ({
             doc_id: h.doc_id,
             title: h.title,
