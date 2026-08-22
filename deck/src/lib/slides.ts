@@ -1,8 +1,10 @@
 /** The pitch script — single source of truth for the person at the microphone.
- *  Rendered at /script. V6 "DORA agent": rewritten to the pivoted demo at
- *  68723ce (always-on Article 30 contract agent), matched beat-for-beat to
- *  DEMO.md, and pressure-tested twice (3× Sonnet panel + codex gpt-5.6-sol
- *  xhigh) before a scene was built. Staging rationale: docs/DECK-ARC-DRAFT.md.
+ *  Rendered at /script. V7 "the two-minute cut": V6's arc (pressure-tested by
+ *  a 3× Sonnet panel + codex gpt-5.6-sol xhigh) compressed to ~324 spoken
+ *  words of plain speech — no AI jargon, impact first, MongoDB and OpenClaw
+ *  named. Every number still traces to DEMO.md or the code; OpenClaw is
+ *  claimed as builder/driver of the box, never as the runtime (graveyard #4).
+ *  Staging rationale: docs/DECK-ARC-DRAFT.md.
  *  Lines wrapped in (parens) are stage directions, not spoken. */
 
 export type Slide = {
@@ -15,7 +17,7 @@ export type Slide = {
   narration: string[];
 };
 
-export const REVISION = 'V6 · DORA agent — confinement held to the artifact, twice pressure-tested';
+export const REVISION = 'V7 · the two-minute cut — plain speech, MongoDB + OpenClaw named';
 
 export const SLIDES: Slide[] = [
   {
@@ -25,12 +27,11 @@ export const SLIDES: Slide[] = [
     onscreen:
       'DORA Art. 28(8) — exit strategies for ICT behind critical functions, incl. reincorporation in-house — over the Art. 30 spec: 9 elements for every arrangement, +6 critical (audit, exit assistance). A shelf of contract spines, one reader.',
     narration: [
-      'DORA Article 28(8): for the services a bank’s critical functions run on, it must hold an exit strategy — including the option to bring the service back in-house. Article 30 says the contracts themselves have to make that possible: nine required elements in every ICT contract, six more — audit rights, exit assistance — where the function is critical.',
-      'So whether the bank can actually leave is written down, across every ICT contract it has. Someone has to read them all against that list. In a real estate that’s hundreds. Nobody reads them.',
-      'The exit plan stays a slide. ExitPlan is the agent that reads the contracts — continuously.',
+      'European law says a bank must be able to fire any tech vendor and take the service back in-house. The proof lives in hundreds of contracts nobody reads.',
+      'So every bank’s exit plan is a slide that would fall apart the day anyone needed it.',
     ],
     loadBearing:
-      'The exit plan stays a slide. ExitPlan is the agent that reads the contracts — continuously.',
+      'So every bank’s exit plan is a slide that would fall apart the day anyone needed it.',
   },
   {
     n: 2,
@@ -39,9 +40,7 @@ export const SLIDES: Slide[] = [
     onscreen:
       'Three lanes: MODEL EXTRACTS (present / inadequate / absent + the clause it relied on · chip: NO QUOTE, NO CLAIM) → POLICY DISPOSES (deterministic Python · chip: EXIT · AUDIT · DATA RETURN = BLOCKING) → REVIEWERS TEACH (tan · chip: RULES ONLY ACT ON AN EXISTING GAP). No database named here.',
     narration: [
-      'The model’s authority stops at extraction. It reads a contract and labels every required provision — present, inadequate, absent — and it has to produce the clause it relied on. A claim with no quote behind it is recorded as absent.',
-      'What those labels mean is a fixed policy in Python, not the model. Our policy marks a missing exit clause, audit right or data return as blocking — without those, Article 28(8) can’t be evidenced at all.',
-      'And it learns from people, not retraining. A reviewer who disagrees writes the correction down; it becomes a readable rule with an author and a scope. And a rule can only act on a gap the checklist already found.',
+      'ExitPlan reads them all, around the clock. The AI must quote the contract or its claim doesn’t count. A fixed checklist decides every verdict — and people can overrule it in writing.',
     ],
   },
   {
@@ -52,12 +51,11 @@ export const SLIDES: Slide[] = [
       '(switch to the browser — deck parks here; frames 3–6 are the fallback) · Tiles: 7 with gaps · CANNOT BE CLEANLY EXITED €7,030,000 · 10 Art. 30 gaps · €16,375,000 total. Twelve real rows, Helvetia €4.18M → Pinnacle €88k. Weakest-estate panel: 2× no pen-testing clause, 2× data location undisclosed.',
     narration: [
       '(switch display to the browser — 1440×1250, seeded, desk at 127.0.0.1:3000)',
-      'Nordhafen Bank — fictional, a synthetic register: twelve ICT arrangements, sixteen point four million euros a year, eight supporting critical functions. The agent has read every one.',
-      'Seven million euros a year runs through contracts this bank cannot cleanly exit or inspect — the number a supervisor asks for and nobody can produce.',
-      'And the estate view: the same clause missing across suppliers — two with no penetration-testing clause, two that won’t say where the data sits — is a contracting problem, not a supplier problem.',
+      'Twelve vendor contracts, sixteen million a year — fictional bank, synthetic books. The agent read them all and found the headline:',
+      'Seven million euros a year flows through contracts this bank can’t legally walk away from. Regulators ask for that number; nobody can produce it.',
     ],
     loadBearing:
-      'Seven million euros a year runs through contracts this bank cannot cleanly exit or inspect — the number a supervisor asks for and nobody can produce.',
+      'Seven million euros a year flows through contracts this bank can’t legally walk away from. Regulators ask for that number; nobody can produce it.',
   },
   {
     n: 4,
@@ -66,9 +64,7 @@ export const SLIDES: Slide[] = [
     onscreen:
       'HELVETIA CLOUD SERVICES AG · core banking platform · €4,180,000/yr · CRITICAL. Checklist 14/15; absent row EXIT STRATEGY AND TRANSITION PERIOD marked blocking. One passed row expanded to its verbatim clause (14. Access, Inspection and Audit).',
     narration: [
-      'Helvetia Cloud — the core banking platform, four point one eight million a year. Fourteen of fifteen required provisions are present. This is a good contract.',
-      'The one it’s missing is the exit strategy: no transition period, no obligation to help the bank move. The bank’s Article 28(8) exit plan for core banking is a document that cannot be executed.',
-      'Open any tick and you get the sentence the model relied on, quoted. If it claims a clause and can’t produce the text, the system records the provision as absent.',
+      'The worst is core banking itself: four million a year, nearly perfect — except no exit clause at all. Asked “could you leave?”, the honest answer is no.',
     ],
   },
   {
@@ -78,14 +74,12 @@ export const SLIDES: Slide[] = [
     onscreen:
       'Castellan Core Systems: the TLPT finding — supplier self-tests annually, customer-initiated testing refused; checklist: material, gaps to close. Review panel: Disagree — correct it · provision SET DELIBERATELY to “Participation in threat-led penetration testing” · scope CRITICAL FUNCTIONS ONLY · the written correction · tan STORE RULE AND RE-CHECK THE REGISTER. Right column: AGENT ACTIVITY, idle.',
     narration: [
-      'Castellan Core — core banking software. Look at its penetration-testing finding: the supplier tests itself, once a year, and refuses customer-initiated testing. The checklist calls that a material gap — something to schedule. A third-party risk officer would say: for core banking, that is not a gap to schedule. That’s a stop.',
+      'Now the best part. The machine called one serious weakness “routine”. A risk officer disagrees.',
       '(select the provision by hand — threat-led penetration testing — the pre-fill is wrong on this contract)',
-      'So they disagree, in writing. The correction names the provision, is scoped to critical functions only, and says why, in plain language.',
-      '(the store click takes ~3s — the local embedding model turning the sentence into a vector; keep talking)',
-      'Store the rule. No retraining happened. A sentence a human wrote just became policy — and the agent notices on its own.',
+      'Two sentences of plain English, click store. No retraining, no engineers — a human sentence just became bank policy.',
     ],
     loadBearing:
-      'Store the rule. No retraining happened. A sentence a human wrote just became policy — and the agent notices on its own.',
+      'Two sentences of plain English, click store. No retraining, no engineers — a human sentence just became bank policy.',
   },
   {
     n: 6,
@@ -95,12 +89,10 @@ export const SLIDES: Slide[] = [
       'Build: the right column fills. Timeline: RULE STORED → INDEX SEARCHABLE → 12 RE-CHECKED · 0 RE-READ · ~0.5s. Three evidence cards: CASTELLAN — verdict changed (origin) · AURORA KYC — rule retrieved & applied, contract never opened · NORDLYS — considered, withheld (no gap to attach to). Memory chip, verbatim UI: “changing 2 verdicts now”.',
     build: true,
     narration: [
-      'Reading all twelve contracts took the local model twelve minutes. Re-checking all twelve after that correction took half a second — it re-read nothing, because which clauses a contract contains hasn’t changed. Only what the bank makes of them has.',
-      'Castellan’s verdict flips — the rule doing its job at home. The interesting one is Aurora KYC: nobody opened that contract, and the correction was retrieved there by meaning and applied to the same gap the checklist had already found.',
-      'And Nordlys — considered, withheld. It has a testing clause; there is no gap for the rule to attach to. A rule can make an existing finding stricter. It cannot invent one.',
+      'That click re-checked the whole register in half a second, and the correction traveled — catching the same flaw in a contract nobody opened, skipping one that’s clean.',
+      'Taught once. The whole bank knows.',
     ],
-    loadBearing:
-      'Reading all twelve contracts took the local model twelve minutes. Re-checking all twelve after that correction took half a second — it re-read nothing, because which clauses a contract contains hasn’t changed. Only what the bank makes of them has.',
+    loadBearing: 'Taught once. The whole bank knows.',
   },
   {
     n: 7,
@@ -109,35 +101,36 @@ export const SLIDES: Slide[] = [
     onscreen:
       'First naming of the store. OPERATIONAL REGISTER (contracts · verdicts · corrections) · VECTOR MEMORY (rules + $vectorSearch · bge-m3 1024-d) · EVENT BUS (change streams → the always-on agent). Live counts row. Dashed on-prem boundary.',
     narration: [
-      'Everything you just watched moved through one MongoDB doing three jobs. The operational register. The vector memory the correction was retrieved from. And — through change streams — the event bus: a new contract makes the agent read; a new rule makes it re-check the register. A service that never polls.',
-      'The counts on screen are aggregated in the database, live, with an append-only run log of every read and every sweep.',
-      'MongoDB isn’t a sidecar here — it’s the register, the memory and the nervous system, in one deployment.',
+      'One MongoDB runs it all, three jobs: the filing cabinet — every contract and verdict. The memory — that rule, found by meaning, not keywords. And the alarm — the database wakes the agent when anything changes.',
     ],
     loadBearing:
-      'MongoDB isn’t a sidecar here — it’s the register, the memory and the nervous system, in one deployment.',
+      'One MongoDB runs it all, three jobs: the filing cabinet — every contract and verdict. The memory — that rule, found by meaning, not keywords. And the alarm — the database wakes the agent when anything changes.',
   },
   {
     n: 8,
     act: 'IV — The artifact',
     label: 'UNPLUGGED — demo §6',
     onscreen:
-      'Unit spec: nemotron-3-nano · 30B (Ollama) / bge-m3 · 1024-d / MongoDB Atlas Local — change streams + vector index / Next.js register / Dell Pro Max GB10 / uplink: NOT REQUIRED. Measured line: CLAUSE AGREEMENT 138/141 · 98%.',
+      'Unit spec: nemotron-3-nano · 30B (Ollama) / bge-m3 / MongoDB Atlas Local — streams + vectors / BUILT WITH: OpenClaw · driving the box / Next.js register / Dell Pro Max GB10 / uplink: NOT REQUIRED. Measured line: CLAUSE AGREEMENT 138/141 · 98%.',
     narration: [
       '(live first: pull the cable, reload, teach another rule — then back to the deck)',
-      'We just pulled the network. Reading, embedding, retrieval, storage — everything you watched runs on this one machine: a thirty-billion-parameter open model carried by the harness — quote-or-absent, fixed policy, human rules. Measured on the box: ninety-eight percent clause agreement, one hundred thirty-eight of one hundred forty-one calls.',
-      'DORA does not require on-prem — and we don’t claim it does. We built the runtime self-contained because of what this tool is: host your exit auditor in the cloud and it becomes row thirteen in its own register, with an exit clause of its own to negotiate.',
-      'Ask a bank for its DORA exit plan and you’ll get a slide. This is the artifact — and there is no third party to lose.',
+      'The cable is out of the wall right now and everything still works — one Dell box, built and driven by OpenClaw, ninety-eight percent accurate, measured.',
+      'Put your exit auditor in the cloud and it’s one more vendor you can’t leave.',
+      'Ask a bank for its exit plan — you get a slide. This one runs.',
     ],
     loadBearing:
-      'Ask a bank for its DORA exit plan and you’ll get a slide. This is the artifact — and there is no third party to lose.',
+      'Ask a bank for its exit plan — you get a slide. This one runs.',
   },
   {
     n: 9,
     act: 'V — Close',
     label: 'CLOSE',
     onscreen:
-      'EXITPLAN · tan rule · The model extracts. Policy decides. Reviewers teach. · footer: synthetic register · business analysis, not legal advice.',
-    narration: ['ExitPlan. The model extracts. Policy decides. Reviewers teach it.', '(stop talking)'],
+      'EXITPLAN · tan rule · It reads the contracts. People stay in charge. Nothing leaves the building. · footer: synthetic register · business analysis, not legal advice.',
+    narration: [
+      'ExitPlan. It reads the contracts. People stay in charge. Nothing leaves the building.',
+      '(stop talking)',
+    ],
   },
 ];
 

@@ -111,6 +111,7 @@ const SPEC: [string, string][] = [
   ["Reader", "nemotron-3-nano · 30B (Ollama)"],
   ["Embeddings", "bge-m3 · 1024-d"],
   ["Store", "MongoDB Atlas Local · streams + vectors"],
+  ["Built with", "OpenClaw · driving the box"],
   ["Register", "Next.js · 127.0.0.1:3000"],
   ["Compute", "Dell Pro Max GB10 · 128GB unified"],
   ["Runtime network", "not required"],
@@ -210,7 +211,7 @@ export function SceneClose() {
           transition={{ delay: 1.5, duration: 0.7 }}
           className="mark-label mt-[2.4vmin] text-[1.8vmin] text-g600"
         >
-          The model extracts. Policy decides. Reviewers teach.
+          It reads the contracts. People stay in charge. Nothing leaves the building.
         </motion.div>
       </div>
       <motion.div

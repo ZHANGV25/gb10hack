@@ -1,4 +1,14 @@
-# DECK-ARC-DRAFT — V6 (DORA agent), post pressure-test
+# DECK-ARC-DRAFT — V7 (the two-minute cut), post pressure-test
+
+**V7 delta (Victor's direction):** narration compressed to ~324 spoken words (≈2:00–2:20 —
+plain speech, no AI jargon, impact first). MongoDB gets its own plain-language beat (filing
+cabinet · memory · alarm). OpenClaw is named on slide 8 and in the spec sheet as **"built
+and driven by OpenClaw on the box"** — deliberately a build/operate claim, never a runtime
+claim, because graveyard #4 (bespoke harness) still holds and a judge asking "show me the
+OpenClaw process in the runtime" must not have a puncture. If the phase-0 stack wiring
+actually put OpenClaw/NemoClaw into the runtime path, harden the line and update PITCH.md's
+graveyard in the same commit. Slide-by-slide specs below are V6's; scenes are unchanged
+except the OpenClaw spec row and the new close tagline.
 
 **Status:** revised after two independent adversarial reviews (3× Sonnet panel: all
 `ship_with_fixes`; codex gpt-5.6-sol xhigh: `rework` — every blocker from both is addressed
