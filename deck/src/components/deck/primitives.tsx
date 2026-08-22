@@ -69,6 +69,10 @@ export function useTypewriter(
  * rise in with a tight stagger; `tone="tan"` exists for exactly one slide —
  * DECIDE — where the word itself is the human act.
  */
+/** Deck-wide switch for the act words — off for now (too loud behind the
+ *  panels); flip to true to bring the SLEEPER backdrop typography back. */
+export const SHOW_ACT_WORDS = false;
+
 export function GiantWord({
   children,
   size = "36vh",
@@ -83,6 +87,7 @@ export function GiantWord({
   delay?: number;
 }) {
   const rm = useReducedMotion();
+  if (!SHOW_ACT_WORDS) return null;
   const color =
     tone === "tan"
       ? "var(--color-tan)"
