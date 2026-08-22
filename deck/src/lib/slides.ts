@@ -1,8 +1,8 @@
 /** The pitch script — single source of truth for the person at the microphone.
- *  Rendered at /script (the deck scenes are being updated to match this arc).
- *  V2 "cage-centered": local-first is table stakes in this room; the pitch is
- *  the buyer (DORA duty) and the legally-shaped agent. The cable is a
- *  10-second punctuation before the close, not the spine.
+ *  Rendered at /script. V3 "problem-first": a Codex (gpt-5.6-sol) ground-up
+ *  rewrite synthesized with the shadow-deployment thesis. No cable gimmick,
+ *  no invented scale, every claim checked against the running code.
+ *  Full staging + Q&A prep: docs/PITCH-V3.md.
  *  Lines wrapped in (parens) are stage directions, not spoken. */
 
 export type Slide = {
@@ -15,154 +15,119 @@ export type Slide = {
   narration: string[];
 };
 
-export const REVISION = 'V2 · cage-centered — cable demoted to punctuation';
+export const REVISION = 'V3 · problem-first — codex × fable synthesis, no gimmicks';
 
 export const SLIDES: Slide[] = [
   {
     n: 1,
-    act: 'I — The buyer',
-    label: 'WHO BUYS — the room-aware hook',
-    onscreen:
-      'Warm paper, registration marks. Two mono lines only: “DORA Art 28(8)” and the phrase “reincorporate them in-house”, tan underline drawing as spoken. No full excerpt until EUR-Lex-verified.',
+    act: 'I — The job',
+    label: 'THE WORK ORDER',
+    onscreen: 'ALERT ≠ VERDICT · L1: 30–45 MIN* · ≈95% CLOSED WITHOUT SAR* (*source footer: Everest/Capgemini 2025, NICE Actimize survey — unspoken)',
     narration: [
-      'Everyone in this room is running a local model today. So that can’t be the pitch.',
-      'The pitch is who has to buy one. Every EU bank — by law.',
-      'DORA, Article 28(8): every financial entity must hold a plan to pull its ICT services out of its provider and reincorporate them in-house.',
-      'Not because cloud is banned — HSBC runs its primary AML monitoring on Google Cloud. That’s exactly why the exit duty exists.',
+      'An AML alert is not a verdict. It’s a work order: pull the customer records, the payments, the watchlists, the policy; write a defensible memo; decide — close or escalate.',
+      'Industry studies put level-one handling at thirty to forty-five minutes, and roughly ninety-five percent of alerts close without a suspicious-activity report.',
+      'ExitPlan attacks that queue.',
     ],
   },
   {
     n: 2,
-    act: 'I — The buyer',
-    label: 'A SLIDE — the punchline',
-    onscreen: 'The deliberately sad PowerPoint mock. Held on a full beat of silence.',
+    act: 'I — The job',
+    label: 'TODAY’S DESK — the status quo',
+    onscreen: 'CORE BANKING → MONITORING RULES → L1 QUEUE · KYC · PAYMENTS · WATCHLISTS · POLICY · legacy case tools · manual memo · outsourced capacity',
     narration: [
-      'Ask a bank what that plan looks like today. You’ll get a PowerPoint.',
-      '(beat — a full second)',
-      'We built the artifact instead.',
+      'Today, core-banking feeds hit monitoring rules and pour alerts into level-one queues — often staffed at scale, often outsourced.',
+      'Analysts swivel between KYC, payments, watchlists, policy binders and legacy case tools, then hand-write the rationale.',
+      'ExitPlan keeps that control structure and removes the assembly work.',
     ],
   },
   {
     n: 3,
-    act: 'I — The buyer',
-    label: 'EXITPLAN — the reveal',
+    act: 'II — The system',
+    label: 'NOT JUST AN LLM — the architecture',
     onscreen:
-      'GB10 box drawing, spec chips typing on (COMPUTE · MODELS · UPLINK). From the first live frame: browser address bar shows the box’s LAN IP, never localhost.',
+      'One Mongo-centred diagram inside a DELL PRO MAX GB10 boundary: feeds → customers/transactions → RULES → alerts; policy ingest → bge-m3 → corpus [vector index] ↕ retrievePolicy ↕ nemotron drafter (≤4 steps) → HARD GATE → HUMAN → dispositions/audit_log. Labels: ONLY TOOL: retrievePolicy · NO DECIDE TOOL · NO FILE TOOL.',
     narration: [
-      'This is ExitPlan — financial-crime triage for EU banks, running entirely on this box.',
-      'Local is table stakes here, so we won’t spend your five minutes proving it — the address bar stays on the box’s LAN IP the whole way through.',
-      'What’s special is what this agent is allowed to do. Watch the cage, not the box.',
+      'ExitPlan is an agent system with an LLM inside it — not the other way around.',
+      'Feeds land in MongoDB. Policy is embedded there with bge-m3. Deterministic rules — not the model — open every alert.',
+      'The drafting loop gets exactly one tool: retrieve policy. Mongo vector search returns the spans. Hard gates and a human own the outcome.',
     ],
   },
   {
     n: 4,
-    act: 'II — The cage',
-    label: 'MONDAY — the queue',
-    onscreen:
-      'CUT 1 → live product. 200-row mono queue. Honesty chip: 200 ALERTS · 99% NOISE · 30 MIN EACH BY HAND · SYNTHETIC DATA.',
+    act: 'III — Live on the desk',
+    label: 'THE QUEUE',
+    onscreen: 'CUT → live product. Alert queue. Lower-third: 8 NAMED SYNTHETIC CASES. Select VIKTOR KOVALEV.',
     narration: [
-      'This is a compliance analyst’s queue. Two hundred alerts — synthetic data, all of it — ninety-nine percent noise, thirty minutes each by hand.',
-      'A hundred analyst-hours of triage, on one queue.',
+      'This is Nordhafen Bank — fictional, eight named synthetic cases, running the same rules a core-banking feed would.',
+      'Let’s take Viktor Kovalev: a fuzzy name match against a sanctions listing.',
     ],
   },
   {
     n: 5,
-    act: 'II — The cage',
-    label: 'RULES — the screener owns the queue',
-    onscreen: 'Build: the row expands, queue recedes. The rule that fired, the fuzzy match, the corridor.',
+    act: 'III — Live on the desk',
+    label: 'PROVENANCE — the rule opened it',
+    onscreen: 'Case view: WATCHLIST_FUZZY · matched name · customer record · ordinary payments · the rule’s reason.',
     build: true,
     narration: [
-      'One opens. Notice what found it — a rule.',
-      'A deterministic screener owns this queue. The model can’t invent an alert, and it can’t make one disappear.',
+      'The case shows the rule that fired, the matched name, the customer, the payments.',
+      'The model didn’t find this, and it can’t suppress it — it receives a case that already exists in the database.',
     ],
   },
   {
     n: 6,
-    act: 'II — The cage',
-    label: 'CITED — the draft',
-    onscreen:
-      'The disposition draft assembles; every sentence trails a citation chip; one expands to the exact source span.',
+    act: 'III — Live on the desk',
+    label: 'RETRIEVE, THEN DRAFT',
+    onscreen: 'Click GENERATE DISPOSITION → “searching policy library” → four source titles appear → the memo streams.',
     narration: [
-      'The agent drafts the disposition. Every sentence carries its source — the customer file, the policy paragraph, the regulation — down to the exact span.',
-      'No evidence? It says so, and escalates. It never fills a gap.',
+      'Generate disposition. The loop calls its one tool first — watch the retrieval chips: bge-m3 embeds the query, Atlas vector search returns four policy spans, and the memo streams, grounded in them.',
+      'There is no decide tool. There is no file tool.',
     ],
   },
   {
     n: 7,
-    act: 'II — The cage',
-    label: 'OVERRULED — rules beat the model',
-    onscreen: 'Build: the red-flag bar stamps across the draft’s recommendation.',
-    build: true,
+    act: 'III — Live on the desk',
+    label: 'THE AUTHORITY BOUNDARY',
+    onscreen: 'Dismiss Kovalev → open VIKTOR KOVALENKO · EXACT SANCTIONS MATCH · Dismiss disabled (and rejected server-side) · SUBMIT SAR TO FIU.',
     narration: [
-      'And when a hard rule disagrees with the model — the rule wins. The model never overrules the rules.',
+      'The draft is advice. I dismiss the false match — a human action, recorded.',
+      'Now Viktor Kovalenko: an exact sanctions match. Dismiss is disabled here, and rejected server-side — no prompt can negotiate with that gate.',
+      'Only the analyst can refer it, or submit the SAR to the FIU. I’ll submit.',
     ],
   },
   {
     n: 8,
-    act: 'II — The cage',
-    label: 'NO FILE ACTION — the cage, shown',
-    onscreen:
-      'The agent’s action list renders: DRAFT · CITE · ESCALATE. File sits greyed with a lock chip: FILE — HUMAN ONLY.',
+    act: 'III — Live on the desk',
+    label: 'THE MONGODB REVEAL — state, not logos',
+    onscreen: 'Open /system, then /audit. DECISIONS 0 → 2 · EVENTS 16 → 18 · collection rail: customers · transactions · alerts · corpus · dispositions · audit_log.',
+    loadBearing: 'MongoDB isn’t our vector-store sidecar — it’s the desk’s chain of custody.',
     narration: [
-      'Now watch what this agent can actually do: draft, cite, escalate.',
-      'There is no file action. That’s not a policy we wrote into a prompt — there is no tool there to call.',
+      'Now look at state. One database holds the whole desk: customers, transactions, alerts, embedded policy, dispositions, audit.',
+      'Our two clicks just moved the live decision count from zero to two and appended two timestamped events.',
+      'MongoDB isn’t our vector-store sidecar — it’s the desk’s chain of custody.',
     ],
   },
   {
     n: 9,
-    act: 'II — The cage',
-    label: 'DECIDE — the human, and the unlock',
-    onscreen:
-      'Monochrome except the tan Decide and File buttons. The deck’s only cursor clicks both. The audit-ledger line appends.',
+    act: 'IV — The deal',
+    label: 'THE UNDERSTUDY — shadow-first deployment',
+    onscreen: 'SHADOW-FIRST PILOT · same feeds, drafting beside your analysts · decisions → precedent (Mongo) · overrules → proposed rules, human-approved · GO/NO-GO: median handle time −50% · citations validated · rework ≤ baseline.',
     narration: [
-      'The agent drafted. A human decides, and a human files.',
-      'AML Regulation, Article 18(3): that decision cannot be outsourced — not to a vendor, not to a model.',
-      'That constraint isn’t what limits this product. It’s what lets a regulated bank run it at all.',
-      '(the ledger line appends)',
-      'Append-only ledger: input hash, rationale, the analyst’s name. Evidence you can hand an auditor.',
+      'Deployment is shadow-first: wire it to the same feeds and let it draft beside your analysts.',
+      'And it learns the way a bank can audit — every decision they record becomes retrievable precedent in Mongo; every overrule becomes a proposed rule a human signs off. Documents, not weight updates.',
+      'The pilot has a hard scorecard: halve median handle time, every citation validated, rework no worse. If the numbers don’t move, it fails. We claim no ROI from eight synthetic cases.',
     ],
   },
   {
     n: 10,
-    act: 'III — Proof',
-    label: 'STACK — chips on the same box',
-    onscreen:
-      'CUT 2 → back to deck. The slide-3 box returns; spec chips reattach fast: OpenClaw · NemoClaw · OpenShell · MongoDB + bge-m3 · nemotron-3-nano 30B.',
-    narration: [
-      'Under the hood: OpenClaw orchestrating, NemoClaw auditing every step, OpenShell sandboxing execution, MongoDB holding the evidence and the vectors — all on the box.',
-    ],
-  },
-  {
-    n: 11,
-    act: 'III — Proof',
-    label: 'THE EXIT, EXECUTED — ten seconds of cable',
-    onscreen:
-      'Presenter pulls the box’s uplink. The external ping terminal — green since the first live frame — starts timing out. The UI keeps moving. Ten seconds, no more.',
-    loadBearing: 'That’s the exit plan — executing.',
-    narration: [
-      'One last thing. The regulation we started with asks every bank for an exit. Ours takes ten seconds.',
-      '(pull the cable)',
-      'That’s the box’s uplink — the room is fine, the LAN is fine — and the next draft comes out exactly like the last one.',
-      'That’s the exit plan — executing.',
-    ],
-  },
-  {
-    n: 12,
-    act: 'IV — Close',
-    label: 'PAY IT BACK — 200 → 1',
-    onscreen:
-      'Number-flow counts 200 down to 1. Chip: ONE CITED DRAFT · ONE HUMAN DECISION. Finanz Informatik as one small line.',
-    narration: [
-      'Two hundred alerts in. One cited draft, one human decision, and nothing left the room.',
-      'Finanz Informatik already runs a hundred and fifty thousand banking users on models in its own data centres. Every EU bank carries the same duty.',
-    ],
-  },
-  {
-    n: 13,
-    act: 'IV — Close',
+    act: 'V — Close',
     label: 'CLOSE',
-    onscreen: 'EXITPLAN wordmark, tan underline, “The artifact, not the slide.” Registration marks.',
-    narration: ['ExitPlan. The artifact, not the slide.', '(stop talking)'],
+    onscreen: 'EXITPLAN · RULES FIND · AGENT DRAFTS · MONGODB REMEMBERS · HUMAN DECIDES · runtime rail: Ollama · nemotron · bge-m3 · Atlas Local · Dell Pro Max GB10.',
+    narration: [
+      'All of it — model, embeddings, vector search, application, database — runs on this Dell Pro Max.',
+      'Which makes it a working piece of a DORA Article 28(8) exit path. DORA doesn’t ban cloud — it demands you can leave.',
+      'ExitPlan: rules find, the agent drafts, Mongo remembers, the human decides.',
+      '(stop talking)',
+    ],
   },
 ];
 
