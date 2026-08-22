@@ -136,13 +136,13 @@ alert) → abstention-capable → audit-logged.
 | # | Block | Owner | Status |
 |---|---|---|---|
 | 0 | Stack setup: OpenClaw + NemoClaw + OpenShell wiring | Zhang('s team) | in progress |
-| 1 | Synthetic data gen (customers, transactions, watchlist, alerts) | TBD | not started |
-| 2 | Deterministic screener (rules → candidate alerts + reasons) | TBD | not started |
-| 3 | Regulatory corpus ingest + Mongo vector search (bge-m3) | TBD | not started |
-| 4 | Drafting agent + span citations + constrained generation | TBD | not started |
-| 5 | Analyst UI (alert queue → draft disposition → human decides) | TBD | not started |
-| 6 | Audit ledger (Mongo append-only, via NemoClaw) | TBD | not started |
-| 7 | Demo script + deck + DORA Art 28(8) slide | all, by 17:00 | not started |
+| 1 | Synthetic data gen (customers, transactions, watchlist, alerts) | Gyorgy | done |
+| 2 | Deterministic screener (rules → candidate alerts + reasons) | Gyorgy | done |
+| 3 | Regulatory corpus ingest + Mongo vector search (bge-m3) | Gyorgy | done |
+| 4 | Drafting agent + span citations + constrained generation | Gyorgy | done |
+| 5 | Analyst UI (alert queue → draft disposition → human decides) | Gyorgy | done |
+| 6 | Audit ledger (Mongo append-only) | Gyorgy | done |
+| 7 | Demo script + deck + DORA Art 28(8) slide | all, by 17:00 | README pitch + 5-min loop done; deck TBD |
 
 **Cut order if behind:** UI polish first, then the regulatory corpus (hardcode 3-4 citations), then vector
 search (keyword fallback). **Never cut:** the deterministic screener, span citations, the human-decides
