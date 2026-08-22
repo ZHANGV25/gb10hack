@@ -20,7 +20,7 @@ export type Slide = {
   narration: string[];
 };
 
-export const REVISION = 'V16 · straight to the point — natural sentences, no dashes, redundancy cut';
+export const REVISION = 'V17 · cut to 400 words — every sentence earns its place';
 
 export const SLIDES: Slide[] = [
   {
@@ -30,11 +30,11 @@ export const SLIDES: Slide[] = [
     onscreen:
       'DORA Art. 28(8) — exit strategies for ICT behind critical functions, incl. reincorporation in-house — over the Art. 30 spec: 9 elements for every arrangement, +6 critical. A shelf of contract spines, one reader.',
     narration: [
-      'European law says every bank must be able to walk away from its technology vendors, even to take a critical service back in house. Whether a bank actually can is buried in hundreds of contracts that nobody has read end to end.',
-      'So today the exit plan is a piece of paper, and it works right up until the day you need it.',
+      'Every bank in Europe is legally required to be able to walk away from its technology vendors. Whether it actually can is buried in hundreds of contracts nobody has read.',
+      'So the exit plan is a piece of paper, and it works until the day you need it.',
     ],
     loadBearing:
-      'So today the exit plan is a piece of paper, and it works right up until the day you need it.',
+      'So the exit plan is a piece of paper, and it works until the day you need it.',
   },
   {
     n: 2,
@@ -43,8 +43,8 @@ export const SLIDES: Slide[] = [
     onscreen:
       'Left: WHAT THE ANALYSIS CONTAINS — vendors it cannot exit (3) · refuses security testing (2) · data locations undisclosed (2) · annual charges (all) · chip: A MAP OF THE BANK’S WEAK POINTS. Right: WHERE COULD IT LIVE — a cloud AI service ✗ (the vendors on the map include the cloud providers) vs. hardware the bank owns ✓.',
     narration: [
-      'Fixing that means reading every contract the bank ever signed and writing down every way it’s trapped: which vendors it can’t leave, what it pays them, who refuses security testing. That document is a map of the bank’s weak points, and the cloud providers are on that map. You can’t store your escape plan with the people you might be escaping from.',
-      'So we built ExitPlan to run on one machine the bank owns, and here it is.',
+      'Fixing that means writing down every way the bank is trapped: which vendors it can’t leave, what it pays them, who refuses security testing. That document is a map of the bank’s weak points, and the cloud providers are on it. You can’t store your escape plan with the people you might be escaping from.',
+      'So ExitPlan runs on one machine the bank owns. Here it is.',
     ],
     loadBearing:
       'You can’t store your escape plan with the people you might be escaping from.',
@@ -66,11 +66,11 @@ export const SLIDES: Slide[] = [
     onscreen:
       '(video: the register scrolls — tiles, sixteen rows, the weakest-estate panel — then opens Helvetia: 14/15, the missing exit clause.) Appendix frame #6 is the fallback.',
     narration: [
-      'This is Nordhafen, a fictional bank with a synthetic register of twelve contracts we wrote ourselves, plus four real ones pulled straight from SEC filings. The agent read all sixteen and found seven million euros a year flowing through contracts this bank could never walk out of. Regulators ask for exactly that number, no bank can produce it, and this one just did.',
-      'And look at this contract. It runs the core banking system, four million a year, and it is one exit clause short of freedom.',
+      'This is Nordhafen, a fictional bank: twelve synthetic contracts we wrote, four real ones from SEC filings. The agent read them all and found seven million euros a year in contracts this bank could never walk out of. Regulators ask for that number, and no bank can produce it.',
+      'And this contract runs core banking, four million a year, one exit clause short of freedom.',
     ],
     loadBearing:
-      'The agent read all sixteen and found seven million euros a year flowing through contracts this bank could never walk out of.',
+      'The agent read them all and found seven million euros a year in contracts this bank could never walk out of.',
   },
   {
     n: 7,
@@ -79,11 +79,11 @@ export const SLIDES: Slide[] = [
     onscreen:
       '(video: Castellan’s finding, the review panel, the provision picked, the correction typed, Store rule clicked… then the sweep: 12 re-checked in ~0.5s, Aurora reached unopened, Nordlys withheld.) Appendix frames #7–8 are the fallback.',
     narration: [
-      'Here is my favorite part. The machine got one wrong. It called a serious weakness routine, and a risk officer corrects it with two sentences of plain English. Watch what happens when they click store.',
-      'In half a second the agent has re-checked every contract in the register. It caught the same flaw in a contract nobody opened and skipped the one that was clean. That review used to be a yearly audit, and now it happens on its own.',
+      'Here’s my favorite part. The machine called a serious weakness routine, and a risk officer corrects it with two sentences of plain English.',
+      'Click store, and in half a second the agent re-checks every contract in the register. It catches the same flaw in a contract nobody opened and skips the one that was clean. That used to be a yearly audit.',
     ],
     loadBearing:
-      'In half a second the agent has re-checked every contract in the register.',
+      'Click store, and in half a second the agent re-checks every contract in the register.',
   },
   {
     n: 9,
@@ -92,7 +92,7 @@ export const SLIDES: Slide[] = [
     onscreen:
       '(video: Sunrise Communications opens — FILED, 113,731 characters, 11 passages retrieved, the checklist filled the same way.) Appendix frame #9 is the fallback.',
     narration: [
-      'Now the four real contracts. This one is an actual SEC filing, a hundred and thirteen thousand characters, far too long for the model to read at once. So the agent found the eleven passages that matter and read those, with the same checklist and nothing tuned.',
+      'These four are real SEC filings. This one is a hundred and thirteen thousand characters, too long for the model to read, so the agent found the eleven passages that matter and read those. Same checklist, nothing tuned.',
       'The contracts we wrote prove it’s accurate. The real ones prove it’s no trick.',
     ],
     loadBearing:
@@ -105,10 +105,10 @@ export const SLIDES: Slide[] = [
     onscreen:
       '(video: the How-it-works page — the three jobs, the live counts, the dashed boundary.) Appendix frame #10 is the fallback.',
     narration: [
-      'And all of this stands on three things: a record of evidence the bank can hand a regulator, a memory of every correction its reviewers have made, and an alarm that wakes the agent the moment anything changes. Normally that is three separate systems. Here it is one database, and that database is MongoDB, running right on the box.',
+      'All of this stands on three things: a record of evidence for the regulator, a memory of every reviewer correction, and an alarm that wakes the agent when anything changes. Normally that’s three systems. Here it’s one database: MongoDB, running on the box.',
     ],
     loadBearing:
-      'Normally that is three separate systems. Here it is one database, and that database is MongoDB.',
+      'Normally that’s three systems. Here it’s one database: MongoDB, running on the box.',
   },
   {
     n: 4,
@@ -118,7 +118,7 @@ export const SLIDES: Slide[] = [
       'Unit spec: nemotron-3-nano · 30B (Ollama) / bge-m3 / MongoDB Atlas Local — streams + vectors / BUILT WITH: OpenClaw · driving the box / Next.js register / Dell Pro Max GB10 / uplink: NOT REQUIRED. Measured line: CLAUSE AGREEMENT 138/141 · 98%.',
     narration: [
       '(back to the deck — and if the GB10 is in the room, point at it)',
-      'Everything you just watched ran on this one Dell box: a thirty billion parameter model and MongoDB, built and driven by OpenClaw, at ninety-eight percent measured accuracy with zero cloud calls.',
+      'Everything you just watched ran on this one Dell box: a thirty billion parameter model and MongoDB, built and driven by OpenClaw, ninety-eight percent measured accuracy, zero cloud calls.',
       'The analysis of whether the bank can leave its vendors never touched a vendor.',
     ],
     loadBearing:
@@ -131,7 +131,7 @@ export const SLIDES: Slide[] = [
     onscreen:
       'EXITPLAN · tan rule · It reads the contracts. It shows the way out. Nothing leaves the building. · footer: synthetic register · business analysis, not legal advice.',
     narration: [
-      'So that’s ExitPlan. It reads the contracts, it shows you the way out, and the way out never leaves the building. Thank you very much.',
+      'That’s ExitPlan. It reads the contracts, shows you the way out, and the way out never leaves the building. Thank you.',
       '(stop talking)',
     ],
   },
