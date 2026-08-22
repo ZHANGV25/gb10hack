@@ -75,7 +75,7 @@ Nurse/Doctor UI (camp tablet/laptop → box on LAN)
 | 0 | Stack setup: OpenClaw + NemoClaw + OpenShell wiring | Zhang('s team) | in progress |
 | 1 | Ingestion agent (doc scan → Mongo + vectors) | TBD | not started |
 | 2 | Retrieval / RAG (Mongo vector search) | TBD | not started |
-| 3 | X-ray block (MedGemma service + red-flag rules) | Snehit + Claude | in progress |
+| 3 | X-ray block (MedGemma service + red-flag rules) | Snehit + Claude | ✅ DONE — live on box :8801 (`~/snehit/xray-block/`), 2.9s warm latency, contract verified |
 | 4 | Patient longitudinal memory | TBD | not started |
 | 5 | Nurse UI (intake + consult screens) | TBD | not started |
 | 6 | Demo script + pitch deck + why-not-Starlink slide | all, by 17:00 | not started |
