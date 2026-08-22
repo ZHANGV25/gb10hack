@@ -199,7 +199,46 @@ export function SceneMap() {
   );
 }
 
-/* ── Slide 3 — the authority split ───────────────────────────────────────
+/* ── Slide 3 — the film card ─────────────────────────────────────────────
+   The deck parks here while the demo video plays fullscreen elsewhere.
+   Quiet by design: if the audience sees this frame at all, it should read
+   as a title card, not a missing slide. */
+
+export function SceneFilm() {
+  return (
+    <div className="absolute inset-0">
+      <RegMarks />
+      <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-[2.2vmin]">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.3, duration: 0.8 }}
+          className="uppercase leading-none"
+          style={{ fontFamily: "var(--font-display)", fontSize: "9vh" }}
+        >
+          ExitPlan
+        </motion.div>
+        <motion.div
+          initial={{ scaleX: 0 }}
+          animate={{ scaleX: 1 }}
+          transition={{ delay: 0.8, duration: 0.7, ease: EASE }}
+          className="hairline h-px w-[24vmin] origin-left"
+        />
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1.2, duration: 0.6 }}
+          className="mark-label text-[1.5vmin] text-g600"
+        >
+          Recorded against the live desk
+        </motion.div>
+      </div>
+      <SlideLabel delay={1.6}>The film — the deck waits here</SlideLabel>
+    </div>
+  );
+}
+
+/* ── Slide (appendix) — the authority split ──────────────────────────────
    Three lanes. The machine is monochrome; the third lane is the human,
    and it is the only warm thing on the slide. No database is named here —
    the store gets its reveal on slide 7. */

@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
-import { SceneCage, SceneMap, SceneReading } from "./act1";
+import { SceneFilm, SceneMap, SceneReading } from "./act1";
 import { SceneRegister } from "./act2";
 import { SceneTeach } from "./act3";
 import { SceneArtifact, SceneClose, SceneFilings, SceneMongo } from "./act4";
@@ -13,26 +13,28 @@ export const LAST = 10;
  * keypress changes a prop, never remounts — 5→6 is the deck's one build:
  * the rule is stored and the agent's sweep fills the right column.
  */
+/** Presented path: 1 → 2 → 3 (film) → 4 → 5. Frames 6–10 are the appendix —
+ *  the old demo frames, used only if the video fails (7→8 is the one build). */
 const GROUP: Record<number, string> = {
   1: "reading",
   2: "map",
-  3: "cage",
-  4: "register",
-  5: "teach",
-  6: "teach",
-  7: "filings",
-  8: "mongo",
-  9: "artifact",
-  10: "close",
+  3: "film",
+  4: "artifact",
+  5: "close",
+  6: "register",
+  7: "teach",
+  8: "teach",
+  9: "filings",
+  10: "mongo",
 };
 
 function Scene({ n }: { n: number }) {
   switch (GROUP[n]) {
     case "reading": return <SceneReading />;
     case "map": return <SceneMap />;
-    case "cage": return <SceneCage />;
+    case "film": return <SceneFilm />;
     case "register": return <SceneRegister />;
-    case "teach": return <SceneTeach swept={n >= 6} />;
+    case "teach": return <SceneTeach swept={n >= 8} />;
     case "filings": return <SceneFilings />;
     case "mongo": return <SceneMongo />;
     case "artifact": return <SceneArtifact />;

@@ -1,12 +1,13 @@
 /** The pitch script — single source of truth for the person at the microphone.
- *  Rendered at /script. V13 "why local, up front": the reason this cannot be
- *  a cloud service is now slide 2, before anything else — the tool's output
- *  is a map of the bank's weak points, and the vendors on that map include
- *  the cloud providers themselves. The cable pull (slide 9) is the receipt
- *  for that promise, not a stunt. Helvetia's frame folded into the register
- *  beat to pay for it. Keynote voice throughout; every number traces to
- *  DEMO.md or the code; no claim that any law requires on-prem (graveyard
- *  #1) and OpenClaw stays builder/driver, never runtime (graveyard #4).
+ *  Rendered at /script. V15 "two slides, the film, two slides": the show is
+ *  slide 1 (the trap) → slide 2 (the map — why this cannot be a cloud
+ *  service) → slide 3 parks while the demo video plays (narrate the four
+ *  film beats over the 1:52 silent cut, or let the 3:18 narrated cut speak
+ *  for itself) → slide 4 (the box) → slide 5 (close). Slides 6–10 are an
+ *  appendix after the close: the old demo frames, advanced only if the video
+ *  fails. Keynote voice throughout; every number traces to DEMO.md or the
+ *  code; no law-requires-on-prem claim (graveyard #1); OpenClaw is
+ *  builder/driver of the box, never the runtime (graveyard #4).
  *  Lines wrapped in (parens) are stage directions, not spoken. */
 
 export type Slide = {
@@ -19,12 +20,12 @@ export type Slide = {
   narration: string[];
 };
 
-export const REVISION = 'V14 · the keynote cut — V13’s spine, spoken like Cupertino';
+export const REVISION = 'V15 · two slides, the film, two slides — the audio matches the format';
 
 export const SLIDES: Slide[] = [
   {
     n: 1,
-    act: 'I — The trap',
+    act: 'I — Two slides in',
     label: 'THE READING PROBLEM',
     onscreen:
       'DORA Art. 28(8) — exit strategies for ICT behind critical functions, incl. reincorporation in-house — over the Art. 30 spec: 9 elements for every arrangement, +6 critical. A shelf of contract spines, one reader.',
@@ -37,76 +38,61 @@ export const SLIDES: Slide[] = [
   },
   {
     n: 2,
-    act: 'I — The trap',
+    act: 'I — Two slides in',
     label: 'WHY THIS CANNOT BE A CLOUD SERVICE',
     onscreen:
       'Left: WHAT THE ANALYSIS CONTAINS — vendors it cannot exit (3) · refuses security testing (2) · data locations undisclosed (2) · annual charges (all) · chip: A MAP OF THE BANK’S WEAK POINTS. Right: WHERE COULD IT LIVE — a cloud AI service ✗ (the vendors on the map include the cloud providers) vs. hardware the bank owns ✓.',
     narration: [
       'Now here’s the catch. To fix this, something has to read every contract the bank ever signed… and write down every way it’s trapped. Which vendors it can’t walk away from. What it pays. Who won’t let it test their security. That document is a map of the bank’s weak points. And look who’s on the map — the cloud providers themselves.',
       'You can’t store your escape plan with the people you might be escaping from. It’s that simple.',
+      'So we built ExitPlan to live on one machine the bank owns. Here it is.',
     ],
     loadBearing:
       'You can’t store your escape plan with the people you might be escaping from. It’s that simple.',
   },
   {
     n: 3,
-    act: 'II — What we built',
-    label: 'THE AGENT ON ONE BOX',
+    act: 'II — The film',
+    label: 'ROLL THE FILM',
     onscreen:
-      'Three lanes: MODEL EXTRACTS (present / inadequate / absent + the clause it relied on · chip: NO QUOTE, NO CLAIM) → POLICY DISPOSES (deterministic Python) → REVIEWERS TEACH (tan). No database named here.',
+      'A quiet title card — EXITPLAN · RECORDED AGAINST THE LIVE DESK — while the video plays fullscreen. The deck parks here for the whole film.',
     narration: [
-      'So we built ExitPlan to live on hardware the bank owns. A complete AI agent — a thirty-billion-parameter model, search, memory, a database — on one Dell box. And every claim it makes, it backs up with a quote from the contract.',
-      'Rather than talk about it… let me just show you.',
+      '(play the film. With the 1:52 silent cut, you speak the four beats below over it. With the 3:18 narrated cut, stand back and let it talk. Either way the deck stays parked on this slide.)',
     ],
   },
   {
-    n: 4,
-    act: 'III — Live on the desk',
-    label: 'THE REGISTER — demo §1 + §2',
+    n: 6,
+    act: 'II — The film · audio over the video',
+    label: 'FILM BEAT 1 — the register and the trapped money',
     onscreen:
-      '(switch to the browser — deck parks here; frames 4–7 are the fallback) · Tiles: 7 with gaps · CANNOT BE CLEANLY EXITED €7,030,000 · 10 Art. 30 gaps · €16,375,000 total. Sixteen rows: 12 curated + 4 marked FILED. Live: open Helvetia (14/15, missing exit clause) before moving on.',
+      '(video: the register scrolls — tiles, sixteen rows, the weakest-estate panel — then opens Helvetia: 14/15, the missing exit clause.) Appendix frame #6 is the fallback.',
     narration: [
-      '(switch display to the browser — 1440×1250, seeded, desk at 127.0.0.1:3000)',
       'This is Nordhafen Bank. Fictional — the data is synthetic. Sixteen contracts: twelve we wrote ourselves… and four real ones, straight off the SEC. Hold that thought. The agent read them all. And it found something.',
       'Seven million euros a year — flowing through contracts this bank could never walk out of. Regulators ask for exactly that number. No bank can produce it. This one just did.',
-      '(open Helvetia live)',
-      'Look at this one. Core banking. Four million a year. One exit clause short of freedom.',
+      'And look at this one. Core banking. Four million a year. One exit clause short of freedom.',
     ],
     loadBearing:
       'Seven million euros a year — flowing through contracts this bank could never walk out of. Regulators ask for exactly that number. No bank can produce it. This one just did.',
   },
   {
-    n: 5,
-    act: 'III — Live on the desk',
-    label: 'TEACH IT — the correction — demo §3',
-    onscreen:
-      'Castellan Core Systems: the TLPT finding — supplier self-tests annually, customer-initiated testing refused; checklist: material, gaps to close. Review panel: Disagree — correct it · provision SET DELIBERATELY to “Participation in threat-led penetration testing” · scope CRITICAL FUNCTIONS ONLY · the written correction · tan STORE RULE AND RE-CHECK THE REGISTER. Right column: AGENT ACTIVITY, idle.',
-    narration: [
-      'And here’s my favorite part. Right here — the machine got one wrong. It called a serious weakness “routine”. And a risk officer says: no.',
-      '(select the provision by hand — threat-led penetration testing — the pre-fill is wrong on this contract)',
-      'Two sentences of plain English. Click store. Now watch this.',
-    ],
-    loadBearing: 'Two sentences of plain English. Click store. Now watch this.',
-  },
-  {
-    n: 6,
-    act: 'III — Live on the desk',
-    label: 'THE HALF-SECOND — demo §4',
-    onscreen:
-      'Build: the right column fills. Timeline: RULE STORED → INDEX SEARCHABLE → 12 RE-CHECKED · 0 RE-READ · ~0.5s. Three evidence cards: CASTELLAN — verdict changed (origin) · AURORA KYC — rule retrieved & applied, contract never opened · NORDLYS — considered, withheld (no gap to attach to). Memory chip, verbatim UI: “changing 2 verdicts now”.',
-    build: true,
-    narration: [
-      'Half a second. That’s how long it took to re-check every contract in the register. It caught the same flaw in a contract nobody opened. It skipped the one that was clean.',
-      'This used to be a yearly audit. Now it just… happens.',
-    ],
-    loadBearing: 'This used to be a yearly audit. Now it just… happens.',
-  },
-  {
     n: 7,
-    act: 'III — Live on the desk',
-    label: 'THE REAL ONES — the control group',
+    act: 'II — The film · audio over the video',
+    label: 'FILM BEAT 2 — a human teaches it',
     onscreen:
-      'SUNRISE COMMUNICATIONS AG · chip: FILED — SEC EDGAR. Reading strip: 113,731 CHARACTERS → SPLIT INTO PASSAGES → 11 RETRIEVED → READ IN ~77s, and a note: the model never saw the rest. Right rail: the four filed rows — Sunrise · Edgemode · Platinum Analytics · NuScale Power. Footer: no ground truth · same checks, unchanged.',
+      '(video: Castellan’s finding, the review panel, the provision picked, the correction typed, Store rule clicked… then the sweep: 12 re-checked in ~0.5s, Aurora reached unopened, Nordlys withheld.) Appendix frames #7–8 are the fallback.',
+    narration: [
+      'And here’s my favorite part. Right here — the machine got one wrong. It called a serious weakness “routine”. And a risk officer says: no. Two sentences of plain English. Click store. Now watch this.',
+      'Half a second. That’s how long it took to re-check every contract in the register. It caught the same flaw in a contract nobody opened. It skipped the one that was clean. This used to be a yearly audit. Now it just… happens.',
+    ],
+    loadBearing:
+      'Half a second. That’s how long it took to re-check every contract in the register. It caught the same flaw in a contract nobody opened. It skipped the one that was clean. This used to be a yearly audit. Now it just… happens.',
+  },
+  {
+    n: 9,
+    act: 'II — The film · audio over the video',
+    label: 'FILM BEAT 3 — the real ones',
+    onscreen:
+      '(video: Sunrise Communications opens — FILED, 113,731 characters, 11 passages retrieved, the checklist filled the same way.) Appendix frame #9 is the fallback.',
     narration: [
       'Now. Those four real contracts? We didn’t write those. Nobody did. They’re actual SEC filings. And this one? A hundred and thirteen thousand characters — too big for the model to even read. So the agent found the eleven passages that matter… and read those. Same checklist. Nothing tuned.',
       'The synthetic ones prove it’s accurate. The real ones prove it’s no trick.',
@@ -115,11 +101,11 @@ export const SLIDES: Slide[] = [
       'The synthetic ones prove it’s accurate. The real ones prove it’s no trick.',
   },
   {
-    n: 8,
-    act: 'III — Live on the desk',
-    label: 'ONE DATABASE, THREE JOBS — demo §5',
+    n: 10,
+    act: 'II — The film · audio over the video',
+    label: 'FILM BEAT 4 — one database',
     onscreen:
-      'First naming of the store. OPERATIONAL REGISTER (contracts · verdicts · corrections) · VECTOR MEMORY (rules + $vectorSearch · bge-m3 1024-d) · EVENT BUS (change streams → the always-on agent). Live counts row. Dashed on-prem boundary.',
+      '(video: the How-it-works page — the three jobs, the live counts, the dashed boundary.) Appendix frame #10 is the fallback.',
     narration: [
       'And underneath all of this… three systems. A record — the evidence you hand the regulator. A memory — twelve precedents from three reviewers, found by meaning. And an alarm — the moment anything changes, it wakes the agent. A record… a memory… an alarm. Are you getting it? These are not three systems. This is one database. It’s MongoDB.',
     ],
@@ -127,22 +113,22 @@ export const SLIDES: Slide[] = [
       'And underneath all of this… three systems. A record — the evidence you hand the regulator. A memory — twelve precedents from three reviewers, found by meaning. And an alarm — the moment anything changes, it wakes the agent. A record… a memory… an alarm. Are you getting it? These are not three systems. This is one database. It’s MongoDB.',
   },
   {
-    n: 9,
-    act: 'IV — The receipt',
-    label: 'UNPLUGGED — demo §6',
+    n: 4,
+    act: 'III — Two slides out',
+    label: 'THE BOX',
     onscreen:
       'Unit spec: nemotron-3-nano · 30B (Ollama) / bge-m3 / MongoDB Atlas Local — streams + vectors / BUILT WITH: OpenClaw · driving the box / Next.js register / Dell Pro Max GB10 / uplink: NOT REQUIRED. Measured line: CLAUSE AGREEMENT 138/141 · 98%.',
     narration: [
-      '(live first: pull the cable, reload, teach another rule — then back to the deck)',
-      'Oh — and one more thing. The network cable came out of the wall a minute ago. Did anybody notice? That was the promise. The reading. The memory. The map. All of it happened on this one Dell box — built and driven by OpenClaw.',
+      '(back to the deck — and if the GB10 is in the room, point at it)',
+      'So. Everything you just watched ran on one Dell box. A thirty-billion-parameter model. MongoDB. Built and driven by OpenClaw. Ninety-eight percent measured accuracy — and zero cloud calls. Nothing left the building.',
       'The analysis of whether you can leave your vendors… never touched a vendor.',
     ],
     loadBearing:
       'The analysis of whether you can leave your vendors… never touched a vendor.',
   },
   {
-    n: 10,
-    act: 'V — Close',
+    n: 5,
+    act: 'IV — Close',
     label: 'CLOSE',
     onscreen:
       'EXITPLAN · tan rule · It reads the contracts. It shows the way out. Nothing leaves the building. · footer: synthetic register · business analysis, not legal advice.',
@@ -155,14 +141,12 @@ export const SLIDES: Slide[] = [
 
 /** Operator prep — read before going on, never spoken. Mirrors DEMO.md. */
 export const PRESHOW: string[] = [
-  'systemctl --user status dora-watch → active (running) — without it the teach beat dies.',
-  'Reset between runs is instant: reset_demo.py retires what you taught and the agent reverts the verdicts itself. Full seed_dora.py + review_all.py (~12 min) only if the contracts changed. Confirm the register tiles (7 with gaps · 10 gaps · €7,030,000 · €16,375,000), Castellan shows “Gaps to close”, and the agreement line (script says 138/141 · 98%); update these strings if the run differs.',
-  'Browser ≥1440×1250, desk at 127.0.0.1:3000. Deck parked on slide 3 during the demo.',
-  'Drill the dropdown: on Castellan the provision pre-fill is WRONG (termination rights). Select “Participation in threat-led penetration testing”, scope “critical functions only”, or Aurora never fires.',
-  'Live route: Register → Helvetia (during slide 4’s last line) → Castellan → store rule → Agent activity → What it has learned → Aurora KYC → Nordlys → Sunrise Communications (filed · 113k chars · 11 passages) → How it works → pull cable, reload, teach again → back to deck (slide 9).',
-  'Say “synthetic” out loud once (slide 4). It appears nowhere in the product.',
-  'The register should show 16 rows: 12 curated plus 4 marked FILED (Sunrise, Edgemode, Platinum Analytics, NuScale). The € tiles are unchanged; filed contracts carry €0. Confirm Sunrise’s page shows 113,731 characters · 11 passages retrieved.',
-  'A narrated 3:18 recording of the full demo sits on the box Desktop (ExitPlan-DORA-agent-demo-narrated.mp4) — the fallback of last resort. Its voiceover is cloud text-to-speech, post-production on the video only; the runtime path never leaves the box. Say so if anyone asks.',
+  'The show is five keypresses: 1 → 2 → 3 (the film plays; deck parks) → 4 → 5. Slides 6–10 sit after the close as an appendix — the old demo frames, advanced only if the video fails while you keep speaking the film beats.',
+  'Pick the cut before you go on: the 1:52 silent video (you speak film beats 1–4 over it) or the 3:18 narrated video (you stay silent; its voiceover is cloud TTS, post-production only — say so if anyone asks how it was made). Both are on the box Desktop.',
+  'If the desk is shown live instead of the video, the old run still applies: dora-watch active; reset_demo.py between runs; on Castellan the provision pre-fill is WRONG — select “Participation in threat-led penetration testing”, scope “critical functions only”, or Aurora never fires.',
+  'Register sanity: 16 rows (12 curated + 4 FILED), tiles 7 with gaps · 10 gaps · €7,030,000 · €16,375,000, Castellan “Gaps to close”, Sunrise 113,731 characters · 11 passages, agreement 138/141 · 98% — update script strings if a re-run differs.',
+  'Say “synthetic” out loud once (film beat 1). It appears nowhere in the product.',
+  'If the GB10 itself is in the room, point at it on slide 4 — the box beats the spec sheet.',
 ];
 
 /** Rehearsed Q&A — the questions this arc invites. */
@@ -176,16 +160,16 @@ export const QA: { q: string; a: string }[] = [
     a: 'The synthetic twelve are the calibration: we know exactly what’s in them, which is the only reason 98% means anything. The four SEC filings are the control: nobody wrote them for us, they carry no ground truth, and the same checks run over them unchanged. Accuracy proven on the book; generalization shown on the filings.',
   },
   {
+    q: 'Was that a video or the real thing?',
+    a: 'A recording of the real desk — driven by a Playwright script against the live system, each beat held for its narration segment. Everything in it is reproducible on the box in this room, right now: the register, the taught rule and the half-second sweep are exactly what you’d click yourself. Happy to run any beat live.',
+  },
+  {
     q: 'Does the agent survive its own sandbox?',
     a: 'Yes, and it’s a click, not a claim: stop the service, teach a rule while it’s dead, start it again. It replays what it missed from the resume token in watch_state and re-evaluates without being asked. Nothing lives in process memory — verdicts, memory, cached readings and the stream position are all in MongoDB.',
   },
   {
     q: 'Does the retriever actually change behaviour?',
     a: 'Twice over. One retriever decides what the model reads: the 113k-character Sunrise filing is unreadable without it — eleven passages retrieved per provision, the rest never seen. The other decides what the bank makes of a gap: on Vantage HR the data-return rule shows Applied at 0.767 while others were considered and withheld. And rule search is scoped per gap, because a blended query ranked the deciding rule seventh of twelve.',
-  },
-  {
-    q: 'Everyone here pulled a cable. What’s actually hard?',
-    a: 'Separating extraction from judgment. Reading the register costs the model twelve minutes; re-judging it costs half a second, because extractions are stored and only policy changed. Plus an always-on agent on change streams — no cron, no polling — that waits for the vector index to be consistent before re-evaluating, so a taught rule can never silently produce stale verdicts.',
   },
   {
     q: 'Is this all you built? (only if asked about reuse)',
