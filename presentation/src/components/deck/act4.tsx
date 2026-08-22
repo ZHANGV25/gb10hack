@@ -131,9 +131,16 @@ export function SceneMongo() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 2.6, duration: 0.5 }}
-            className="mark-label absolute -bottom-[1.2vmin] right-[3vmin] bg-ink px-[0.9vmin] py-[0.3vmin] text-[1vmin] text-paper"
+            className="absolute -bottom-[3.6vmin] right-0 flex items-center gap-[1vmin]"
           >
-            built with OpenClaw — driving the box
+            <span className="mark-label bg-ink px-[0.9vmin] py-[0.3vmin] text-[1vmin] text-paper">
+              built with OpenClaw
+            </span>
+            <span className="mark-label text-[1vmin] text-g600">
+              the agent ran on this box — wrote the engine and the register,
+              ran the contract reads, operated the services · not in the
+              runtime path above
+            </span>
           </motion.div>
 
           <Panel className="w-[64vmin] px-[2.8vmin] py-[2.4vmin]" delay={0.5}>
