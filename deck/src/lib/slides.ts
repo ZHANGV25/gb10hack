@@ -1,10 +1,11 @@
 /** The pitch script — single source of truth for the person at the microphone.
- *  Rendered at /script. V7 "the two-minute cut": V6's arc (pressure-tested by
- *  a 3× Sonnet panel + codex gpt-5.6-sol xhigh) compressed to ~324 spoken
- *  words of plain speech — no AI jargon, impact first, MongoDB and OpenClaw
- *  named. Every number still traces to DEMO.md or the code; OpenClaw is
- *  claimed as builder/driver of the box, never as the runtime (graveyard #4).
- *  Staging rationale: docs/DECK-ARC-DRAFT.md.
+ *  Rendered at /script. V8 "spoken, not written": V7's content re-voiced on
+ *  the register of real keynote transcripts (Jobs 2007: short declaratives,
+ *  So/And/Now connectives, blunt number then its meaning, "let me just show
+ *  you", "one more thing") — connected sentences a person would say, not
+ *  copywriter fragments. ~378 words ≈ 2:20 at stage pace. Every number still
+ *  traces to DEMO.md or the code; OpenClaw is claimed as builder/driver of
+ *  the box, never as the runtime (graveyard #4).
  *  Lines wrapped in (parens) are stage directions, not spoken. */
 
 export type Slide = {
@@ -17,7 +18,7 @@ export type Slide = {
   narration: string[];
 };
 
-export const REVISION = 'V7 · the two-minute cut — plain speech, MongoDB + OpenClaw named';
+export const REVISION = 'V8 · spoken, not written — patterned on the 2007 keynote register';
 
 export const SLIDES: Slide[] = [
   {
@@ -27,11 +28,11 @@ export const SLIDES: Slide[] = [
     onscreen:
       'DORA Art. 28(8) — exit strategies for ICT behind critical functions, incl. reincorporation in-house — over the Art. 30 spec: 9 elements for every arrangement, +6 critical (audit, exit assistance). A shelf of contract spines, one reader.',
     narration: [
-      'European law says a bank must be able to fire any tech vendor and take the service back in-house. The proof lives in hundreds of contracts nobody reads.',
-      'So every bank’s exit plan is a slide that would fall apart the day anyone needed it.',
+      'Every bank in Europe keeps a document called an exit plan. The law requires one: if a critical vendor fails, you take that service back in-house. Whether you actually could is buried in hundreds of contracts nobody has read.',
+      'So the plan is just paper, and it works right up until the day you need it.',
     ],
     loadBearing:
-      'So every bank’s exit plan is a slide that would fall apart the day anyone needed it.',
+      'So the plan is just paper, and it works right up until the day you need it.',
   },
   {
     n: 2,
@@ -40,7 +41,8 @@ export const SLIDES: Slide[] = [
     onscreen:
       'Three lanes: MODEL EXTRACTS (present / inadequate / absent + the clause it relied on · chip: NO QUOTE, NO CLAIM) → POLICY DISPOSES (deterministic Python · chip: EXIT · AUDIT · DATA RETURN = BLOCKING) → REVIEWERS TEACH (tan · chip: RULES ONLY ACT ON AN EXISTING GAP). No database named here.',
     narration: [
-      'ExitPlan reads them all, around the clock. The AI must quote the contract or its claim doesn’t count. A fixed checklist decides every verdict — and people can overrule it in writing.',
+      'So we built ExitPlan, an agent that reads every one of them. If it makes a claim, it has to quote the contract. A checklist decides the verdicts, not the AI. And anyone can overrule it in plain English.',
+      'Let me just show you.',
     ],
   },
   {
@@ -51,11 +53,11 @@ export const SLIDES: Slide[] = [
       '(switch to the browser — deck parks here; frames 3–6 are the fallback) · Tiles: 7 with gaps · CANNOT BE CLEANLY EXITED €7,030,000 · 10 Art. 30 gaps · €16,375,000 total. Twelve real rows, Helvetia €4.18M → Pinnacle €88k. Weakest-estate panel: 2× no pen-testing clause, 2× data location undisclosed.',
     narration: [
       '(switch display to the browser — 1440×1250, seeded, desk at 127.0.0.1:3000)',
-      'Twelve vendor contracts, sixteen million a year — fictional bank, synthetic books. The agent read them all and found the headline:',
-      'Seven million euros a year flows through contracts this bank can’t legally walk away from. Regulators ask for that number; nobody can produce it.',
+      'Meet Nordhafen Bank. It’s fictional, and the data is synthetic. Twelve vendors, sixteen million euros a year. The agent read every contract and found this number:',
+      'Seven million a year in contracts this bank could never walk away from. Regulators ask for that number, and no bank can produce it. This one just did.',
     ],
     loadBearing:
-      'Seven million euros a year flows through contracts this bank can’t legally walk away from. Regulators ask for that number; nobody can produce it.',
+      'Seven million a year in contracts this bank could never walk away from. Regulators ask for that number, and no bank can produce it. This one just did.',
   },
   {
     n: 4,
@@ -64,7 +66,7 @@ export const SLIDES: Slide[] = [
     onscreen:
       'HELVETIA CLOUD SERVICES AG · core banking platform · €4,180,000/yr · CRITICAL. Checklist 14/15; absent row EXIT STRATEGY AND TRANSITION PERIOD marked blocking. One passed row expanded to its verbatim clause (14. Access, Inspection and Audit).',
     narration: [
-      'The worst is core banking itself: four million a year, nearly perfect — except no exit clause at all. Asked “could you leave?”, the honest answer is no.',
+      'The worst one is the core banking platform. Four million a year, and the contract is nearly perfect. Fourteen of fifteen boxes ticked. The one that’s missing is the exit clause.',
     ],
   },
   {
@@ -74,12 +76,11 @@ export const SLIDES: Slide[] = [
     onscreen:
       'Castellan Core Systems: the TLPT finding — supplier self-tests annually, customer-initiated testing refused; checklist: material, gaps to close. Review panel: Disagree — correct it · provision SET DELIBERATELY to “Participation in threat-led penetration testing” · scope CRITICAL FUNCTIONS ONLY · the written correction · tan STORE RULE AND RE-CHECK THE REGISTER. Right column: AGENT ACTIVITY, idle.',
     narration: [
-      'Now the best part. The machine called one serious weakness “routine”. A risk officer disagrees.',
+      'Now here’s my favorite part. The machine got this one wrong. It called a serious weakness routine, and a risk officer disagrees.',
       '(select the provision by hand — threat-led penetration testing — the pre-fill is wrong on this contract)',
-      'Two sentences of plain English, click store. No retraining, no engineers — a human sentence just became bank policy.',
+      'They write two sentences of plain English and click store. Now watch what happens.',
     ],
-    loadBearing:
-      'Two sentences of plain English, click store. No retraining, no engineers — a human sentence just became bank policy.',
+    loadBearing: 'They write two sentences of plain English and click store. Now watch what happens.',
   },
   {
     n: 6,
@@ -89,10 +90,10 @@ export const SLIDES: Slide[] = [
       'Build: the right column fills. Timeline: RULE STORED → INDEX SEARCHABLE → 12 RE-CHECKED · 0 RE-READ · ~0.5s. Three evidence cards: CASTELLAN — verdict changed (origin) · AURORA KYC — rule retrieved & applied, contract never opened · NORDLYS — considered, withheld (no gap to attach to). Memory chip, verbatim UI: “changing 2 verdicts now”.',
     build: true,
     narration: [
-      'That click re-checked the whole register in half a second, and the correction traveled — catching the same flaw in a contract nobody opened, skipping one that’s clean.',
-      'Taught once. The whole bank knows.',
+      'In half a second, the whole register re-checked itself. And the correction traveled. It caught the same flaw in a contract nobody opened, and skipped the one that was clean.',
+      'You teach it once, and the whole bank knows.',
     ],
-    loadBearing: 'Taught once. The whole bank knows.',
+    loadBearing: 'You teach it once, and the whole bank knows.',
   },
   {
     n: 7,
@@ -101,10 +102,10 @@ export const SLIDES: Slide[] = [
     onscreen:
       'First naming of the store. OPERATIONAL REGISTER (contracts · verdicts · corrections) · VECTOR MEMORY (rules + $vectorSearch · bge-m3 1024-d) · EVENT BUS (change streams → the always-on agent). Live counts row. Dashed on-prem boundary.',
     narration: [
-      'One MongoDB runs it all, three jobs: the filing cabinet — every contract and verdict. The memory — that rule, found by meaning, not keywords. And the alarm — the database wakes the agent when anything changes.',
+      'And underneath it all is exactly one piece of infrastructure: MongoDB, doing three jobs. The system of record for every contract and verdict. The memory, where that rule was found by meaning, not keywords. And the alarm that wakes the agent whenever anything changes.',
     ],
     loadBearing:
-      'One MongoDB runs it all, three jobs: the filing cabinet — every contract and verdict. The memory — that rule, found by meaning, not keywords. And the alarm — the database wakes the agent when anything changes.',
+      'And underneath it all is exactly one piece of infrastructure: MongoDB, doing three jobs. The system of record for every contract and verdict. The memory, where that rule was found by meaning, not keywords. And the alarm that wakes the agent whenever anything changes.',
   },
   {
     n: 8,
@@ -114,12 +115,11 @@ export const SLIDES: Slide[] = [
       'Unit spec: nemotron-3-nano · 30B (Ollama) / bge-m3 / MongoDB Atlas Local — streams + vectors / BUILT WITH: OpenClaw · driving the box / Next.js register / Dell Pro Max GB10 / uplink: NOT REQUIRED. Measured line: CLAUSE AGREEMENT 138/141 · 98%.',
     narration: [
       '(live first: pull the cable, reload, teach another rule — then back to the deck)',
-      'The cable is out of the wall right now and everything still works — one Dell box, built and driven by OpenClaw, ninety-eight percent accurate, measured.',
-      'Put your exit auditor in the cloud and it’s one more vendor you can’t leave.',
-      'Ask a bank for its exit plan — you get a slide. This one runs.',
+      'And one more thing. The network cable came out of the wall a minute ago, and you didn’t notice. Everything you watched ran on this one Dell box, built and driven by OpenClaw, at ninety-eight percent measured accuracy.',
+      'Because an exit auditor that lives in the cloud is just one more vendor you can’t leave.',
     ],
     loadBearing:
-      'Ask a bank for its exit plan — you get a slide. This one runs.',
+      'Because an exit auditor that lives in the cloud is just one more vendor you can’t leave.',
   },
   {
     n: 9,
@@ -128,7 +128,7 @@ export const SLIDES: Slide[] = [
     onscreen:
       'EXITPLAN · tan rule · It reads the contracts. People stay in charge. Nothing leaves the building. · footer: synthetic register · business analysis, not legal advice.',
     narration: [
-      'ExitPlan. It reads the contracts. People stay in charge. Nothing leaves the building.',
+      'So that’s ExitPlan. It reads the contracts, people stay in charge, and nothing ever leaves the building. Thank you.',
       '(stop talking)',
     ],
   },
