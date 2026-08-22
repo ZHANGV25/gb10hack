@@ -110,8 +110,8 @@ export function CaseAi({
   return (
     <section className="overflow-hidden rounded-lg border border-hairline bg-surface">
       <div className="flex items-center justify-between gap-3 border-b border-hairline px-4 py-2">
-        <h2 className="text-[12px] font-medium">Disposition draft</h2>
-        <span className="text-[11px] text-muted-foreground">
+        <h2 className="text-[13px] font-medium">Disposition draft</h2>
+        <span className="text-[12px] text-muted-foreground">
           Drafts only — it cannot decide or file
         </span>
       </div>
@@ -119,7 +119,7 @@ export function CaseAi({
       <div className="px-4 py-3">
         {!live ? (
           <>
-            <p className="text-[12px] leading-5 text-muted-foreground">
+            <p className="text-[13px] leading-5 text-muted-foreground">
               Retrieves the bank policy and EU articles that apply to{" "}
               {customerName}, then writes a memo that cites them. Nothing about
               this case is sent outside the bank.
@@ -140,7 +140,7 @@ export function CaseAi({
               >
                 Generate disposition
               </Button>
-              <p className="mt-1.5 text-center text-[11px] text-muted-foreground">
+              <p className="mt-1.5 text-center text-[12px] text-muted-foreground">
                 Usually 30&ndash;60 seconds on the bank&rsquo;s own hardware
               </p>
             </div>
@@ -161,7 +161,7 @@ export function CaseAi({
                       return (
                         <p
                           key={`${message.id}-${i}`}
-                          className="mt-1 text-[13px] leading-[1.65] text-muted-foreground italic"
+                          className="mt-1 text-[14px] leading-[1.65] text-muted-foreground italic"
                         >
                           Requested a disposition for this case.
                         </p>
@@ -188,7 +188,7 @@ export function CaseAi({
                         key={`${message.id}-${i}`}
                         className="my-2 rounded-md border border-hairline bg-surface-muted/60 px-3 py-2"
                       >
-                        <p className="flex items-center gap-1.5 text-[11px] font-medium">
+                        <p className="flex items-center gap-1.5 text-[12px] font-medium">
                           <span
                             className={`size-1.5 rounded-full ${
                               done ? "bg-emerald-500" : "ep-live bg-watch"
@@ -199,7 +199,7 @@ export function CaseAi({
                             : "Searching the policy library"}
                         </p>
                         {query ? (
-                          <p className="mt-1 font-mono text-[10px] text-muted-foreground">
+                          <p className="mt-1 font-mono text-[11px] text-muted-foreground">
                             vector query: {query}
                           </p>
                         ) : null}
@@ -208,7 +208,7 @@ export function CaseAi({
                             (row: { title?: string; score?: number }) => (
                               <li
                                 key={String(row.title)}
-                                className="flex items-baseline justify-between gap-3 text-[11px]"
+                                className="flex items-baseline justify-between gap-3 text-[12px]"
                               >
                                 <span className="min-w-0 truncate text-foreground/80">
                                   {String(row.title)}
@@ -231,13 +231,13 @@ export function CaseAi({
             ))}
 
             {busy ? (
-              <p className="flex items-center gap-2 text-[11px] text-muted-foreground">
+              <p className="flex items-center gap-2 text-[12px] text-muted-foreground">
                 <span className="ep-live size-1.5 rounded-full bg-foreground" />
                 {busyLabel} ·{" "}
                 <span className="font-mono tabular-nums">{elapsed}s</span>
               </p>
             ) : (
-              <p className="rounded-md border border-hairline bg-surface-muted/60 px-3 py-2 text-[11px] text-muted-foreground">
+              <p className="rounded-md border border-hairline bg-surface-muted/60 px-3 py-2 text-[12px] text-muted-foreground">
                 Draft ready. It is a recommendation only — the case stays open
                 until you record a decision below.
               </p>
@@ -255,7 +255,7 @@ export function CaseAi({
                 type="button"
                 disabled={busy}
                 onClick={() => ask(s.text)}
-                className="rounded-full border border-hairline px-2 py-0.5 text-[11px] text-muted-foreground transition-colors hover:border-foreground/25 hover:text-foreground disabled:opacity-40"
+                className="rounded-full border border-hairline px-2 py-0.5 text-[12px] text-muted-foreground transition-colors hover:border-foreground/25 hover:text-foreground disabled:opacity-40"
               >
                 {s.label}
               </button>

@@ -54,7 +54,7 @@ export default async function ActivityPage() {
                   aria-hidden
                 />
                 <div className="grid gap-1 md:grid-cols-[5.5rem_1fr_auto] md:items-baseline md:gap-4">
-                  <p className="font-mono text-[11px] text-muted-foreground">
+                  <p className="font-mono text-[12px] text-muted-foreground">
                     {r.started_at
                       ? new Date(String(r.started_at)).toLocaleTimeString("en-GB", {
                           hour: "2-digit",
@@ -63,14 +63,14 @@ export default async function ActivityPage() {
                         })
                       : ""}
                   </p>
-                  <p className="min-w-0 text-[12px] leading-5">
+                  <p className="min-w-0 text-[13px] leading-5">
                     <span className="font-medium">{meta.label}</span>
                     {r.ref ? (
                       <>
                         {" · "}
                         <Link
                           href={`/contracts/${String(r.ref)}`}
-                          className="font-mono text-[11px] underline-offset-2 hover:underline"
+                          className="font-mono text-[12px] underline-offset-2 hover:underline"
                         >
                           {String(r.ref)}
                         </Link>
@@ -95,7 +95,7 @@ export default async function ActivityPage() {
                         {changed.map((c: Record<string, unknown>) => (
                           <span
                             key={String(c.ref)}
-                            className="block text-[11px] text-foreground/80"
+                            className="block text-[12px] text-foreground/80"
                           >
                             <span className="font-mono">{String(c.ref)}</span>{" "}
                             {String(c.vendor ?? "")}: {String(c.from)} &rarr;{" "}
@@ -105,7 +105,7 @@ export default async function ActivityPage() {
                       </span>
                     ) : null}
                   </p>
-                  <p className="font-mono text-[11px] text-muted-foreground md:text-right">
+                  <p className="font-mono text-[12px] text-muted-foreground md:text-right">
                     {typeof r.seconds === "number" ? `${r.seconds}s` : ""}
                   </p>
                 </div>
@@ -113,7 +113,7 @@ export default async function ActivityPage() {
             );
           })}
           {rows.length === 0 ? (
-            <li className="px-4 py-8 text-center text-[13px] text-muted-foreground">
+            <li className="px-4 py-8 text-center text-[14px] text-muted-foreground">
               No activity yet. Start the agent and it will report here.
             </li>
           ) : null}

@@ -52,7 +52,7 @@ export default async function SystemPage() {
 
         <section className="mt-6">
           <Eyebrow>What it checks</Eyebrow>
-          <p className="mt-1 max-w-3xl text-[12px] leading-5 text-muted-foreground">
+          <p className="mt-1 max-w-3xl text-[13px] leading-5 text-muted-foreground">
             Article 30(2) applies to every ICT arrangement. Article 30(3) adds
             six more where the arrangement supports a critical or important
             function. Three of them are treated as blocking: without an exit
@@ -65,21 +65,21 @@ export default async function SystemPage() {
                 key={p.key}
                 className="grid gap-1 border-b border-hairline px-4 py-2 last:border-b-0 md:grid-cols-[5.5rem_1.3fr_2fr_auto] md:items-baseline md:gap-4"
               >
-                <span className="font-mono text-[11px] text-muted-foreground">
+                <span className="font-mono text-[12px] text-muted-foreground">
                   {p.article}
                 </span>
-                <span className="text-[12px] font-medium">{p.label}</span>
-                <span className="text-[12px] leading-5 text-muted-foreground">
+                <span className="text-[13px] font-medium">{p.label}</span>
+                <span className="text-[13px] leading-5 text-muted-foreground">
                   {p.plain}
                 </span>
                 <span className="flex justify-end gap-1">
                   {p.critical ? (
-                    <span className="rounded border border-hairline px-1 py-px text-[9px] tracking-wide text-muted-foreground uppercase">
+                    <span className="rounded border border-hairline px-1 py-px text-[10px] tracking-wide text-muted-foreground uppercase">
                       critical only
                     </span>
                   ) : null}
                   {p.blocking ? (
-                    <span className="rounded border border-flag/30 bg-flag-soft px-1 py-px text-[9px] tracking-wide text-flag uppercase">
+                    <span className="rounded border border-flag/30 bg-flag-soft px-1 py-px text-[10px] tracking-wide text-flag uppercase">
                       blocking
                     </span>
                   ) : null}
@@ -97,11 +97,11 @@ export default async function SystemPage() {
                 key={m.feature}
                 className="rounded-lg border border-hairline bg-surface px-3.5 py-2.5"
               >
-                <p className="text-[12px] font-medium">{m.feature}</p>
-                <p className="mt-0.5 font-mono text-[10px] leading-4 text-muted-foreground">
+                <p className="text-[13px] font-medium">{m.feature}</p>
+                <p className="mt-0.5 font-mono text-[11px] leading-4 text-muted-foreground">
                   {m.where}
                 </p>
-                <p className="mt-1.5 text-[11px] leading-[1.55] text-muted-foreground">
+                <p className="mt-1.5 text-[12px] leading-[1.55] text-muted-foreground">
                   {m.why}
                 </p>
               </li>
@@ -121,14 +121,14 @@ export default async function SystemPage() {
               ["Nothing leaves the building", "Reading, embedding, retrieval and storage all run on the bank's own hardware."],
             ].map(([title, body]) => (
               <li key={title} className="rounded-lg border border-hairline bg-surface px-3.5 py-2.5">
-                <p className="flex items-start gap-2 text-[12px] font-medium">
+                <p className="flex items-start gap-2 text-[13px] font-medium">
                   <svg viewBox="0 0 14 14" className="mt-0.5 size-3.5 shrink-0 text-emerald-600" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden>
                     <circle cx="7" cy="7" r="5.6" />
                     <path d="M4.6 7.2 6.3 8.9 9.6 5.4" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
                   {title}
                 </p>
-                <p className="mt-1 pl-5.5 text-[11px] leading-[1.5] text-muted-foreground">
+                <p className="mt-1 pl-5.5 text-[12px] leading-[1.5] text-muted-foreground">
                   {body}
                 </p>
               </li>

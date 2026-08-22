@@ -55,12 +55,12 @@ export function DecideBar({
   return (
     <section className="overflow-hidden rounded-lg border border-foreground/15 bg-surface shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
       <div className="flex items-center justify-between gap-3 border-b border-hairline px-4 py-2">
-        <h2 className="text-[12px] font-medium">Record the decision</h2>
-        <span className="text-[11px] text-muted-foreground">Analyst only</span>
+        <h2 className="text-[13px] font-medium">Record the decision</h2>
+        <span className="text-[12px] text-muted-foreground">Analyst only</span>
       </div>
 
       <div className="px-4 py-3">
-        <p className="text-[12px] leading-5 text-muted-foreground">
+        <p className="text-[13px] leading-5 text-muted-foreground">
           The case stays open until one of these is recorded. The drafting
           assistant cannot take any of them.
         </p>
@@ -111,16 +111,16 @@ export function DecideBar({
                   ) : null}
                 </span>
                 <span className="min-w-0 flex-1">
-                  <span className="flex items-center gap-2 text-[13px] font-medium">
+                  <span className="flex items-center gap-2 text-[14px] font-medium">
                     {a.label}
                     {pending === a.id ? (
-                      <span className="text-[11px] font-normal opacity-70">
+                      <span className="text-[12px] font-normal opacity-70">
                         recording…
                       </span>
                     ) : null}
                   </span>
                   <span
-                    className={`mt-0.5 block text-[11px] leading-4 ${
+                    className={`mt-0.5 block text-[12px] leading-4 ${
                       chosen ? "text-background/75" : "text-muted-foreground"
                     }`}
                   >
@@ -135,14 +135,14 @@ export function DecideBar({
         </div>
 
         {current ? (
-          <p className="mt-3 rounded-md border border-hairline bg-surface-muted/60 px-3 py-2 text-[11px] leading-4 text-muted-foreground">
+          <p className="mt-3 rounded-md border border-hairline bg-surface-muted/60 px-3 py-2 text-[12px] leading-4 text-muted-foreground">
             Recorded by A. Weber, Financial Crime Operations. Written to the
             activity log with the case ID and reason.
           </p>
         ) : null}
 
         {error ? (
-          <p className="mt-3 rounded-md border border-flag/30 bg-flag-soft px-3 py-2 text-[12px] leading-5 text-flag">
+          <p className="mt-3 rounded-md border border-flag/30 bg-flag-soft px-3 py-2 text-[13px] leading-5 text-flag">
             {error}
           </p>
         ) : null}

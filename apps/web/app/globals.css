@@ -161,7 +161,7 @@
     @apply font-sans;
   }
   body {
-    @apply bg-background text-foreground text-sm leading-6;
+    @apply bg-background text-foreground text-[15px] leading-6;
     -webkit-font-smoothing: antialiased;
   }
   h1,

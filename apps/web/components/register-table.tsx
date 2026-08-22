@@ -65,7 +65,7 @@ export function RegisterTable({ rows }: { rows: RegisterRow[] }) {
               key={t.id}
               type="button"
               onClick={() => setTab(t.id)}
-              className={`rounded-md px-2.5 py-1 text-[12px] transition-colors ${
+              className={`rounded-md px-2.5 py-1 text-[13px] transition-colors ${
                 tab === t.id
                   ? "bg-foreground font-medium text-background"
                   : "text-muted-foreground hover:bg-surface-muted hover:text-foreground"
@@ -73,7 +73,7 @@ export function RegisterTable({ rows }: { rows: RegisterRow[] }) {
             >
               {t.label}
               <span
-                className={`ml-1.5 font-mono text-[10px] ${
+                className={`ml-1.5 font-mono text-[11px] ${
                   tab === t.id ? "text-background/60" : "text-muted-foreground/70"
                 }`}
               >
@@ -86,12 +86,12 @@ export function RegisterTable({ rows }: { rows: RegisterRow[] }) {
           value={q}
           onChange={(e) => setQ(e.currentTarget.value)}
           placeholder="Search supplier or reference"
-          className="ml-auto h-8 w-full max-w-[240px] rounded-md border border-hairline bg-surface px-2.5 text-[13px] outline-none placeholder:text-muted-foreground/70 focus:border-foreground/25 focus:ring-3 focus:ring-foreground/5"
+          className="ml-auto h-8 w-full max-w-[240px] rounded-md border border-hairline bg-surface px-2.5 text-[14px] outline-none placeholder:text-muted-foreground/70 focus:border-foreground/25 focus:ring-3 focus:ring-foreground/5"
         />
       </div>
 
       <div className="overflow-hidden rounded-lg border border-hairline bg-surface">
-        <div className="hidden grid-cols-[1.5fr_1.4fr_auto_auto_auto] items-center gap-4 border-b border-hairline bg-surface-muted/60 px-4 py-2 text-[10px] font-medium tracking-[0.08em] text-muted-foreground uppercase md:grid">
+        <div className="hidden grid-cols-[1.5fr_1.4fr_auto_auto_auto] items-center gap-4 border-b border-hairline bg-surface-muted/60 px-4 py-2 text-[11px] font-medium tracking-[0.08em] text-muted-foreground uppercase md:grid">
           <span>Supplier and reference</span>
           <span>Article 30 gaps</span>
           <span className="text-right">Coverage</span>
@@ -109,16 +109,18 @@ export function RegisterTable({ rows }: { rows: RegisterRow[] }) {
             >
               <Rail tone={tone} />
               <div className="min-w-0">
-                <p className="flex items-center gap-1.5 truncate text-[13px] font-medium">
-                  {r.vendor}
+                {/* the supplier name owns the first line — it is what a
+                    reviewer scans for, so nothing else may squeeze it */}
+                <p className="truncate text-[14px] font-medium">{r.vendor}</p>
+                <p className="mt-0.5 flex items-center gap-1.5 text-[12px] text-muted-foreground">
                   {r.critical ? (
-                    <span className="shrink-0 rounded border border-hairline px-1 py-px text-[9px] tracking-wide text-muted-foreground uppercase">
+                    <span className="shrink-0 rounded border border-hairline px-1 py-px text-[10px] tracking-wide uppercase">
                       critical
                     </span>
                   ) : null}
-                </p>
-                <p className="truncate text-[11px] text-muted-foreground">
-                  <span className="font-mono">{r.ref}</span> · {r.function}
+                  <span className="truncate">
+                    <span className="font-mono">{r.ref}</span> · {r.function}
+                  </span>
                 </p>
               </div>
 
@@ -129,7 +131,7 @@ export function RegisterTable({ rows }: { rows: RegisterRow[] }) {
                       <span
                         key={g.provision}
                         title={g.label}
-                        className={`rounded border px-1 py-px font-mono text-[10px] ${
+                        className={`rounded border px-1 py-px font-mono text-[11px] ${
                           g.severity === "blocking"
                             ? "border-flag/30 bg-flag-soft text-flag"
                             : "border-hairline text-muted-foreground"
@@ -139,43 +141,43 @@ export function RegisterTable({ rows }: { rows: RegisterRow[] }) {
                       </span>
                     ))}
                     {r.gaps.length > 3 ? (
-                      <span className="text-[10px] text-muted-foreground">
+                      <span className="text-[11px] text-muted-foreground">
                         +{r.gaps.length - 3}
                       </span>
                     ) : null}
-                    <span className="truncate text-[11px] text-muted-foreground">
+                    <span className="truncate text-[12px] text-muted-foreground">
                       {r.gaps[0].label}
                       {r.gaps.length > 1 ? ` +${r.gaps.length - 1} more` : ""}
                     </span>
                   </div>
                 ) : r.decision ? (
-                  <span className="text-[12px] text-muted-foreground">
+                  <span className="text-[13px] text-muted-foreground">
                     All required provisions present
                   </span>
                 ) : (
-                  <span className="text-[12px] text-muted-foreground">
+                  <span className="text-[13px] text-muted-foreground">
                     Queued for review
                   </span>
                 )}
                 {r.changedByMemory ? (
-                  <p className="mt-0.5 text-[10px] text-muted-foreground">
+                  <p className="mt-0.5 text-[11px] text-muted-foreground">
                     Verdict set by a learned rule, not the checklist
                   </p>
                 ) : null}
               </div>
 
               <div className="md:text-right">
-                <p className="font-mono text-[13px] tabular-nums">
+                <p className="font-mono text-[14px] tabular-nums">
                   {r.decision ? `${r.presentCount}/${r.requiredCount}` : "—"}
                 </p>
-                <p className="text-[11px] text-muted-foreground">provisions</p>
+                <p className="text-[12px] text-muted-foreground">provisions</p>
               </div>
 
               <div className="md:text-right">
-                <p className="font-mono text-[13px] tabular-nums">
+                <p className="font-mono text-[14px] tabular-nums">
                   {euros(r.annualValueEur)}
                 </p>
-                <p className="text-[11px] text-muted-foreground">per year</p>
+                <p className="text-[12px] text-muted-foreground">per year</p>
               </div>
 
               <div className="md:w-[132px] md:text-right">
@@ -189,7 +191,7 @@ export function RegisterTable({ rows }: { rows: RegisterRow[] }) {
         })}
 
         {shown.length === 0 ? (
-          <p className="px-4 py-8 text-center text-[13px] text-muted-foreground">
+          <p className="px-4 py-8 text-center text-[14px] text-muted-foreground">
             Nothing in this view.
           </p>
         ) : null}

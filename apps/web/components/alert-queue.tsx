@@ -76,7 +76,7 @@ export function AlertQueue({ alerts }: { alerts: AlertRow[] }) {
               key={t.id}
               type="button"
               onClick={() => setTab(t.id)}
-              className={`rounded-md px-2.5 py-1 text-[12px] transition-colors ${
+              className={`rounded-md px-2.5 py-1 text-[13px] transition-colors ${
                 tab === t.id
                   ? "bg-foreground font-medium text-background"
                   : "text-muted-foreground hover:bg-surface-muted hover:text-foreground"
@@ -84,7 +84,7 @@ export function AlertQueue({ alerts }: { alerts: AlertRow[] }) {
             >
               {t.label}
               <span
-                className={`ml-1.5 font-mono text-[10px] ${
+                className={`ml-1.5 font-mono text-[11px] ${
                   tab === t.id ? "text-background/60" : "text-muted-foreground/70"
                 }`}
               >
@@ -97,12 +97,12 @@ export function AlertQueue({ alerts }: { alerts: AlertRow[] }) {
           value={q}
           onChange={(e) => setQ(e.currentTarget.value)}
           placeholder="Search name or case ID"
-          className="ml-auto h-8 w-full max-w-[240px] rounded-md border border-hairline bg-surface px-2.5 text-[13px] outline-none placeholder:text-muted-foreground/70 focus:border-foreground/25 focus:ring-3 focus:ring-foreground/5"
+          className="ml-auto h-8 w-full max-w-[240px] rounded-md border border-hairline bg-surface px-2.5 text-[14px] outline-none placeholder:text-muted-foreground/70 focus:border-foreground/25 focus:ring-3 focus:ring-foreground/5"
         />
       </div>
 
       <div className="overflow-hidden rounded-lg border border-hairline bg-surface">
-        <div className="hidden grid-cols-[1.3fr_1.5fr_auto_auto] items-center gap-4 border-b border-hairline bg-surface-muted/60 px-4 py-2 text-[10px] font-medium tracking-[0.08em] text-muted-foreground uppercase md:grid">
+        <div className="hidden grid-cols-[1.3fr_1.5fr_auto_auto] items-center gap-4 border-b border-hairline bg-surface-muted/60 px-4 py-2 text-[11px] font-medium tracking-[0.08em] text-muted-foreground uppercase md:grid">
           <span>Customer</span>
           <span>Why monitoring opened it</span>
           <span className="text-right">Value in review</span>
@@ -120,8 +120,8 @@ export function AlertQueue({ alerts }: { alerts: AlertRow[] }) {
             >
               <Rail tone={decided ? "clear" : tone} />
               <div className="min-w-0">
-                <p className="truncate text-[13px] font-medium">{a.customerName}</p>
-                <p className="truncate text-[11px] text-muted-foreground">
+                <p className="truncate text-[14px] font-medium">{a.customerName}</p>
+                <p className="truncate text-[12px] text-muted-foreground">
                   <span className="font-mono">{a.alertId}</span>
                   {a.occupation ? ` · ${a.occupation}` : ""}
                   {a.city ? ` · ${a.city}` : ""}
@@ -129,12 +129,12 @@ export function AlertQueue({ alerts }: { alerts: AlertRow[] }) {
               </div>
 
               <div className="min-w-0">
-                <p className="truncate text-[13px] leading-5">{a.headline}</p>
+                <p className="truncate text-[14px] leading-5">{a.headline}</p>
                 <div className="mt-0.5 flex flex-wrap items-center gap-1">
                   {(a.ruleIds.length ? a.ruleIds : [a.ruleId]).map((r) => (
                     <span
                       key={r}
-                      className="rounded border border-hairline px-1 py-px text-[10px] text-muted-foreground"
+                      className="rounded border border-hairline px-1 py-px text-[11px] text-muted-foreground"
                     >
                       {ruleLabel(r)}
                     </span>
@@ -143,10 +143,10 @@ export function AlertQueue({ alerts }: { alerts: AlertRow[] }) {
               </div>
 
               <div className="md:text-right">
-                <p className="font-mono text-[13px] tabular-nums">
+                <p className="font-mono text-[14px] tabular-nums">
                   {euros(a.exposureEur)}
                 </p>
-                <p className="text-[11px] text-muted-foreground">
+                <p className="text-[12px] text-muted-foreground">
                   {a.txnCount} payments
                 </p>
               </div>
@@ -169,7 +169,7 @@ export function AlertQueue({ alerts }: { alerts: AlertRow[] }) {
         })}
 
         {rows.length === 0 ? (
-          <p className="px-4 py-8 text-center text-[13px] text-muted-foreground">
+          <p className="px-4 py-8 text-center text-[14px] text-muted-foreground">
             Nothing in this view.
           </p>
         ) : null}

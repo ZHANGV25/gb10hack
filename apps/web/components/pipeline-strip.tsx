@@ -23,7 +23,7 @@ export function PipelineStrip({ current }: { current: StageId }) {
             }`}
           >
             <span
-              className={`flex size-5 shrink-0 items-center justify-center rounded-full border font-mono text-[10px] ${
+              className={`flex size-5 shrink-0 items-center justify-center rounded-full border font-mono text-[11px] ${
                 isCurrent
                   ? "border-background/40 bg-background/15 text-background"
                   : isDone
@@ -47,11 +47,11 @@ export function PipelineStrip({ current }: { current: StageId }) {
               )}
             </span>
             <span className="min-w-0">
-              <span className="block truncate text-[12px] leading-4 font-medium">
+              <span className="block truncate text-[13px] leading-4 font-medium">
                 {step.title}
               </span>
               <span
-                className={`block truncate text-[10px] leading-4 ${
+                className={`block truncate text-[11px] leading-4 ${
                   isCurrent ? "text-background/70" : "text-muted-foreground"
                 }`}
               >

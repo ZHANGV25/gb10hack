@@ -68,7 +68,7 @@ export function CaseWorkspace({ view }: { view: CaseView }) {
     <div className="space-y-4">
       <div>
         <PipelineStrip current={stage} />
-        <p className="mt-1.5 text-[11px] text-muted-foreground">
+        <p className="mt-1.5 text-[12px] text-muted-foreground">
           The highlighted step is where this case is right now.
         </p>
       </div>
@@ -78,15 +78,15 @@ export function CaseWorkspace({ view }: { view: CaseView }) {
         <div className="space-y-4">
           <section className="overflow-hidden rounded-lg border border-hairline bg-surface">
             <div className="flex items-center justify-between gap-3 border-b border-hairline px-4 py-2">
-              <h2 className="text-[12px] font-medium">
+              <h2 className="text-[13px] font-medium">
                 Why monitoring opened this
               </h2>
-              <span className="text-[11px] text-muted-foreground">
+              <span className="text-[12px] text-muted-foreground">
                 Rules, not the model
               </span>
             </div>
             <div className="px-4 py-3">
-              <p className="text-[13px] leading-[1.6]">
+              <p className="text-[14px] leading-[1.6]">
                 {view.story || view.reason}
               </p>
             </div>
@@ -97,24 +97,24 @@ export function CaseWorkspace({ view }: { view: CaseView }) {
                   <li key={h.ruleId} className="px-4 py-2.5">
                     <div className="flex flex-wrap items-center gap-2">
                       <Pill tone={tone}>{ruleLabel(h.ruleId)}</Pill>
-                      <span className="text-[12px] font-medium">
+                      <span className="text-[13px] font-medium">
                         {h.headline}
                       </span>
                       {typeof h.score === "number" &&
                       h.ruleId.startsWith("WATCHLIST") ? (
-                        <span className="ml-auto font-mono text-[11px] text-muted-foreground">
+                        <span className="ml-auto font-mono text-[12px] text-muted-foreground">
                           name match {(h.score * 100).toFixed(0)}%
                         </span>
                       ) : h.ruleId === "RED_FLAG_SANCTIONS" ? (
-                        <span className="ml-auto font-mono text-[11px] text-flag">
+                        <span className="ml-auto font-mono text-[12px] text-flag">
                           exact match
                         </span>
                       ) : null}
                     </div>
-                    <p className="mt-1 text-[12px] leading-5 text-muted-foreground">
+                    <p className="mt-1 text-[13px] leading-5 text-muted-foreground">
                       {h.reason}
                     </p>
-                    <p className="mt-1 text-[11px] leading-4 text-muted-foreground/80">
+                    <p className="mt-1 text-[12px] leading-4 text-muted-foreground/80">
                       {ruleMechanic(h.ruleId)}
                     </p>
                   </li>
@@ -122,7 +122,7 @@ export function CaseWorkspace({ view }: { view: CaseView }) {
               })}
             </ul>
             {view.redFlag ? (
-              <p className="border-t border-hairline bg-flag-soft px-4 py-2 text-[12px] text-flag">
+              <p className="border-t border-hairline bg-flag-soft px-4 py-2 text-[13px] text-flag">
                 Exact sanctions-list match. This case cannot be dismissed as a
                 false positive — the desk blocks it.
               </p>
@@ -131,17 +131,17 @@ export function CaseWorkspace({ view }: { view: CaseView }) {
 
           <section className="overflow-hidden rounded-lg border border-hairline bg-surface">
             <div className="border-b border-hairline px-4 py-2">
-              <h2 className="text-[12px] font-medium">Who the customer is</h2>
+              <h2 className="text-[13px] font-medium">Who the customer is</h2>
             </div>
             <div className="px-4 py-3">
-              <p className="text-[13px] leading-[1.6]">
+              <p className="text-[14px] leading-[1.6]">
                 {view.occupation &&
                 !view.kyc.toLowerCase().includes(view.occupation.toLowerCase())
                   ? `${view.occupation}. `
                   : ""}
                 {view.kyc}
               </p>
-              <p className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-[11px] text-muted-foreground">
+              <p className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-[12px] text-muted-foreground">
                 <span>
                   Customer{" "}
                   <span className="font-mono text-foreground">
@@ -158,8 +158,8 @@ export function CaseWorkspace({ view }: { view: CaseView }) {
 
           <section className="overflow-hidden rounded-lg border border-hairline bg-surface">
             <div className="flex items-center justify-between gap-3 border-b border-hairline px-4 py-2">
-              <h2 className="text-[12px] font-medium">Payments reviewed</h2>
-              <span className="text-[11px] text-muted-foreground">
+              <h2 className="text-[13px] font-medium">Payments reviewed</h2>
+              <span className="text-[12px] text-muted-foreground">
                 {flaggedCount
                   ? `${flaggedCount} of these triggered a rule`
                   : "No single payment triggered this case"}
@@ -180,17 +180,17 @@ export function CaseWorkspace({ view }: { view: CaseView }) {
                     />
                   ) : null}
                   <span className="min-w-0">
-                    <span className="block truncate text-[13px]">
+                    <span className="block truncate text-[14px]">
                       {t.counterparty || "Counterparty on file"}
                     </span>
-                    <span className="text-[11px] text-muted-foreground">
+                    <span className="text-[12px] text-muted-foreground">
                       {shortDate(t.ts)} · {countryName(t.country)}
                       {HIGH_RISK_COUNTRIES.has(t.country)
                         ? " · high-risk jurisdiction"
                         : ""}
                     </span>
                   </span>
-                  <span className="shrink-0 font-mono text-[13px] tabular-nums">
+                  <span className="shrink-0 font-mono text-[14px] tabular-nums">
                     {euros(t.amount)}
                   </span>
                 </li>
@@ -217,8 +217,8 @@ export function CaseWorkspace({ view }: { view: CaseView }) {
           {view.sources.length ? (
             <section className="overflow-hidden rounded-lg border border-hairline bg-surface">
               <div className="flex items-center justify-between gap-3 border-b border-hairline px-4 py-2">
-                <h2 className="text-[12px] font-medium">Policy on file</h2>
-                <span className="text-[11px] text-muted-foreground">
+                <h2 className="text-[13px] font-medium">Policy on file</h2>
+                <span className="text-[12px] text-muted-foreground">
                   Cited by the saved draft
                 </span>
               </div>
@@ -226,8 +226,8 @@ export function CaseWorkspace({ view }: { view: CaseView }) {
                 {view.sources.map((s) => (
                   <li key={s.docId} id={s.docId} className="px-4 py-2.5">
                     <Eyebrow>{s.source}</Eyebrow>
-                    <p className="mt-1 text-[12px] font-medium">{s.title}</p>
-                    <p className="mt-1 text-[12px] leading-5 text-muted-foreground">
+                    <p className="mt-1 text-[13px] font-medium">{s.title}</p>
+                    <p className="mt-1 text-[13px] leading-5 text-muted-foreground">
                       {s.text}
                     </p>
                   </li>

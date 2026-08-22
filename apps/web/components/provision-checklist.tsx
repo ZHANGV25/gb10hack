@@ -29,10 +29,10 @@ export function ProvisionChecklist({
   return (
     <section className="overflow-hidden rounded-lg border border-hairline bg-surface">
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-hairline px-4 py-2">
-        <h2 className="text-[12px] font-medium">
+        <h2 className="text-[13px] font-medium">
           DORA Article 30 checklist
         </h2>
-        <p className="text-[11px] text-muted-foreground">
+        <p className="text-[12px] text-muted-foreground">
           {required.length} provisions required{" "}
           {critical ? "— critical function" : "— standard arrangement"}
         </p>
@@ -71,24 +71,24 @@ export function ProvisionChecklist({
 
                 <span className="min-w-0 flex-1">
                   <span className="flex flex-wrap items-baseline gap-x-2">
-                    <span className="font-mono text-[10px] text-muted-foreground">
+                    <span className="font-mono text-[11px] text-muted-foreground">
                       {p.article}
                     </span>
-                    <span className="text-[13px] font-medium">{p.label}</span>
+                    <span className="text-[14px] font-medium">{p.label}</span>
                     {p.blocking && !ok ? (
-                      <span className="rounded border border-flag/30 bg-flag-soft px-1 py-px text-[9px] tracking-wide text-flag uppercase">
+                      <span className="rounded border border-flag/30 bg-flag-soft px-1 py-px text-[10px] tracking-wide text-flag uppercase">
                         blocking
                       </span>
                     ) : null}
                   </span>
-                  <span className="mt-0.5 block text-[11px] leading-4 text-muted-foreground">
+                  <span className="mt-0.5 block text-[12px] leading-4 text-muted-foreground">
                     {p.plain}
                   </span>
                 </span>
 
                 <span className="shrink-0 text-right">
                   <span
-                    className={`block text-[11px] ${
+                    className={`block text-[12px] ${
                       ok
                         ? "text-muted-foreground"
                         : status === "inadequate"
@@ -98,7 +98,7 @@ export function ProvisionChecklist({
                   >
                     {STATUS_LABEL[status] ?? status}
                   </span>
-                  <span className="text-[10px] text-muted-foreground/70">
+                  <span className="text-[11px] text-muted-foreground/70">
                     {found.quote ? (expanded ? "hide clause" : "show clause") : ""}
                   </span>
                 </span>
@@ -108,23 +108,23 @@ export function ProvisionChecklist({
                 <div className="border-t border-hairline bg-background/60 px-4 py-3 pl-11">
                   {found.quote ? (
                     <>
-                      <p className="text-[10px] font-medium tracking-[0.08em] text-muted-foreground uppercase">
+                      <p className="text-[11px] font-medium tracking-[0.08em] text-muted-foreground uppercase">
                         {found.section
                           ? `Quoted from ${found.section}`
                           : "Quoted from the contract"}
                       </p>
-                      <blockquote className="mt-1.5 border-l-2 border-hairline pl-3 text-[12px] leading-[1.6] text-foreground/85 italic">
+                      <blockquote className="mt-1.5 border-l-2 border-hairline pl-3 text-[13px] leading-[1.6] text-foreground/85 italic">
                         {found.quote}
                       </blockquote>
                       {status === "inadequate" ? (
-                        <p className="mt-2 text-[11px] leading-4 text-watch">
+                        <p className="mt-2 text-[12px] leading-4 text-watch">
                           A clause exists but does not meet the requirement. The
                           bank cannot rely on it to evidence compliance.
                         </p>
                       ) : null}
                     </>
                   ) : (
-                    <p className="text-[12px] leading-5 text-muted-foreground">
+                    <p className="text-[13px] leading-5 text-muted-foreground">
                       Nothing in the contract addresses this. The agent found no
                       clause to quote.
                     </p>

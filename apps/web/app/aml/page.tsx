@@ -75,15 +75,15 @@ function Stat({
 }) {
   return (
     <div className="bg-surface px-4 py-3">
-      <p className="text-[11px] text-muted-foreground">{label}</p>
+      <p className="text-[12px] text-muted-foreground">{label}</p>
       <p
-        className={`mt-1 text-[22px] leading-7 font-semibold tracking-tight tabular-nums ${
+        className={`mt-1 text-[24px] leading-7 font-semibold tracking-tight tabular-nums ${
           emphasis ? "" : "text-foreground/90"
         }`}
       >
         {value}
       </p>
-      <p className="mt-0.5 text-[11px] leading-4 text-muted-foreground">{sub}</p>
+      <p className="mt-0.5 text-[12px] leading-4 text-muted-foreground">{sub}</p>
     </div>
   );
 }

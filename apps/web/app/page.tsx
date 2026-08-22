@@ -60,10 +60,10 @@ export default async function RegisterPage() {
 
           <section className="overflow-hidden rounded-lg border border-hairline bg-surface">
             <div className="border-b border-hairline px-4 py-2">
-              <h2 className="text-[12px] font-medium">
+              <h2 className="text-[13px] font-medium">
                 Where the estate is weakest
               </h2>
-              <p className="mt-0.5 text-[11px] text-muted-foreground">
+              <p className="mt-0.5 text-[12px] text-muted-foreground">
                 The same provision missing across several suppliers is a
                 contracting problem, not a supplier problem.
               </p>
@@ -73,19 +73,19 @@ export default async function RegisterPage() {
                 {gaps.map((g) => (
                   <li key={g.provision} className="px-4 py-2.5">
                     <div className="flex items-baseline justify-between gap-3">
-                      <span className="font-mono text-[11px] text-muted-foreground">
+                      <span className="font-mono text-[12px] text-muted-foreground">
                         DORA {g.article}
                       </span>
-                      <span className="font-mono text-[12px] tabular-nums">
+                      <span className="font-mono text-[13px] tabular-nums">
                         {g.contracts}
                         <span className="text-muted-foreground">
                           {g.contracts === 1 ? " contract" : " contracts"}
                         </span>
                       </span>
                     </div>
-                    <p className="mt-0.5 text-[12px] leading-5">{g.label}</p>
+                    <p className="mt-0.5 text-[13px] leading-5">{g.label}</p>
                     {g.severity === "blocking" ? (
-                      <p className="mt-0.5 text-[10px] text-flag">
+                      <p className="mt-0.5 text-[11px] text-flag">
                         Blocking — the bank cannot evidence an exit or a right
                         to inspect
                       </p>
@@ -94,13 +94,13 @@ export default async function RegisterPage() {
                 ))}
               </ul>
             ) : (
-              <p className="px-4 py-6 text-[12px] text-muted-foreground">
+              <p className="px-4 py-6 text-[13px] text-muted-foreground">
                 No gaps recorded yet. The agent is still reading the register.
               </p>
             )}
             <div className="border-t border-hairline px-4 py-2.5">
               <Eyebrow>Aggregated live</Eyebrow>
-              <p className="mt-1 text-[11px] leading-4 text-muted-foreground">
+              <p className="mt-1 text-[12px] leading-4 text-muted-foreground">
                 Counted across the latest verdict for each contract, in the
                 database rather than in the page.
               </p>
@@ -125,15 +125,15 @@ function Stat({
 }) {
   return (
     <div className="bg-surface px-4 py-3">
-      <p className="text-[11px] text-muted-foreground">{label}</p>
+      <p className="text-[12px] text-muted-foreground">{label}</p>
       <p
-        className={`mt-1 text-[22px] leading-7 font-semibold tracking-tight tabular-nums ${
+        className={`mt-1 text-[24px] leading-7 font-semibold tracking-tight tabular-nums ${
           emphasis ? "" : "text-foreground/90"
         }`}
       >
         {value}
       </p>
-      <p className="mt-0.5 text-[11px] leading-4 text-muted-foreground">{sub}</p>
+      <p className="mt-0.5 text-[12px] leading-4 text-muted-foreground">{sub}</p>
     </div>
   );
 }

@@ -52,7 +52,7 @@ export default async function AuditPage() {
                   }`}
                   aria-hidden
                 />
-                <p className="font-mono text-[11px] text-muted-foreground">
+                <p className="font-mono text-[12px] text-muted-foreground">
                   {r.ts
                     ? new Date(r.ts).toLocaleTimeString("en-GB", {
                         hour: "2-digit",
@@ -61,8 +61,8 @@ export default async function AuditPage() {
                       })
                     : ""}
                 </p>
-                <p className="text-[12px]">{auditActor(agent)}</p>
-                <p className="min-w-0 text-[12px] leading-5">
+                <p className="text-[13px]">{auditActor(agent)}</p>
+                <p className="min-w-0 text-[13px] leading-5">
                   <span className="font-medium">
                     {auditAction(String(r.action))}
                   </span>
@@ -71,7 +71,7 @@ export default async function AuditPage() {
                       {" · "}
                       <Link
                         href={`/alerts/${alertId}`}
-                        className="font-mono text-[11px] underline-offset-2 hover:underline"
+                        className="font-mono text-[12px] underline-offset-2 hover:underline"
                       >
                         {alertId}
                       </Link>
@@ -88,7 +88,7 @@ export default async function AuditPage() {
             );
           })}
           {rows.length === 0 ? (
-            <li className="px-4 py-8 text-center text-[13px] text-muted-foreground">
+            <li className="px-4 py-8 text-center text-[14px] text-muted-foreground">
               No activity recorded yet.
             </li>
           ) : null}

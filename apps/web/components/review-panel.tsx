@@ -85,22 +85,22 @@ export function ReviewPanel({
   return (
     <section className="overflow-hidden rounded-lg border border-foreground/15 bg-surface shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
       <div className="flex items-center justify-between gap-3 border-b border-hairline px-4 py-2">
-        <h2 className="text-[12px] font-medium">Reviewer decision</h2>
-        <span className="text-[11px] text-muted-foreground">
+        <h2 className="text-[13px] font-medium">Reviewer decision</h2>
+        <span className="text-[12px] text-muted-foreground">
           M. Halvorsen, Third-Party Risk
         </span>
       </div>
 
       <div className="px-4 py-3">
         {done ? (
-          <p className="mb-3 rounded-md border border-emerald-600/25 bg-emerald-50 px-3 py-2 text-[12px] leading-5 text-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-300">
+          <p className="mb-3 rounded-md border border-emerald-600/25 bg-emerald-50 px-3 py-2 text-[13px] leading-5 text-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-300">
             {done}
           </p>
         ) : null}
 
         {!teaching ? (
           <>
-            <p className="text-[12px] leading-5 text-muted-foreground">
+            <p className="text-[13px] leading-5 text-muted-foreground">
               The agent reads the contract; you decide what the bank does about
               it. If you disagree, the reason you write becomes a rule it
               applies to every similar arrangement from now on.
@@ -121,7 +121,7 @@ export function ReviewPanel({
               </Button>
             </div>
             {currentDecision ? (
-              <p className="mt-2 text-[11px] text-muted-foreground">
+              <p className="mt-2 text-[12px] text-muted-foreground">
                 Current verdict: {currentDecision}. Agreeing records no change.
               </p>
             ) : null}
@@ -129,7 +129,7 @@ export function ReviewPanel({
         ) : (
           <div className="space-y-3">
             <div>
-              <p className="text-[11px] font-medium">
+              <p className="text-[12px] font-medium">
                 What should the verdict be?
               </p>
               <div className="mt-1.5 space-y-1.5">
@@ -151,10 +151,10 @@ export function ReviewPanel({
                       className="mt-1 accent-foreground"
                     />
                     <span className="min-w-0">
-                      <span className="block text-[13px] font-medium">
+                      <span className="block text-[14px] font-medium">
                         {o.label}
                       </span>
-                      <span className="block text-[11px] leading-4 text-muted-foreground">
+                      <span className="block text-[12px] leading-4 text-muted-foreground">
                         {o.hint}
                       </span>
                     </span>
@@ -165,13 +165,13 @@ export function ReviewPanel({
 
             <div className="grid gap-3 sm:grid-cols-2">
               <label className="block">
-                <span className="text-[11px] font-medium">
+                <span className="text-[12px] font-medium">
                   Which provision is this about?
                 </span>
                 <select
                   value={provision}
                   onChange={(e) => setProvision(e.currentTarget.value)}
-                  className="mt-1 h-8 w-full rounded-md border border-hairline bg-surface px-2 text-[12px] outline-none focus:border-foreground/25"
+                  className="mt-1 h-8 w-full rounded-md border border-hairline bg-surface px-2 text-[13px] outline-none focus:border-foreground/25"
                 >
                   <option value="">Any provision</option>
                   {options.map((p) => (
@@ -182,11 +182,11 @@ export function ReviewPanel({
                 </select>
               </label>
               <label className="block">
-                <span className="text-[11px] font-medium">Apply this to</span>
+                <span className="text-[12px] font-medium">Apply this to</span>
                 <select
                   value={scope}
                   onChange={(e) => setScope(e.currentTarget.value)}
-                  className="mt-1 h-8 w-full rounded-md border border-hairline bg-surface px-2 text-[12px] outline-none focus:border-foreground/25"
+                  className="mt-1 h-8 w-full rounded-md border border-hairline bg-surface px-2 text-[13px] outline-none focus:border-foreground/25"
                 >
                   {SCOPES.map((sc) => (
                     <option key={sc.id} value={sc.id}>
@@ -198,7 +198,7 @@ export function ReviewPanel({
             </div>
 
             <label className="block">
-              <span className="text-[11px] font-medium">
+              <span className="text-[12px] font-medium">
                 Why? This sentence becomes the rule.
               </span>
               <textarea
@@ -206,16 +206,16 @@ export function ReviewPanel({
                 onChange={(e) => setReason(e.currentTarget.value)}
                 rows={3}
                 placeholder="e.g. An auto-renewing term with a notice period longer than twelve months is lock-in. Treat it as an exit deficiency, not a routine gap."
-                className="mt-1 w-full rounded-md border border-hairline bg-surface px-2.5 py-2 text-[12px] leading-5 outline-none placeholder:text-muted-foreground/60 focus:border-foreground/25 focus:ring-3 focus:ring-foreground/5"
+                className="mt-1 w-full rounded-md border border-hairline bg-surface px-2.5 py-2 text-[13px] leading-5 outline-none placeholder:text-muted-foreground/60 focus:border-foreground/25 focus:ring-3 focus:ring-foreground/5"
               />
-              <span className="text-[10px] text-muted-foreground">
+              <span className="text-[11px] text-muted-foreground">
                 Stored as a vector, so the agent finds it again on contracts with
                 a similar gap — not only this one.
               </span>
             </label>
 
             {error ? (
-              <p className="rounded-md border border-flag/30 bg-flag-soft px-3 py-2 text-[12px] leading-5 text-flag">
+              <p className="rounded-md border border-flag/30 bg-flag-soft px-3 py-2 text-[13px] leading-5 text-flag">
                 {error}
               </p>
             ) : null}

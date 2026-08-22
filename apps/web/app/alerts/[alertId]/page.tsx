@@ -37,7 +37,7 @@ export default async function AlertPage({
   return (
     <Shell current="/">
       <main className="mx-auto max-w-[1180px] px-5 py-6 pb-20 lg:px-8">
-        <nav className="flex items-center gap-1.5 text-[12px] text-muted-foreground">
+        <nav className="flex items-center gap-1.5 text-[13px] text-muted-foreground">
           <Link href="/" className="hover:text-foreground">
             Alert queue
           </Link>
@@ -55,18 +55,18 @@ export default async function AlertPage({
                   : severityLabel(view.severity)}
               </Pill>
               {view.redFlag ? (
-                <span className="text-[11px] text-flag">
+                <span className="text-[12px] text-flag">
                   Dismissal is blocked on this case
                 </span>
               ) : null}
             </div>
-            <h1 className="mt-2 text-[24px] leading-8 font-semibold">
+            <h1 className="mt-2 text-[26px] leading-8 font-semibold">
               {view.customerName}
             </h1>
-            <p className="mt-0.5 text-[13px] text-muted-foreground">
+            <p className="mt-0.5 text-[14px] text-muted-foreground">
               {view.headline}
             </p>
-            <p className="mt-2 text-[11px] text-muted-foreground">
+            <p className="mt-2 text-[12px] text-muted-foreground">
               {[
                 view.occupation,
                 view.city,
@@ -80,20 +80,20 @@ export default async function AlertPage({
 
           <dl className="flex gap-6">
             <div>
-              <dt className="text-[11px] text-muted-foreground">In review</dt>
-              <dd className="mt-0.5 font-mono text-[18px] tabular-nums">
+              <dt className="text-[12px] text-muted-foreground">In review</dt>
+              <dd className="mt-0.5 font-mono text-[20px] tabular-nums">
                 {euros(total)}
               </dd>
             </div>
             <div>
-              <dt className="text-[11px] text-muted-foreground">Payments</dt>
-              <dd className="mt-0.5 font-mono text-[18px] tabular-nums">
+              <dt className="text-[12px] text-muted-foreground">Payments</dt>
+              <dd className="mt-0.5 font-mono text-[20px] tabular-nums">
                 {view.txns.length}
               </dd>
             </div>
             <div>
-              <dt className="text-[11px] text-muted-foreground">Rules fired</dt>
-              <dd className="mt-0.5 font-mono text-[18px] tabular-nums">
+              <dt className="text-[12px] text-muted-foreground">Rules fired</dt>
+              <dd className="mt-0.5 font-mono text-[20px] tabular-nums">
                 {view.hits.length}
               </dd>
             </div>

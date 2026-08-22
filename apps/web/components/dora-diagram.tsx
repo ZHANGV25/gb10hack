@@ -4,7 +4,7 @@ function Arrow({ label }: { label?: string }) {
   return (
     <div className="flex shrink-0 items-center gap-1 self-center px-1 text-muted-foreground">
       {label ? (
-        <span className="hidden text-[10px] whitespace-nowrap xl:inline">{label}</span>
+        <span className="hidden text-[11px] whitespace-nowrap xl:inline">{label}</span>
       ) : null}
       <svg viewBox="0 0 24 8" className="h-2 w-6" aria-hidden>
         <path d="M0 4h20M17 1l3 3-3 3" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
@@ -19,7 +19,7 @@ function Down({ label }: { label?: string }) {
       <svg viewBox="0 0 8 24" className="h-6 w-2" aria-hidden>
         <path d="M4 0v20M1 17l3 3 3-3" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
       </svg>
-      {label ? <span className="text-[10px]">{label}</span> : null}
+      {label ? <span className="text-[11px]">{label}</span> : null}
     </div>
   );
 }
@@ -47,17 +47,17 @@ function Node({
             : "border-hairline bg-surface"
       }`}
     >
-      <p className="text-[12px] leading-4 font-medium">{title}</p>
-      <p className={`mt-1 text-[11px] leading-[1.45] ${accent === "solid" ? "text-background/75" : "text-muted-foreground"}`}>
+      <p className="text-[13px] leading-4 font-medium">{title}</p>
+      <p className={`mt-1 text-[12px] leading-[1.45] ${accent === "solid" ? "text-background/75" : "text-muted-foreground"}`}>
         {body}
       </p>
       {tech ? (
-        <p className={`mt-1.5 font-mono text-[10px] leading-4 ${accent === "solid" ? "text-background/60" : "text-muted-foreground/80"}`}>
+        <p className={`mt-1.5 font-mono text-[11px] leading-4 ${accent === "solid" ? "text-background/60" : "text-muted-foreground/80"}`}>
           {tech}
         </p>
       ) : null}
       {meta ? (
-        <p className={`mt-1 text-[10px] ${accent === "solid" ? "text-background/70" : "text-foreground/70"}`}>
+        <p className={`mt-1 text-[11px] ${accent === "solid" ? "text-background/70" : "text-foreground/70"}`}>
           {meta}
         </p>
       ) : null}
@@ -79,9 +79,9 @@ function Band({
   return (
     <div className="rounded-lg border border-hairline bg-surface/60 p-3">
       <div className="mb-2.5 flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
-        <span className="font-mono text-[10px] text-muted-foreground">{n}</span>
-        <h3 className="text-[12px] font-medium">{title}</h3>
-        <p className="text-[11px] text-muted-foreground">{note}</p>
+        <span className="font-mono text-[11px] text-muted-foreground">{n}</span>
+        <h3 className="text-[13px] font-medium">{title}</h3>
+        <p className="text-[12px] text-muted-foreground">{note}</p>
       </div>
       {children}
     </div>
@@ -111,11 +111,11 @@ export function DoraDiagram({ counts }: { counts: DiagramCounts }) {
   return (
     <div className="rounded-lg border border-dashed border-foreground/25 bg-background p-3">
       <div className="mb-3 flex flex-wrap items-center justify-between gap-2 px-1">
-        <p className="flex items-center gap-1.5 text-[11px] font-medium">
+        <p className="flex items-center gap-1.5 text-[12px] font-medium">
           <span className="ep-live size-1.5 rounded-full bg-emerald-500" />
           Everything inside this boundary runs on the bank&rsquo;s own hardware
         </p>
-        <p className="text-[11px] text-muted-foreground">
+        <p className="text-[12px] text-muted-foreground">
           No contract text leaves the network
         </p>
       </div>
@@ -205,7 +205,7 @@ export function DoraDiagram({ counts }: { counts: DiagramCounts }) {
       <div className="mt-3 rounded-md border border-hairline bg-surface p-3">
         <div className="mb-2 flex flex-wrap items-baseline justify-between gap-2">
           <Eyebrow>MongoDB · database covenant</Eyebrow>
-          <p className="font-mono text-[10px] text-muted-foreground">
+          <p className="font-mono text-[11px] text-muted-foreground">
             operational store, vector store and event bus — one deployment
           </p>
         </div>
@@ -213,14 +213,14 @@ export function DoraDiagram({ counts }: { counts: DiagramCounts }) {
           {COLLECTIONS.map((c) => (
             <li key={c.name} className="rounded-md border border-hairline bg-surface-muted/50 px-2.5 py-2">
               <div className="flex items-baseline justify-between gap-2">
-                <span className="font-mono text-[11px]">{c.name}</span>
-                <span className="font-mono text-[11px] tabular-nums text-muted-foreground">
+                <span className="font-mono text-[12px]">{c.name}</span>
+                <span className="font-mono text-[12px] tabular-nums text-muted-foreground">
                   {c.key ? counts[c.key] : ""}
                 </span>
               </div>
-              <p className="mt-0.5 text-[10px] leading-4 text-muted-foreground">{c.note}</p>
+              <p className="mt-0.5 text-[11px] leading-4 text-muted-foreground">{c.note}</p>
               {c.vector ? (
-                <p className="mt-1 inline-flex rounded border border-hairline px-1 py-px font-mono text-[9px] text-muted-foreground">
+                <p className="mt-1 inline-flex rounded border border-hairline px-1 py-px font-mono text-[10px] text-muted-foreground">
                   vectorSearch · 1024-d cosine · filters
                 </p>
               ) : null}

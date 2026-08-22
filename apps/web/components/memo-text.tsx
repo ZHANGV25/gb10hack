@@ -74,7 +74,7 @@ export function MemoText({ text }: { text: string }) {
       flushBullets(`u${i}`);
       flushPara(`p${i}`);
       blocks.push(
-        <p key={`h${i}`} className="mt-3 mb-1 text-[12px] font-semibold">
+        <p key={`h${i}`} className="mt-3 mb-1 text-[13px] font-semibold">
           {inline(heading[1].replace(/\s*#+\s*$/, ""), `h${i}`)}
         </p>,
       );
@@ -92,5 +92,5 @@ export function MemoText({ text }: { text: string }) {
   flushBullets("u-end");
   flushPara("p-end");
 
-  return <div className="text-[13px] leading-[1.65] [&>*:first-child]:mt-0">{blocks}</div>;
+  return <div className="text-[14px] leading-[1.65] [&>*:first-child]:mt-0">{blocks}</div>;
 }

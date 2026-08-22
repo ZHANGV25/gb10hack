@@ -23,7 +23,7 @@ export function Pill({
 }) {
   return (
     <span
-      className={`inline-flex items-center gap-1.5 rounded-full border px-2 py-0.5 text-[11px] leading-4 whitespace-nowrap ${TONE[tone]} ${className}`}
+      className={`inline-flex items-center gap-1.5 rounded-full border px-2 py-0.5 text-[12px] leading-4 whitespace-nowrap ${TONE[tone]} ${className}`}
     >
       {children}
     </span>
@@ -46,7 +46,7 @@ export function Rail({ tone = "clear" }: { tone?: Tone }) {
 /** Small uppercase section label. */
 export function Eyebrow({ children }: { children: React.ReactNode }) {
   return (
-    <p className="text-[10px] font-medium tracking-[0.08em] text-muted-foreground uppercase">
+    <p className="text-[11px] font-medium tracking-[0.08em] text-muted-foreground uppercase">
       {children}
     </p>
   );

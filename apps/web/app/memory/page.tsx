@@ -24,7 +24,7 @@ export default async function MemoryPage() {
         lede="Every rule here was written by a reviewer who disagreed with the agent. Nothing was retrained: each one is stored as a vector, and the agent finds it again on any contract with a similar gap. This is the whole of the agent's judgement — you can read it, and you can switch any of it off."
       >
         {rules.length === 0 ? (
-          <p className="rounded-lg border border-hairline bg-surface px-4 py-8 text-center text-[13px] text-muted-foreground">
+          <p className="rounded-lg border border-hairline bg-surface px-4 py-8 text-center text-[14px] text-muted-foreground">
             Nothing learned yet. Disagree with an assessment on any contract and
             the reason you write appears here.
           </p>
@@ -58,25 +58,25 @@ export default async function MemoryPage() {
                           {ACTION_LABEL[r.action] ?? r.action}
                         </Pill>
                         {p ? (
-                          <span className="font-mono text-[11px] text-muted-foreground">
+                          <span className="font-mono text-[12px] text-muted-foreground">
                             DORA {p.article} · {p.label}
                           </span>
                         ) : (
-                          <span className="text-[11px] text-muted-foreground">
+                          <span className="text-[12px] text-muted-foreground">
                             Any provision
                           </span>
                         )}
                       </div>
-                      <span className="text-[11px] text-muted-foreground">
+                      <span className="text-[12px] text-muted-foreground">
                         {r.appliedTo > 0
                           ? `changing ${r.appliedTo} ${r.appliedTo === 1 ? "verdict" : "verdicts"} now`
                           : "no verdict currently affected"}
                       </span>
                     </div>
-                    <blockquote className="px-4 py-3 text-[13px] leading-[1.6]">
+                    <blockquote className="px-4 py-3 text-[14px] leading-[1.6]">
                       &ldquo;{r.text}&rdquo;
                     </blockquote>
-                    <div className="flex flex-wrap items-center gap-x-4 gap-y-1 border-t border-hairline px-4 py-2 text-[11px] text-muted-foreground">
+                    <div className="flex flex-wrap items-center gap-x-4 gap-y-1 border-t border-hairline px-4 py-2 text-[12px] text-muted-foreground">
                       <span>{r.author}</span>
                       {r.createdAt ? (
                         <span>
@@ -108,7 +108,7 @@ export default async function MemoryPage() {
 
             <section className="mt-6 rounded-lg border border-hairline bg-surface px-4 py-3">
               <Eyebrow>Why it generalises</Eyebrow>
-              <p className="mt-1.5 max-w-3xl text-[12px] leading-[1.6] text-muted-foreground">
+              <p className="mt-1.5 max-w-3xl text-[13px] leading-[1.6] text-muted-foreground">
                 A rule is embedded the same way a contract&rsquo;s gaps are. When
                 the agent reviews an arrangement it searches this memory by
                 meaning, so a rule written about one supplier surfaces on a
@@ -129,11 +129,11 @@ export default async function MemoryPage() {
 function Cell({ label, value, sub }: { label: string; value: string; sub: string }) {
   return (
     <div className="bg-surface px-4 py-3">
-      <p className="text-[11px] text-muted-foreground">{label}</p>
-      <p className="mt-1 text-[22px] leading-7 font-semibold tracking-tight tabular-nums">
+      <p className="text-[12px] text-muted-foreground">{label}</p>
+      <p className="mt-1 text-[24px] leading-7 font-semibold tracking-tight tabular-nums">
         {value}
       </p>
-      <p className="mt-0.5 text-[11px] leading-4 text-muted-foreground">{sub}</p>
+      <p className="mt-0.5 text-[12px] leading-4 text-muted-foreground">{sub}</p>
     </div>
   );
 }

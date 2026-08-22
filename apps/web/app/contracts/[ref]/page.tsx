@@ -37,8 +37,8 @@ export default async function ContractPage({
 
   return (
     <Shell current="/">
-      <main className="mx-auto max-w-[1180px] px-5 py-6 pb-20 lg:px-8">
-        <nav className="flex items-center gap-1.5 text-[12px] text-muted-foreground">
+      <main className="mx-auto max-w-[1260px] px-5 py-6 pb-20 lg:px-8">
+        <nav className="flex items-center gap-1.5 text-[13px] text-muted-foreground">
           <Link href="/" className="hover:text-foreground">
             ICT register
           </Link>
@@ -54,23 +54,23 @@ export default async function ContractPage({
                 {decisionLabel(decision)}
               </Pill>
               {critical ? (
-                <span className="rounded border border-hairline px-1.5 py-0.5 text-[10px] tracking-wide text-muted-foreground uppercase">
+                <span className="rounded border border-hairline px-1.5 py-0.5 text-[11px] tracking-wide text-muted-foreground uppercase">
                   critical or important function
                 </span>
               ) : null}
               {verdict?.decision_changed_by_memory ? (
-                <span className="text-[11px] text-muted-foreground">
+                <span className="text-[12px] text-muted-foreground">
                   Verdict set by a learned rule, not the checklist
                 </span>
               ) : null}
             </div>
-            <h1 className="mt-2 text-[24px] leading-8 font-semibold">
+            <h1 className="mt-2 text-[26px] leading-8 font-semibold">
               {String(contract.vendor)}
             </h1>
-            <p className="mt-0.5 text-[13px] text-muted-foreground">
+            <p className="mt-0.5 text-[14px] text-muted-foreground">
               {String(contract.function)}
             </p>
-            <p className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-[11px] text-muted-foreground">
+            <p className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-[12px] text-muted-foreground">
               <span>Commenced {String(contract.commenced ?? "—")}</span>
               <span>·</span>
               <span>{String(contract.governing_law ?? "—")}</span>
@@ -81,20 +81,20 @@ export default async function ContractPage({
 
           <dl className="flex gap-6">
             <div>
-              <dt className="text-[11px] text-muted-foreground">Annual charge</dt>
-              <dd className="mt-0.5 font-mono text-[18px] tabular-nums">
+              <dt className="text-[12px] text-muted-foreground">Annual charge</dt>
+              <dd className="mt-0.5 font-mono text-[20px] tabular-nums">
                 {euros(Number(contract.annual_value_eur ?? 0))}
               </dd>
             </div>
             <div>
-              <dt className="text-[11px] text-muted-foreground">Coverage</dt>
-              <dd className="mt-0.5 font-mono text-[18px] tabular-nums">
+              <dt className="text-[12px] text-muted-foreground">Coverage</dt>
+              <dd className="mt-0.5 font-mono text-[20px] tabular-nums">
                 {verdict ? `${verdict.present_count}/${verdict.required_count}` : "—"}
               </dd>
             </div>
             <div>
-              <dt className="text-[11px] text-muted-foreground">Gaps</dt>
-              <dd className="mt-0.5 font-mono text-[18px] tabular-nums">
+              <dt className="text-[12px] text-muted-foreground">Gaps</dt>
+              <dd className="mt-0.5 font-mono text-[20px] tabular-nums">
                 {verdict ? gaps.length : "—"}
               </dd>
             </div>
@@ -102,7 +102,7 @@ export default async function ContractPage({
         </div>
 
         {!verdict ? (
-          <p className="mt-6 rounded-lg border border-hairline bg-surface px-4 py-6 text-[13px] text-muted-foreground">
+          <p className="mt-6 rounded-lg border border-hairline bg-surface px-4 py-6 text-[14px] text-muted-foreground">
             The agent has not read this arrangement yet. It is queued.
           </p>
         ) : (
@@ -110,19 +110,19 @@ export default async function ContractPage({
             <div className="space-y-4">
               <section className="overflow-hidden rounded-lg border border-hairline bg-surface">
                 <div className="border-b border-hairline px-4 py-2">
-                  <h2 className="text-[12px] font-medium">What the agent concluded</h2>
+                  <h2 className="text-[13px] font-medium">What the agent concluded</h2>
                 </div>
                 <div className="px-4 py-3">
-                  <p className="text-[13px] leading-[1.6]">
+                  <p className="text-[14px] leading-[1.6]">
                     {String(verdict.reasoning ?? "")}
                   </p>
                   {Number(verdict.exposure_eur ?? 0) > 0 ? (
-                    <p className="mt-2 rounded-md border border-flag/25 bg-flag-soft px-3 py-2 text-[12px] leading-5 text-flag">
+                    <p className="mt-2 rounded-md border border-flag/25 bg-flag-soft px-3 py-2 text-[13px] leading-5 text-flag">
                       {euros(Number(verdict.exposure_eur))} a year runs through an
                       arrangement the bank cannot cleanly exit or inspect.
                     </p>
                   ) : null}
-                  <p className="mt-2 text-[11px] leading-4 text-muted-foreground">
+                  <p className="mt-2 text-[12px] leading-4 text-muted-foreground">
                     {String(verdict.math ?? "")}
                   </p>
                 </div>
@@ -149,8 +149,8 @@ export default async function ContractPage({
 
               <section className="overflow-hidden rounded-lg border border-hairline bg-surface">
                 <div className="flex items-center justify-between gap-3 border-b border-hairline px-4 py-2">
-                  <h2 className="text-[12px] font-medium">Memory consulted</h2>
-                  <span className="text-[11px] text-muted-foreground">
+                  <h2 className="text-[13px] font-medium">Memory consulted</h2>
+                  <span className="text-[12px] text-muted-foreground">
                     nearest rules by meaning
                   </span>
                 </div>
@@ -162,17 +162,17 @@ export default async function ContractPage({
                         <li key={String(c.rule_id)} className="px-4 py-2.5">
                           <div className="flex items-baseline justify-between gap-3">
                             <span
-                              className={`text-[11px] ${fired ? "font-medium text-foreground" : "text-muted-foreground"}`}
+                              className={`text-[12px] ${fired ? "font-medium text-foreground" : "text-muted-foreground"}`}
                             >
                               {fired ? "Applied" : "Considered, did not apply"}
                             </span>
-                            <span className="font-mono text-[11px] text-muted-foreground">
+                            <span className="font-mono text-[12px] text-muted-foreground">
                               {typeof c.score === "number"
                                 ? (c.score as number).toFixed(3)
                                 : ""}
                             </span>
                           </div>
-                          <p className="mt-1 text-[12px] leading-5 text-muted-foreground">
+                          <p className="mt-1 text-[13px] leading-5 text-muted-foreground">
                             {String(c.text ?? "")}
                           </p>
                         </li>
@@ -180,13 +180,13 @@ export default async function ContractPage({
                     })}
                   </ul>
                 ) : (
-                  <p className="px-4 py-4 text-[12px] text-muted-foreground">
+                  <p className="px-4 py-4 text-[13px] text-muted-foreground">
                     No rules in memory matched this contract&rsquo;s gaps.
                   </p>
                 )}
                 <div className="border-t border-hairline px-4 py-2.5">
                   <Eyebrow>Retrieval query</Eyebrow>
-                  <p className="mt-1 font-mono text-[10px] leading-4 break-words text-muted-foreground">
+                  <p className="mt-1 font-mono text-[11px] leading-4 break-words text-muted-foreground">
                     {String(verdict.retrieval_query ?? "")}
                   </p>
                 </div>
@@ -195,15 +195,15 @@ export default async function ContractPage({
               {history.length > 1 ? (
                 <section className="overflow-hidden rounded-lg border border-hairline bg-surface">
                   <div className="border-b border-hairline px-4 py-2">
-                    <h2 className="text-[12px] font-medium">Review history</h2>
+                    <h2 className="text-[13px] font-medium">Review history</h2>
                   </div>
                   <ul className="divide-y divide-hairline">
                     {history.map((h: Record<string, unknown>) => (
                       <li
                         key={String(h._id)}
-                        className="flex items-baseline justify-between gap-3 px-4 py-2 text-[12px]"
+                        className="flex items-baseline justify-between gap-3 px-4 py-2 text-[13px]"
                       >
-                        <span className="font-mono text-[11px] text-muted-foreground">
+                        <span className="font-mono text-[12px] text-muted-foreground">
                           {h.created_at
                             ? new Date(String(h.created_at)).toLocaleTimeString(
                                 "en-GB",
