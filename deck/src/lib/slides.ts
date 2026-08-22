@@ -19,7 +19,7 @@ export type Slide = {
   narration: string[];
 };
 
-export const REVISION = 'V13 · why local, up front — the map argument opens, the cable is the receipt';
+export const REVISION = 'V14 · the keynote cut — V13’s spine, spoken like Cupertino';
 
 export const SLIDES: Slide[] = [
   {
@@ -29,11 +29,11 @@ export const SLIDES: Slide[] = [
     onscreen:
       'DORA Art. 28(8) — exit strategies for ICT behind critical functions, incl. reincorporation in-house — over the Art. 30 spec: 9 elements for every arrangement, +6 critical. A shelf of contract spines, one reader.',
     narration: [
-      'Every bank in Europe is locked into its tech vendors, and the law says they must be able to leave — take any critical service back in-house. The answer is buried in hundreds of contracts nobody reads.',
-      'So the exit plan is just paper. It works right up until the day you need it.',
+      'Every bank in Europe has the same problem. They’re locked into their tech vendors — and the law says they have to be able to leave. Take any critical service, bring it back in-house. Could they actually do that? The answer is sitting in hundreds of contracts. And nobody has read them all.',
+      'So the exit plan is a piece of paper. And it works right up until the day you need it.',
     ],
     loadBearing:
-      'So the exit plan is just paper. It works right up until the day you need it.',
+      'So the exit plan is a piece of paper. And it works right up until the day you need it.',
   },
   {
     n: 2,
@@ -42,11 +42,11 @@ export const SLIDES: Slide[] = [
     onscreen:
       'Left: WHAT THE ANALYSIS CONTAINS — vendors it cannot exit (3) · refuses security testing (2) · data locations undisclosed (2) · annual charges (all) · chip: A MAP OF THE BANK’S WEAK POINTS. Right: WHERE COULD IT LIVE — a cloud AI service ✗ (the vendors on the map include the cloud providers) vs. hardware the bank owns ✓.',
     narration: [
-      'Here’s the catch. To fix that, something has to read every contract the bank has signed and write down every way it’s trapped — which vendors it can’t exit, what it pays, who refuses security testing. That document is a map of the bank’s weak points. And the vendors on that map include the cloud providers themselves.',
-      'You can’t store your escape plan with the people you might be escaping from.',
+      'Now here’s the catch. To fix this, something has to read every contract the bank ever signed… and write down every way it’s trapped. Which vendors it can’t walk away from. What it pays. Who won’t let it test their security. That document is a map of the bank’s weak points. And look who’s on the map — the cloud providers themselves.',
+      'You can’t store your escape plan with the people you might be escaping from. It’s that simple.',
     ],
     loadBearing:
-      'You can’t store your escape plan with the people you might be escaping from.',
+      'You can’t store your escape plan with the people you might be escaping from. It’s that simple.',
   },
   {
     n: 3,
@@ -55,8 +55,8 @@ export const SLIDES: Slide[] = [
     onscreen:
       'Three lanes: MODEL EXTRACTS (present / inadequate / absent + the clause it relied on · chip: NO QUOTE, NO CLAIM) → POLICY DISPOSES (deterministic Python) → REVIEWERS TEACH (tan). No database named here.',
     narration: [
-      'So ExitPlan runs on hardware the bank owns. A complete AI agent — a thirty-billion-parameter open model, search, memory, the database — on one Dell box. It reads every contract, and every claim it makes has to quote the contract.',
-      'Let me just show you.',
+      'So we built ExitPlan to live on hardware the bank owns. A complete AI agent — a thirty-billion-parameter model, search, memory, a database — on one Dell box. And every claim it makes, it backs up with a quote from the contract.',
+      'Rather than talk about it… let me just show you.',
     ],
   },
   {
@@ -67,13 +67,13 @@ export const SLIDES: Slide[] = [
       '(switch to the browser — deck parks here; frames 4–7 are the fallback) · Tiles: 7 with gaps · CANNOT BE CLEANLY EXITED €7,030,000 · 10 Art. 30 gaps · €16,375,000 total. Sixteen rows: 12 curated + 4 marked FILED. Live: open Helvetia (14/15, missing exit clause) before moving on.',
     narration: [
       '(switch display to the browser — 1440×1250, seeded, desk at 127.0.0.1:3000)',
-      'Meet Nordhafen Bank. Sixteen contracts: twelve synthetic, on purpose — and four real ones, straight off the SEC. Hold that thought. The agent read them all and found the trapped money:',
-      'Seven million euros a year in contracts this bank could never walk out of. Regulators ask for that number. No bank can produce it. This one just did.',
+      'This is Nordhafen Bank. Fictional — the data is synthetic. Sixteen contracts: twelve we wrote ourselves… and four real ones, straight off the SEC. Hold that thought. The agent read them all. And it found something.',
+      'Seven million euros a year — flowing through contracts this bank could never walk out of. Regulators ask for exactly that number. No bank can produce it. This one just did.',
       '(open Helvetia live)',
-      'Even core banking — four million a year — is exactly one exit clause short of freedom.',
+      'Look at this one. Core banking. Four million a year. One exit clause short of freedom.',
     ],
     loadBearing:
-      'Seven million euros a year in contracts this bank could never walk out of. Regulators ask for that number. No bank can produce it. This one just did.',
+      'Seven million euros a year — flowing through contracts this bank could never walk out of. Regulators ask for exactly that number. No bank can produce it. This one just did.',
   },
   {
     n: 5,
@@ -82,11 +82,11 @@ export const SLIDES: Slide[] = [
     onscreen:
       'Castellan Core Systems: the TLPT finding — supplier self-tests annually, customer-initiated testing refused; checklist: material, gaps to close. Review panel: Disagree — correct it · provision SET DELIBERATELY to “Participation in threat-led penetration testing” · scope CRITICAL FUNCTIONS ONLY · the written correction · tan STORE RULE AND RE-CHECK THE REGISTER. Right column: AGENT ACTIVITY, idle.',
     narration: [
-      'But here’s my favorite part. Right here, the machine got one wrong. It called a serious weakness routine, and a risk officer disagrees.',
+      'And here’s my favorite part. Right here — the machine got one wrong. It called a serious weakness “routine”. And a risk officer says: no.',
       '(select the provision by hand — threat-led penetration testing — the pre-fill is wrong on this contract)',
-      'Two sentences of plain English, click store. Watch this.',
+      'Two sentences of plain English. Click store. Now watch this.',
     ],
-    loadBearing: 'Two sentences of plain English, click store. Watch this.',
+    loadBearing: 'Two sentences of plain English. Click store. Now watch this.',
   },
   {
     n: 6,
@@ -96,10 +96,10 @@ export const SLIDES: Slide[] = [
       'Build: the right column fills. Timeline: RULE STORED → INDEX SEARCHABLE → 12 RE-CHECKED · 0 RE-READ · ~0.5s. Three evidence cards: CASTELLAN — verdict changed (origin) · AURORA KYC — rule retrieved & applied, contract never opened · NORDLYS — considered, withheld (no gap to attach to). Memory chip, verbatim UI: “changing 2 verdicts now”.',
     build: true,
     narration: [
-      'Half a second. That’s how long it took to re-check the whole register. It caught the same flaw in a contract nobody opened, and skipped the one that was clean.',
-      'This used to be a yearly audit. Now it’s live.',
+      'Half a second. That’s how long it took to re-check every contract in the register. It caught the same flaw in a contract nobody opened. It skipped the one that was clean.',
+      'This used to be a yearly audit. Now it just… happens.',
     ],
-    loadBearing: 'This used to be a yearly audit. Now it’s live.',
+    loadBearing: 'This used to be a yearly audit. Now it just… happens.',
   },
   {
     n: 7,
@@ -108,7 +108,7 @@ export const SLIDES: Slide[] = [
     onscreen:
       'SUNRISE COMMUNICATIONS AG · chip: FILED — SEC EDGAR. Reading strip: 113,731 CHARACTERS → SPLIT INTO PASSAGES → 11 RETRIEVED → READ IN ~77s, and a note: the model never saw the rest. Right rail: the four filed rows — Sunrise · Edgemode · Platinum Analytics · NuScale Power. Footer: no ground truth · same checks, unchanged.',
     narration: [
-      'Now — those four real contracts. Nobody wrote them for us; they’re actual SEC filings. This one is a hundred and thirteen thousand characters — too long for the model to read. So the agent found the eleven passages that matter, and read those. Same checklist, nothing tuned.',
+      'Now. Those four real contracts? We didn’t write those. Nobody did. They’re actual SEC filings. And this one? A hundred and thirteen thousand characters — too big for the model to even read. So the agent found the eleven passages that matter… and read those. Same checklist. Nothing tuned.',
       'The synthetic ones prove it’s accurate. The real ones prove it’s no trick.',
     ],
     loadBearing:
@@ -121,10 +121,10 @@ export const SLIDES: Slide[] = [
     onscreen:
       'First naming of the store. OPERATIONAL REGISTER (contracts · verdicts · corrections) · VECTOR MEMORY (rules + $vectorSearch · bge-m3 1024-d) · EVENT BUS (change streams → the always-on agent). Live counts row. Dashed on-prem boundary.',
     narration: [
-      'And underneath it all, there are three systems. A record — the evidence for the regulator. A memory — twelve precedents from three reviewers, found by meaning. And an alarm that wakes the agent when anything changes. Except they’re not three systems. It’s one database. It’s MongoDB.',
+      'And underneath all of this… three systems. A record — the evidence you hand the regulator. A memory — twelve precedents from three reviewers, found by meaning. And an alarm — the moment anything changes, it wakes the agent. A record… a memory… an alarm. Are you getting it? These are not three systems. This is one database. It’s MongoDB.',
     ],
     loadBearing:
-      'And underneath it all, there are three systems. A record — the evidence for the regulator. A memory — twelve precedents from three reviewers, found by meaning. And an alarm that wakes the agent when anything changes. Except they’re not three systems. It’s one database. It’s MongoDB.',
+      'And underneath all of this… three systems. A record — the evidence you hand the regulator. A memory — twelve precedents from three reviewers, found by meaning. And an alarm — the moment anything changes, it wakes the agent. A record… a memory… an alarm. Are you getting it? These are not three systems. This is one database. It’s MongoDB.',
   },
   {
     n: 9,
@@ -134,11 +134,11 @@ export const SLIDES: Slide[] = [
       'Unit spec: nemotron-3-nano · 30B (Ollama) / bge-m3 / MongoDB Atlas Local — streams + vectors / BUILT WITH: OpenClaw · driving the box / Next.js register / Dell Pro Max GB10 / uplink: NOT REQUIRED. Measured line: CLAUSE AGREEMENT 138/141 · 98%.',
     narration: [
       '(live first: pull the cable, reload, teach another rule — then back to the deck)',
-      'Oh, and one more thing. The network cable came out of the wall a minute ago. Did you notice? That was the promise. Everything — the reading, the memory, the map — happened on this one Dell box, built and driven by OpenClaw.',
-      'The analysis of whether you can leave your vendors never touched a vendor.',
+      'Oh — and one more thing. The network cable came out of the wall a minute ago. Did anybody notice? That was the promise. The reading. The memory. The map. All of it happened on this one Dell box — built and driven by OpenClaw.',
+      'The analysis of whether you can leave your vendors… never touched a vendor.',
     ],
     loadBearing:
-      'The analysis of whether you can leave your vendors never touched a vendor.',
+      'The analysis of whether you can leave your vendors… never touched a vendor.',
   },
   {
     n: 10,
@@ -147,7 +147,7 @@ export const SLIDES: Slide[] = [
     onscreen:
       'EXITPLAN · tan rule · It reads the contracts. It shows the way out. Nothing leaves the building. · footer: synthetic register · business analysis, not legal advice.',
     narration: [
-      'So that’s ExitPlan. It reads the contracts. It shows you the way out. And the way out never leaves the building. Thank you.',
+      'So. That’s ExitPlan. It reads the contracts. It shows you the way out. And the way out never leaves the building. Thank you very much.',
       '(stop talking)',
     ],
   },
