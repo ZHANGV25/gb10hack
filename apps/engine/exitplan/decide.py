@@ -40,6 +40,6 @@ def human_decide(alert_id: str, decision: str, actor: str = "analyst") -> dict:
         action="file" if filed else "decide",
         alert_id=alert_id,
         payload={"decision": decision, "actor": actor},
-        rationale="AMLR Art 18(3): a human decides and files. The agent did not.",
+        rationale="Analyst recorded a decision. Assisted drafting cannot file.",
     )
     return {"alert_id": alert_id, "decision": decision, "filed": filed}

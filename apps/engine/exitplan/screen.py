@@ -11,6 +11,28 @@ WATCHLIST = [
 
 HIGH_RISK = {"IR", "KP", "SY", "CU"}
 
+COUNTRY_NAMES = {
+    "DE": "Germany",
+    "FR": "France",
+    "NL": "Netherlands",
+    "IT": "Italy",
+    "ES": "Spain",
+    "AT": "Austria",
+    "BE": "Belgium",
+    "IE": "Ireland",
+    "PL": "Poland",
+    "IR": "Iran",
+    "CY": "Cyprus",
+    "TR": "Turkey",
+    "SY": "Syria",
+    "KP": "North Korea",
+    "CU": "Cuba",
+}
+
+
+def country_name(code: str) -> str:
+    return COUNTRY_NAMES.get(code, code)
+
 
 def name_score(a: str, b: str) -> float:
     return SequenceMatcher(None, a.lower(), b.lower()).ratio()
@@ -23,7 +45,7 @@ def best_watchlist_hit(name: str) -> tuple[str, float]:
 
 
 def screen_customer(customer: dict, txns: list[dict]) -> list[dict]:
-    """Deterministic. The model never chooses whether an alert exists."""
+    """Rules only. The language model never chooses whether an alert exists."""
     hits: list[dict] = []
     name = customer["name"]
     listed, score = best_watchlist_hit(name)
@@ -31,7 +53,11 @@ def screen_customer(customer: dict, txns: list[dict]) -> list[dict]:
         hits.append(
             {
                 "rule_id": "RED_FLAG_SANCTIONS",
-                "reason": f"Exact watchlist match: '{name}' equals '{listed}'.",
+                "reason": (
+                    f"The legal name on this account is an exact match to "
+                    f"{listed} on the sanctions list."
+                ),
+                "headline": "On the sanctions list",
                 "severity": "red_flag",
                 "score": score,
                 "watchlist_name": listed,
@@ -41,7 +67,11 @@ def screen_customer(customer: dict, txns: list[dict]) -> list[dict]:
         hits.append(
             {
                 "rule_id": "WATCHLIST_FUZZY",
-                "reason": f"Name '{name}' fuzzy-matches watchlist '{listed}' (score {score:.2f}).",
+                "reason": (
+                    f"This name is similar to {listed} on the sanctions list. "
+                    f"It may be a different person."
+                ),
+                "headline": "Name similar to a sanctioned person",
                 "severity": "review",
                 "score": score,
                 "watchlist_name": listed,
@@ -51,7 +81,11 @@ def screen_customer(customer: dict, txns: list[dict]) -> list[dict]:
         hits.append(
             {
                 "rule_id": "WATCHLIST_WEAK",
-                "reason": f"Weak name proximity to '{listed}' (score {score:.2f}). Likely noise.",
+                "reason": (
+                    f"This name is only loosely similar to {listed} on the "
+                    f"sanctions list. It is likely a different person."
+                ),
+                "headline": "Possible name match — likely a different person",
                 "severity": "noise",
                 "score": score,
                 "watchlist_name": listed,
@@ -61,10 +95,16 @@ def screen_customer(customer: dict, txns: list[dict]) -> list[dict]:
     risky = [t for t in txns if t.get("country") in HIGH_RISK and t.get("amount_eur", 0) >= 25000]
     if risky:
         t = max(risky, key=lambda x: x["amount_eur"])
+        amount = t["amount_eur"]
+        dest = country_name(str(t["country"]))
         hits.append(
             {
                 "rule_id": "HIGH_RISK_CORRIDOR",
-                "reason": f"EUR {t['amount_eur']:,.0f} to {t['country']} on {t['ts'][:10]}.",
+                "reason": (
+                    f"A payment of €{amount:,.0f} was sent to a counterparty "
+                    f"in {dest}."
+                ),
+                "headline": f"Large payment to {dest}",
                 "severity": "review",
                 "score": 0.7,
                 "txn_id": t["txn_id"],
@@ -76,7 +116,11 @@ def screen_customer(customer: dict, txns: list[dict]) -> list[dict]:
         hits.append(
             {
                 "rule_id": "STRUCTURING",
-                "reason": f"{len(near)} transfers just under EUR 10,000 in the window.",
+                "reason": (
+                    f"{len(near)} outgoing payments were just under the "
+                    f"€10,000 reporting threshold, in a short window."
+                ),
+                "headline": "Several payments just under €10,000",
                 "severity": "review",
                 "score": 0.65,
             }

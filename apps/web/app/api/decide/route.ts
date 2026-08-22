@@ -42,7 +42,7 @@ export async function POST(req: Request) {
     alert_id: alertId,
     input_hash: `${alertId}:${decision}`,
     rationale:
-      "AMLR Art 18(3): a human decides and files. The agent did not.",
+      "Analyst recorded a decision. Assisted drafting cannot file.",
     ts: now,
   });
   return NextResponse.json({ ok: true, decision, filed });

@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Alerts · Nordhafen Bank",
-  description: "On-prem financial crime queue",
+  description: "Financial crime operations",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

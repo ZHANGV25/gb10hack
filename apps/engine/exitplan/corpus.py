@@ -37,7 +37,7 @@ CORPUS = [
     {
         "doc_id": "policy-watchlist",
         "title": "Internal policy §4.2 — watchlist hits",
-        "source": "Nordhafen Bank AML Policy §4.2 (synthetic)",
+        "source": "Nordhafen Bank AML Policy §4.2",
         "text": (
             "Exact sanctions-list matches are red flags. The model may draft a narrative but cannot "
             "close, waive, or file. The analyst must decide. Weak fuzzy matches below 0.78 are presumed "
@@ -47,7 +47,7 @@ CORPUS = [
     {
         "doc_id": "policy-structuring",
         "title": "Internal policy §6.1 — structuring",
-        "source": "Nordhafen Bank AML Policy §6.1 (synthetic)",
+        "source": "Nordhafen Bank AML Policy §6.1",
         "text": (
             "Three or more transfers in a rolling seven-day window between EUR 9,000 and EUR 9,999 "
             "are a structuring indicator. Escalate to the MLRO. Do not file a SAR automatically."
@@ -56,7 +56,7 @@ CORPUS = [
     {
         "doc_id": "policy-abstain",
         "title": "Internal policy §1.4 — abstention",
-        "source": "Nordhafen Bank AML Policy §1.4 (synthetic)",
+        "source": "Nordhafen Bank AML Policy §1.4",
         "text": (
             "If evidence is insufficient to distinguish noise from suspicion, the required disposition "
             "is abstain and escalate. Insufficient evidence is a first-class answer. The agent never "

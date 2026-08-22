@@ -9,19 +9,19 @@ const ACTIONS = [
   {
     id: "close_noise",
     label: "Dismiss as false positive",
-    hint: "No report. Case closed.",
+    hint: "Close with no regulatory report.",
     variant: "outline" as const,
   },
   {
     id: "escalate",
-    label: "Send to MLRO",
-    hint: "Money-laundering reporting officer reviews it.",
+    label: "Refer to MLRO",
+    hint: "Money-laundering reporting officer reviews next.",
     variant: "outline" as const,
   },
   {
     id: "file_sar",
     label: "Submit SAR to FIU",
-    hint: "Suspicious Activity Report — not a computer file.",
+    hint: "Suspicious activity report to the financial intelligence unit.",
     variant: "default" as const,
   },
 ];
@@ -57,49 +57,42 @@ export function DecideBar({
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-5">
       <div>
-        <p className="text-sm font-medium">Your decision</p>
-        <p className="mt-1 text-sm leading-6 text-muted-foreground">
-          There is nothing to attach. These buttons record what{" "}
-          <span className="text-foreground">you</span> want done with the case.
-          The model cannot click them.
+        <h2 className="text-xl font-semibold">Record a decision</h2>
+        <p className="mt-2 text-base leading-7 text-muted-foreground">
+          Required. Assisted drafting cannot dismiss, escalate, or file.
         </p>
       </div>
-      <div className="grid gap-2">
-        {ACTIONS.map((a) => (
-          <div key={a.id} className="flex items-center justify-between gap-3">
-            <div>
-              <p className="text-sm">{a.label}</p>
-              <p className="text-xs text-muted-foreground">{a.hint}</p>
-            </div>
+      <div className="grid gap-3">
+        {ACTIONS.map((a) => {
+          const locked = redFlag && a.id === "close_noise";
+          return (
             <Button
-              className="rounded-full px-4"
-              size="sm"
+              key={a.id}
+              className="h-auto min-h-14 justify-start rounded-2xl px-5 py-4 text-left text-base whitespace-normal"
               variant={a.variant}
-              disabled={
-                pending !== null || (redFlag && a.id === "close_noise")
-              }
+              disabled={pending !== null || locked}
               onClick={() => decide(a.id)}
             >
-              {pending === a.id ? "…" : "Record"}
+              <span className="block">
+                <span className="block text-lg font-medium">
+                  {pending === a.id ? "Recording…" : a.label}
+                </span>
+                <span className="mt-1 block font-normal opacity-80">
+                  {locked ? "Not permitted on an exact sanctions match." : a.hint}
+                </span>
+              </span>
             </Button>
-          </div>
-        ))}
+          );
+        })}
       </div>
-      {redFlag ? (
-        <p className="text-sm">
-          Exact watchlist match — dismiss is locked. A human still has to send
-          it on.
-        </p>
-      ) : null}
       {current ? (
-        <p className="text-sm text-muted-foreground">
-          Recorded:{" "}
-          {ACTIONS.find((a) => a.id === current)?.label ?? current}
+        <p className="text-lg">
+          Recorded: {ACTIONS.find((a) => a.id === current)?.label ?? current}
         </p>
       ) : null}
-      {error ? <p className="text-sm text-destructive">{error}</p> : null}
+      {error ? <p className="text-base text-destructive">{error}</p> : null}
     </div>
   );
 }

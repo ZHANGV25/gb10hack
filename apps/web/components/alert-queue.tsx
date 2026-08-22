@@ -3,21 +3,20 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 
-import { decisionLabel, ruleOrigin } from "@/components/shell";
+import { decisionLabel, severityLabel } from "@/components/shell";
 import type { AlertRow } from "@/lib/exitplan";
 
 const TABS = [
-  { id: "all", label: "All" },
+  { id: "all", label: "All cases" },
   { id: "red_flag", label: "Red flag" },
   { id: "review", label: "Needs review" },
-  { id: "noise", label: "Likely noise" },
+  { id: "noise", label: "Likely false alert" },
 ] as const;
 
 function rank(a: AlertRow) {
   if (a.severity === "red_flag") return 0;
-  if (a.demoRole === "review") return 1;
-  if (a.severity === "review") return 2;
-  return 3;
+  if (a.severity === "review") return 1;
+  return 2;
 }
 
 export function AlertQueue({ alerts }: { alerts: AlertRow[] }) {
@@ -32,16 +31,17 @@ export function AlertQueue({ alerts }: { alerts: AlertRow[] }) {
         return (
           a.customerName.toLowerCase().includes(query) ||
           a.alertId.toLowerCase().includes(query) ||
-          a.ruleId.toLowerCase().includes(query)
+          a.headline.toLowerCase().includes(query) ||
+          a.occupation.toLowerCase().includes(query)
         );
       })
       .sort((a, b) => rank(a) - rank(b));
   }, [alerts, tab, q]);
 
   return (
-    <div className="overflow-hidden rounded-2xl border border-border bg-background">
-      <div className="flex flex-wrap items-center gap-3 border-b px-4 py-3">
-        <div className="flex flex-wrap gap-1">
+    <div>
+      <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center">
+        <div className="flex flex-wrap gap-2">
           {TABS.map((t) => (
             <button
               key={t.id}
@@ -49,8 +49,8 @@ export function AlertQueue({ alerts }: { alerts: AlertRow[] }) {
               onClick={() => setTab(t.id)}
               className={
                 tab === t.id
-                  ? "rounded-full bg-foreground px-3 py-1.5 text-xs text-background"
-                  : "rounded-full px-3 py-1.5 text-xs text-muted-foreground hover:bg-muted"
+                  ? "rounded-full bg-foreground px-4 py-2.5 text-base text-background"
+                  : "rounded-full bg-muted px-4 py-2.5 text-base text-muted-foreground hover:text-foreground"
               }
             >
               {t.label}
@@ -60,39 +60,48 @@ export function AlertQueue({ alerts }: { alerts: AlertRow[] }) {
         <input
           value={q}
           onChange={(e) => setQ(e.currentTarget.value)}
-          placeholder="Search customer or case ID"
-          className="ml-auto h-8 w-full max-w-xs rounded-full border border-border bg-background px-3 text-sm outline-none focus:ring-2 focus:ring-foreground/10"
+          placeholder="Search by name or what happened"
+          className="h-12 w-full rounded-full border border-border bg-background px-5 text-base outline-none focus:ring-2 focus:ring-foreground/15 sm:ml-auto sm:max-w-sm"
         />
       </div>
-      <div className="grid grid-cols-[6.5rem_1fr_9rem_8rem] gap-3 border-b bg-muted/50 px-4 py-2 text-[11px] tracking-wide text-muted-foreground uppercase">
-        <span>Case</span>
-        <span>Customer</span>
-        <span>Raised by</span>
-        <span>Status</span>
+      <div className="space-y-3">
+        {rows.map((a) => (
+          <Link
+            key={a.alertId}
+            href={`/alerts/${a.alertId}`}
+            className="block rounded-2xl border border-border bg-background px-5 py-5 hover:border-foreground/30 hover:bg-muted/40"
+          >
+            <div className="flex flex-wrap items-start justify-between gap-3">
+              <div className="min-w-0">
+                <p className="text-2xl font-semibold tracking-tight">
+                  {a.customerName}
+                </p>
+                <p className="mt-1 text-lg leading-7 text-muted-foreground">
+                  {a.headline}
+                </p>
+                {a.occupation ? (
+                  <p className="mt-1 text-base text-muted-foreground">
+                    {a.occupation}
+                  </p>
+                ) : null}
+              </div>
+              <div className="text-right">
+                <p className="text-base font-medium">
+                  {decisionLabel(a.humanDecision, a.severity)}
+                </p>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  {severityLabel(a.severity)} · {a.alertId}
+                </p>
+              </div>
+            </div>
+          </Link>
+        ))}
+        {rows.length === 0 ? (
+          <p className="rounded-2xl border border-border px-5 py-8 text-lg text-muted-foreground">
+            No cases in this view.
+          </p>
+        ) : null}
       </div>
-      {rows.slice(0, 80).map((a) => (
-        <Link
-          key={a.alertId}
-          href={`/alerts/${a.alertId}`}
-          className="grid grid-cols-[6.5rem_1fr_9rem_8rem] items-center gap-3 border-b px-4 py-3 last:border-b-0 hover:bg-muted/40"
-        >
-          <span className="font-mono text-xs text-muted-foreground">
-            {a.alertId}
-          </span>
-          <span className="min-w-0">
-            <span className="block truncate text-sm font-medium">
-              {a.customerName}
-            </span>
-            <span className="block truncate text-xs text-muted-foreground">
-              {a.reason}
-            </span>
-          </span>
-          <span className="text-xs text-muted-foreground">
-            {ruleOrigin(a.ruleId)}
-          </span>
-          <span className="text-xs">{decisionLabel(a.humanDecision, a.severity)}</span>
-        </Link>
-      ))}
     </div>
   );
 }

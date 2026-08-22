@@ -2,7 +2,7 @@
 
 import { DefaultChatTransport, isToolUIPart } from "ai";
 import { useChat } from "@ai-sdk/react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,12 +10,22 @@ import { Input } from "@/components/ui/input";
 const DRAFT_PROMPT =
   "Write a short disposition memo for this case. Call retrievePolicy first. Cite source titles in brackets. Do not decide or file.";
 
+function toolState(state: string) {
+  if (state === "output-available") return "Policy retrieved";
+  if (state === "input-available" || state === "input-streaming") {
+    return "Searching policy library";
+  }
+  return "Policy lookup";
+}
+
 export function CaseAi({
   alertId,
   stub,
+  onStatus,
 }: {
   alertId: string;
   stub: string;
+  onStatus?: (status: "idle" | "drafting" | "done") => void;
 }) {
   const [input, setInput] = useState("");
   const transport = useMemo(
@@ -29,36 +39,41 @@ export function CaseAi({
   const { messages, sendMessage, status } = useChat({ transport });
   const busy = status === "submitted" || status === "streaming";
   const live = messages.length > 0;
+  const onStatusRef = useRef(onStatus);
+  onStatusRef.current = onStatus;
+
+  useEffect(() => {
+    if (busy) onStatusRef.current?.("drafting");
+    else if (live) onStatusRef.current?.("done");
+    else onStatusRef.current?.("idle");
+  }, [busy, live]);
 
   return (
-    <section className="rounded-2xl border border-border p-5">
+    <section className="rounded-2xl border border-border p-6">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <h2 className="text-sm font-medium">On-box model</h2>
-          <p className="mt-1 text-xs text-muted-foreground">
-            Nemotron 3 Nano 30B via Ollama on this GB10. It can pull policy
-            with Atlas vector search. It cannot dismiss or submit a SAR.
+          <h2 className="text-xl font-semibold">Disposition</h2>
+          <p className="mt-2 max-w-xl text-base leading-7 text-muted-foreground">
+            Assisted drafting against current policy. This is not a decision
+            and not a SAR filing.
           </p>
         </div>
-        <span className="rounded-full bg-muted px-3 py-1 font-mono text-[11px]">
-          nemotron-3-nano:30b
-        </span>
       </div>
 
       {!live ? (
-        <div className="mt-4 rounded-xl bg-muted/60 p-4">
-          <p className="text-[11px] tracking-wide text-muted-foreground uppercase">
-            Placeholder memo · not the GPU
+        <div className="mt-5 rounded-2xl bg-muted/70 p-5">
+          <p className="text-sm tracking-wide text-muted-foreground uppercase">
+            Last saved draft
           </p>
-          <p className="mt-2 text-sm leading-6 text-muted-foreground">{stub}</p>
+          <p className="mt-3 text-lg leading-8">{stub}</p>
         </div>
       ) : null}
 
-      <div className="mt-4 space-y-3 text-sm leading-6">
+      <div className="mt-5 space-y-4 text-lg leading-8">
         {messages.map((message) => (
           <div key={message.id}>
-            <p className="text-[11px] tracking-wide text-muted-foreground uppercase">
-              {message.role === "user" ? "You" : "Nemotron · local"}
+            <p className="text-sm tracking-wide text-muted-foreground uppercase">
+              {message.role === "user" ? "Analyst" : "Drafter"}
             </p>
             {message.parts.map((part, i) => {
               if (part.type === "text" && part.text) {
@@ -76,17 +91,12 @@ export function CaseAi({
                 return (
                   <div
                     key={`${message.id}-${i}`}
-                    className="my-2 rounded-xl bg-muted px-3 py-2 text-xs"
+                    className="my-3 rounded-2xl bg-muted px-4 py-3 text-base"
                   >
-                    <p className="font-medium">
-                      Atlas $vectorSearch · {part.state}
-                    </p>
+                    <p className="font-medium">{toolState(part.state)}</p>
                     {rows.map((row: { title?: string; score?: number }) => (
                       <p key={String(row.title)} className="text-muted-foreground">
                         {String(row.title)}
-                        {typeof row.score === "number"
-                          ? ` · ${row.score.toFixed(3)}`
-                          : ""}
                       </p>
                     ))}
                   </div>
@@ -97,25 +107,25 @@ export function CaseAi({
           </div>
         ))}
         {busy ? (
-          <p className="text-xs text-muted-foreground">
-            Running on the GB10 GPU — first tokens can take a few seconds.
+          <p className="text-base text-muted-foreground">
+            Generating disposition…
           </p>
         ) : null}
       </div>
 
-      <div className="mt-4 flex flex-wrap gap-2">
+      <div className="mt-5">
         <Button
-          className="rounded-full px-4"
+          className="h-12 rounded-full px-6 text-base"
           disabled={busy}
           onClick={() => sendMessage({ text: DRAFT_PROMPT })}
         >
-          {busy ? "Generating…" : "Run Nemotron on this case"}
+          {busy ? "Generating…" : "Generate disposition"}
         </Button>
       </div>
 
       {live ? (
         <form
-          className="mt-3 flex gap-2"
+          className="mt-4 flex flex-col gap-3 sm:flex-row"
           onSubmit={(e) => {
             e.preventDefault();
             if (!input.trim() || busy) return;
@@ -126,11 +136,17 @@ export function CaseAi({
           <Input
             value={input}
             onChange={(e) => setInput(e.currentTarget.value)}
-            placeholder="Ask why this fired, or what the policy says"
+            placeholder="Ask about this case or the applicable policy"
             disabled={busy}
+            className="h-12 rounded-full px-5 text-base md:text-base"
           />
-          <Button type="submit" variant="outline" className="rounded-full" disabled={busy}>
-            Ask
+          <Button
+            type="submit"
+            variant="outline"
+            className="h-12 rounded-full px-6 text-base"
+            disabled={busy}
+          >
+            Send
           </Button>
         </form>
       ) : null}

@@ -1,11 +1,12 @@
 from __future__ import annotations
 
-import random
 from datetime import datetime, timedelta, timezone
 
+from exitplan.audit import log_event
 from exitplan.corpus import CORPUS
 from exitplan.db import (
     alerts,
+    audit_log,
     corpus,
     customers,
     dispositions,
@@ -13,32 +14,331 @@ from exitplan.db import (
     transactions,
 )
 from exitplan.embed import embed_text
-from exitplan.screen import best_watchlist_hit, screen_customer
-from exitplan.audit import log_event
+from exitplan.screen import screen_customer
 
-FIRST = [
-    "Anna", "Jonas", "Elena", "Lukas", "Sofia", "Mateo", "Nora", "Paul",
-    "Ines", "Theo", "Mila", "Oscar", "Hana", "Felix", "Clara", "Nils",
+BOOK: list[dict] = [
+    {
+        "customer_id": "C-SANCTIONS",
+        "name": "Viktor Kovalenko",
+        "city": "Hamburg",
+        "risk_segment": "high",
+        "occupation": "Import broker",
+        "kyc": (
+            "Import broker, Hamburg branch. Onboarded November 2024. "
+            "Enhanced due diligence is on file."
+        ),
+        "story": (
+            "Viktor Kovalenko holds a current account used for import brokerage. "
+            "Monitoring compared the legal name on the account to the sanctions "
+            "list and found an exact match. There is also a large payment to a "
+            "trading company in Iran."
+        ),
+        "txns": [
+            {
+                "days": 3,
+                "amount": 61000.0,
+                "country": "IR",
+                "counterparty": "Pars International Trading Co.",
+            },
+            {
+                "days": 18,
+                "amount": 28000.0,
+                "country": "TR",
+                "counterparty": "Bosphorus Freight Ltd.",
+            },
+            {
+                "days": 24,
+                "amount": 1800.0,
+                "country": "DE",
+                "counterparty": "Hamburg Port Authority",
+            },
+        ],
+    },
+    {
+        "customer_id": "C-STRUCTURING",
+        "name": "Elena Rossi",
+        "city": "Munich",
+        "risk_segment": "medium",
+        "occupation": "Restaurant owner",
+        "kyc": (
+            "Sole director of Osteria Rossi, Munich. Onboarded 2021. "
+            "Hospitality account; cash-intensive business."
+        ),
+        "story": (
+            "Elena Rossi runs a restaurant in Munich. In six days she sent three "
+            "payments of just under €10,000 to the same private account. That "
+            "pattern is how cash is often moved without triggering a report."
+        ),
+        "txns": [
+            {
+                "days": 2,
+                "amount": 9400.0,
+                "country": "DE",
+                "counterparty": "Private account — M. Bianchi",
+            },
+            {
+                "days": 4,
+                "amount": 9650.0,
+                "country": "DE",
+                "counterparty": "Private account — M. Bianchi",
+            },
+            {
+                "days": 6,
+                "amount": 9100.0,
+                "country": "DE",
+                "counterparty": "Private account — M. Bianchi",
+            },
+            {
+                "days": 12,
+                "amount": 540.0,
+                "country": "DE",
+                "counterparty": "METRO Cash & Carry",
+            },
+            {
+                "days": 20,
+                "amount": 2800.0,
+                "country": "DE",
+                "counterparty": "Hausverwaltung König — rent",
+            },
+        ],
+    },
+    {
+        "customer_id": "C-CORRIDOR",
+        "name": "Jonas Berg",
+        "city": "Frankfurt",
+        "risk_segment": "medium",
+        "occupation": "Machinery exporter",
+        "kyc": (
+            "Director, Berg Maschinenexport GmbH. Onboarded 2019. "
+            "Trade-finance customer, Frankfurt."
+        ),
+        "story": (
+            "Jonas Berg exports industrial machinery. Last week the company sent "
+            "€61,000 to a supplier in Iran. Payments of this size to that "
+            "country are treated as high-risk until an analyst reviews them."
+        ),
+        "txns": [
+            {
+                "days": 5,
+                "amount": 61000.0,
+                "country": "IR",
+                "counterparty": "Kish Industrial Supply — invoice 4419",
+            },
+            {
+                "days": 11,
+                "amount": 1800.0,
+                "country": "NL",
+                "counterparty": "Port of Rotterdam",
+            },
+            {
+                "days": 19,
+                "amount": 420.0,
+                "country": "DE",
+                "counterparty": "Commerzbank — charges",
+            },
+        ],
+    },
+    {
+        "customer_id": "C-SIMILAR",
+        "name": "Viktor Kovalev",
+        "city": "Berlin",
+        "risk_segment": "low",
+        "occupation": "Warehouse manager",
+        "kyc": (
+            "Warehouse manager at a Berlin logistics firm. Onboarded April 2023. "
+            "Salary account plus a small current account."
+        ),
+        "story": (
+            "Viktor Kovalev is a warehouse manager in Berlin. His name looks "
+            "like Viktor Kovalenko, who is on the sanctions list. His payments "
+            "are ordinary salary, rent, and freight. This is often a different person."
+        ),
+        "txns": [
+            {
+                "days": 1,
+                "amount": 3200.0,
+                "country": "DE",
+                "counterparty": "Berliner Logistik GmbH — salary",
+            },
+            {
+                "days": 3,
+                "amount": 1450.0,
+                "country": "DE",
+                "counterparty": "Wohnbau Mitte — rent",
+            },
+            {
+                "days": 8,
+                "amount": 1400.0,
+                "country": "PL",
+                "counterparty": "DHL Freight Poland",
+            },
+            {
+                "days": 14,
+                "amount": 89.0,
+                "country": "DE",
+                "counterparty": "REWE — groceries",
+            },
+        ],
+    },
+    {
+        "customer_id": "C-SIMILAR-2",
+        "name": "Omar Rashid",
+        "city": "Cologne",
+        "risk_segment": "low",
+        "occupation": "Dentist",
+        "kyc": (
+            "Principal of Praxis Rashid, Cologne. Onboarded 2018. "
+            "Professional current account."
+        ),
+        "story": (
+            "Omar Rashid is a dentist in Cologne. The sanctions list contains "
+            "Omar Al-Rashid, a similar name. Card settlements and lab bills on "
+            "this account look like a medical practice, not a listed person."
+        ),
+        "txns": [
+            {
+                "days": 2,
+                "amount": 4200.0,
+                "country": "DE",
+                "counterparty": "Visa Europe — card settlement",
+            },
+            {
+                "days": 7,
+                "amount": 1800.0,
+                "country": "DE",
+                "counterparty": "Rhein Dental Labor",
+            },
+            {
+                "days": 15,
+                "amount": 2100.0,
+                "country": "DE",
+                "counterparty": "Kölner Immobilien — rent",
+            },
+        ],
+    },
+    {
+        "customer_id": "C-SIMILAR-3",
+        "name": "Marina Petrova",
+        "city": "Vienna",
+        "risk_segment": "low",
+        "occupation": "Piano teacher",
+        "kyc": (
+            "Private banking, Vienna. Onboarded 2020. Declared occupation: "
+            "music teacher."
+        ),
+        "story": (
+            "Marina Petrova teaches piano in Vienna. The list contains Marina "
+            "Petrovic. Incoming lesson fees and a rent payment do not, on their "
+            "own, confirm they are the same person."
+        ),
+        "txns": [
+            {
+                "days": 4,
+                "amount": 540.0,
+                "country": "AT",
+                "counterparty": "Lesson fees — several pupils",
+            },
+            {
+                "days": 9,
+                "amount": 980.0,
+                "country": "AT",
+                "counterparty": "Wiener Wohnen — rent",
+            },
+            {
+                "days": 21,
+                "amount": 120.0,
+                "country": "AT",
+                "counterparty": "Musikhaus Doblinger",
+            },
+        ],
+    },
+    {
+        "customer_id": "C-NOISE-1",
+        "name": "Marina Petersen",
+        "city": "Amsterdam",
+        "risk_segment": "low",
+        "occupation": "Retail customer",
+        "kyc": (
+            "Retail current account, Amsterdam. Onboarded 2022. "
+            "No adverse media on file."
+        ),
+        "story": (
+            "Marina Petersen is a retail customer in Amsterdam. The name only "
+            "loosely resembles Marina Petrovic on the sanctions list. Everyday "
+            "card spend is on the account. This is usually a false match."
+        ),
+        "txns": [
+            {
+                "days": 2,
+                "amount": 64.0,
+                "country": "NL",
+                "counterparty": "Albert Heijn",
+            },
+            {
+                "days": 6,
+                "amount": 120.0,
+                "country": "NL",
+                "counterparty": "NS — train tickets",
+            },
+            {
+                "days": 16,
+                "amount": 890.0,
+                "country": "NL",
+                "counterparty": "ING — own savings",
+            },
+        ],
+    },
+    {
+        "customer_id": "C-NOISE-2",
+        "name": "Chen Wei",
+        "city": "Frankfurt",
+        "risk_segment": "low",
+        "occupation": "Software engineer",
+        "kyc": (
+            "Employee current account. Onboarded 2024 after relocating from "
+            "Singapore. Employer: a Frankfurt software firm."
+        ),
+        "story": (
+            "Chen Wei is an employee in Frankfurt. The sanctions list names a "
+            "company, Chen Wei Holdings — not this person. Salary and rent are "
+            "the only material payments."
+        ),
+        "txns": [
+            {
+                "days": 1,
+                "amount": 5400.0,
+                "country": "DE",
+                "counterparty": "Rhine Soft GmbH — salary",
+            },
+            {
+                "days": 5,
+                "amount": 1650.0,
+                "country": "DE",
+                "counterparty": "Vonovia — rent",
+            },
+            {
+                "days": 12,
+                "amount": 48.0,
+                "country": "DE",
+                "counterparty": "Deutsche Bahn",
+            },
+        ],
+    },
 ]
-LAST = [
-    "Berg", "Kowalski", "Nielsen", "Rossi", "Dupont", "Keller", "Novak",
-    "Silva", "Horvath", "Lindgren", "Costa", "Meyer", "Kovacs", "Andersen",
-]
-COUNTRIES = ["DE", "FR", "NL", "IT", "ES", "AT", "BE", "IE", "PL", "IR", "CY"]
 
 
-def _ts(rng: random.Random, days: int = 40) -> datetime:
-    return datetime.now(timezone.utc) - timedelta(days=rng.randint(0, days), hours=rng.randint(0, 23))
+def _when(days: int) -> datetime:
+    return datetime.now(timezone.utc) - timedelta(days=days, hours=10)
 
 
-def seed(n_customers: int = 160) -> dict:
+def seed() -> dict:
     ensure_indexes()
-    rng = random.Random(28)
     customers().delete_many({})
     transactions().delete_many({})
     alerts().delete_many({})
     dispositions().delete_many({})
     corpus().delete_many({})
+    audit_log().delete_many({})
 
     for doc in CORPUS:
         corpus().replace_one(
@@ -47,105 +347,64 @@ def seed(n_customers: int = 160) -> dict:
             upsert=True,
         )
 
-    people: list[dict] = []
-    people.append(
-        {
-            "customer_id": "C-REDFLAG",
-            "name": "Viktor Kovalenko",
-            "city": "Hamburg",
-            "risk_segment": "high",
-            "kyc": "Synthetic KYC. Occupation: import broker. Onboarding 2024-11.",
-        }
-    )
-    people.append(
-        {
-            "customer_id": "C-FUZZY",
-            "name": "Viktor Kovalev",
-            "city": "Berlin",
-            "risk_segment": "medium",
-            "kyc": "Synthetic KYC. Occupation: logistics. Onboarding 2023-04.",
-        }
-    )
-    for i in range(n_customers):
-        people.append(
+    n_alerts = 0
+    for person in BOOK:
+        customers().insert_one(
             {
-                "customer_id": f"C-{i:04d}",
-                "name": f"{rng.choice(FIRST)} {rng.choice(LAST)}",
-                "city": rng.choice(["Munich", "Frankfurt", "Cologne", "Vienna", "Amsterdam"]),
-                "risk_segment": rng.choice(["low", "low", "low", "medium"]),
-                "kyc": "Synthetic KYC. Retail current account. No adverse media.",
+                "customer_id": person["customer_id"],
+                "name": person["name"],
+                "city": person["city"],
+                "risk_segment": person["risk_segment"],
+                "occupation": person["occupation"],
+                "kyc": person["kyc"],
             }
         )
+        tx_docs = []
+        for i, t in enumerate(person["txns"]):
+            doc = {
+                "txn_id": f"{person['customer_id']}-T{i:02d}",
+                "customer_id": person["customer_id"],
+                "amount_eur": t["amount"],
+                "country": t["country"],
+                "counterparty": t["counterparty"],
+                "ts": _when(t["days"]).isoformat(),
+            }
+            transactions().insert_one(doc)
+            tx_docs.append(doc)
 
-    for p in people:
-        customers().insert_one({**p, "synthetic": True})
-        n_tx = rng.randint(4, 9)
-        for j in range(n_tx):
-            amount = rng.choice([120.0, 540.0, 1800.0, 4200.0, 9100.0, 9600.0, 28000.0, 61000.0])
-            country = rng.choice(COUNTRIES)
-            if p["customer_id"] == "C-REDFLAG":
-                amount = 61000.0
-                country = "IR"
-            if p["customer_id"] == "C-FUZZY" and j < 3:
-                amount = 9400.0
-                country = "DE"
-            transactions().insert_one(
-                {
-                    "txn_id": f"{p['customer_id']}-T{j:02d}",
-                    "customer_id": p["customer_id"],
-                    "amount_eur": amount,
-                    "country": country,
-                    "counterparty": "Synthetic counterparty",
-                    "ts": _ts(rng).isoformat(),
-                    "synthetic": True,
-                }
-            )
-
-    n_alerts = 0
-    for p in people:
-        txns = list(transactions().find({"customer_id": p["customer_id"]}))
-        hits = screen_customer(p, txns)
+        hits = screen_customer(person, tx_docs)
         if not hits:
-            listed, score = best_watchlist_hit(p["name"])
-            hits = [
-                {
-                    "rule_id": "WATCHLIST_WEAK",
-                    "reason": f"Weak name proximity to '{listed}' (score {score:.2f}). Likely noise.",
-                    "severity": "noise",
-                    "score": score,
-                    "watchlist_name": listed,
-                }
-            ]
-        primary = sorted(hits, key=lambda h: {"red_flag": 3, "review": 2, "noise": 1}[h["severity"]], reverse=True)[0]
-        alert_id = f"ALT-{n_alerts + 1:04d}"
+            continue
+        primary = sorted(
+            hits,
+            key=lambda h: {"red_flag": 3, "review": 2, "noise": 1}[h["severity"]],
+            reverse=True,
+        )[0]
         n_alerts += 1
-        demo_role = "queue"
-        if p["customer_id"] == "C-REDFLAG":
-            demo_role = "red_flag"
-        elif p["customer_id"] == "C-FUZZY":
-            demo_role = "review"
-        doc = {
+        alert_id = f"ALT-{n_alerts:04d}"
+        alert = {
             "alert_id": alert_id,
-            "customer_id": p["customer_id"],
-            "customer_name": p["name"],
+            "customer_id": person["customer_id"],
+            "customer_name": person["name"],
+            "occupation": person["occupation"],
+            "headline": primary.get("headline") or primary["reason"],
+            "story": person["story"],
             "hits": hits,
             "rule_id": primary["rule_id"],
             "reason": primary["reason"],
             "severity": primary["severity"],
             "status": "open",
-            "demo_role": demo_role,
-            "synthetic": True,
             "created_at": datetime.now(timezone.utc),
         }
-        alerts().insert_one(doc)
+        alerts().insert_one(alert)
         log_event(
-            agent="screener",
+            agent="monitoring",
             action="raise_alert",
             alert_id=alert_id,
             payload={"rule_id": primary["rule_id"], "severity": primary["severity"]},
             rationale=primary["reason"],
         )
-        _seed_draft(doc, p, txns)
+        _seed_draft(alert, person)
 
     return {
         "customers": customers().count_documents({}),
@@ -155,27 +414,51 @@ def seed(n_customers: int = 160) -> dict:
     }
 
 
-def _seed_draft(alert: dict, customer: dict, txns: list[dict]) -> None:
-    """Deterministic cited draft. Live Nemotron can regenerate in the UI."""
-    sev = alert["severity"]
-    if sev == "red_flag":
+def _seed_draft(alert: dict, customer: dict) -> None:
+    rule = alert["rule_id"]
+    name = customer["name"]
+    if rule == "RED_FLAG_SANCTIONS":
         narrative = (
-            "The screener fired RED_FLAG_SANCTIONS because the customer name is an exact watchlist match "
-            "[Internal policy §4.2 — watchlist hits]. The agent cannot close or file this case "
-            "[AMLR Art 18(3) — decisions cannot be outsourced]. Recommended human action: decide and, if "
-            "appropriate, file with the FIU. Insufficient for the model to proceed."
+            f"{name} is an exact match to a person on the sanctions list "
+            "[Internal policy §4.2 — watchlist hits]. Dismissal is not permitted. "
+            "An analyst must refer the case or submit a SAR "
+            "[AMLR Art 18(3) — decisions cannot be outsourced]."
         )
         abstain = True
         citations = [
             {"doc_id": "policy-watchlist", "title": "Internal policy §4.2 — watchlist hits"},
             {"doc_id": "amlr-18-3", "title": "AMLR Art 18(3) — decisions cannot be outsourced"},
         ]
-    elif sev == "review":
+    elif rule == "STRUCTURING":
         narrative = (
-            f"The deterministic screener — not the model — raised {alert['rule_id']}: {alert['reason']} "
-            "[Internal policy §4.2 — watchlist hits]. Analysis may be assisted; reporting may not "
-            "[AMLR Art 18(3) — decisions cannot be outsourced]. Draft recommendation: escalate to the MLRO "
-            "for a human decision."
+            f"{name} sent several payments just under €10,000 in a short window "
+            "[Internal policy §6.1 — structuring]. That pattern is used to avoid "
+            "a cash report. Recommend referring to the MLRO. Do not submit a SAR "
+            "automatically [AMLR Art 18(3) — decisions cannot be outsourced]."
+        )
+        abstain = False
+        citations = [
+            {"doc_id": "policy-structuring", "title": "Internal policy §6.1 — structuring"},
+            {"doc_id": "amlr-18-3", "title": "AMLR Art 18(3) — decisions cannot be outsourced"},
+        ]
+    elif rule == "HIGH_RISK_CORRIDOR":
+        narrative = (
+            f"{name} sent a large payment to a high-risk country "
+            "[Internal policy §4.2 — watchlist hits]. Trade can be legitimate; "
+            "the destination still requires a human review. Recommend referring "
+            "to the MLRO [AMLR Art 18(3) — decisions cannot be outsourced]."
+        )
+        abstain = False
+        citations = [
+            {"doc_id": "policy-watchlist", "title": "Internal policy §4.2 — watchlist hits"},
+            {"doc_id": "amlr-18-3", "title": "AMLR Art 18(3) — decisions cannot be outsourced"},
+        ]
+    elif rule == "WATCHLIST_FUZZY":
+        narrative = (
+            f"{name} is similar to a name on the sanctions list "
+            "[Internal policy §4.2 — watchlist hits]. Similar names are common "
+            "false matches. Recommend the MLRO confirm identity before any report "
+            "[AMLR Art 18(3) — decisions cannot be outsourced]."
         )
         abstain = False
         citations = [
@@ -184,10 +467,10 @@ def _seed_draft(alert: dict, customer: dict, txns: list[dict]) -> None:
         ]
     else:
         narrative = (
-            f"Weak screener hit ({alert['rule_id']}). Policy treats scores in this band as presumed noise "
-            "unless corroborated [Internal policy §4.2 — watchlist hits]. Evidence is insufficient to "
-            "assert suspicion [Internal policy §1.4 — abstention]. Draft recommendation: close as noise, "
-            "human still decides."
+            f"The name on this account is only loosely similar to a listed name "
+            "[Internal policy §4.2 — watchlist hits]. Unless payments corroborate "
+            "suspicion, policy treats this as a false match "
+            "[Internal policy §1.4 — abstention]. Recommend dismiss."
         )
         abstain = True
         citations = [
@@ -202,7 +485,7 @@ def _seed_draft(alert: dict, customer: dict, txns: list[dict]) -> None:
             "abstain": abstain,
             "human_decision": None,
             "filed": False,
-            "model": "template+screener",
+            "model": "template",
             "created_at": datetime.now(timezone.utc),
         }
     )
@@ -211,5 +494,5 @@ def _seed_draft(alert: dict, customer: dict, txns: list[dict]) -> None:
         action="draft",
         alert_id=alert["alert_id"],
         payload={"abstain": abstain, "citations": [c["doc_id"] for c in citations]},
-        rationale="Seeded cited draft. Human has not decided.",
+        rationale="Disposition drafted. Awaiting analyst action.",
     )

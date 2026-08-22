@@ -1,9 +1,8 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import { CaseAi } from "@/components/case-ai";
-import { DecideBar } from "@/components/decide-bar";
-import { Shell, ruleOrigin, severityLabel } from "@/components/shell";
+import { CaseWorkspace } from "@/components/case-workspace";
+import { Shell, severityLabel } from "@/components/shell";
 import { getAlert } from "@/lib/exitplan";
 
 export const dynamic = "force-dynamic";
@@ -16,113 +15,41 @@ export default async function AlertPage({
   const { alertId } = await params;
   const data = await getAlert(alertId);
   if (!data) notFound();
-  const { alert, customer, txns, disposition, sources } = data;
-  const redFlag = alert.severity === "red_flag";
-  const narrative = String(disposition?.narrative ?? "No draft yet.");
+  const { view } = data;
 
   return (
     <Shell current="/">
-      <main className="mx-auto max-w-6xl px-6 py-8 pb-24">
-        <p className="mb-5 text-sm text-muted-foreground">
-          <Link href="/" className="hover:text-foreground">
-            Alerts
+      <main className="mx-auto max-w-4xl px-6 py-10 pb-24">
+        <p className="mb-6 text-base">
+          <Link href="/" className="text-muted-foreground hover:text-foreground">
+            ← All alerts
           </Link>
-          <span className="mx-2">/</span>
-          <span className="font-mono">{alert.alert_id}</span>
         </p>
-        <div className="mb-8 flex flex-wrap items-end justify-between gap-3">
-          <div>
-            <p className="text-sm text-muted-foreground">
-              {severityLabel(String(alert.severity))} · {ruleOrigin(String(alert.rule_id))}
-            </p>
-            <h1 className="mt-1 text-3xl font-semibold tracking-tight">
-              {String(alert.customer_name)}
-            </h1>
-          </div>
-        </div>
-        <div className="grid gap-5 lg:grid-cols-[0.95fr_1.05fr]">
-          <div className="space-y-4">
-            <section className="rounded-2xl border border-border p-5">
-              <h2 className="text-sm font-medium">Where this case came from</h2>
-              <ol className="mt-3 list-decimal space-y-2 pl-4 text-sm leading-6 text-muted-foreground">
-                <li>
-                  Demo data: a fake customer record and payments were generated
-                  on this machine. Not a real bank book.
-                </li>
-                <li>
-                  A Python rule scanned them. It fired{" "}
-                  <span className="font-mono text-foreground">
-                    {String(alert.rule_id)}
-                  </span>
-                  : {String(alert.reason)}
-                </li>
-                <li>
-                  That opened this case. Nobody uploaded a PDF or spreadsheet.
-                </li>
-                <li>
-                  Click <span className="text-foreground">Run Nemotron</span>{" "}
-                  on the right to draft a memo live on this GPU. That is the
-                  model. It still cannot decide the case.
-                </li>
-              </ol>
-              {redFlag ? (
-                <p className="mt-3 text-sm">
-                  Exact name on the watchlist — dismiss is disabled.
-                </p>
-              ) : null}
-            </section>
-            <section className="rounded-2xl bg-muted p-5">
-              <h2 className="text-sm font-medium">Customer record</h2>
-              <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                {String(customer?.kyc ?? "Synthetic KYC.")} {String(customer?.city)}{" "}
-                · {String(customer?.risk_segment)} risk
-              </p>
-              <p className="mt-4 text-xs tracking-wide text-muted-foreground uppercase">
-                Recent payments
-              </p>
-              <ul className="mt-2 space-y-1 text-sm">
-                {txns.map((t) => (
-                  <li
-                    key={String(t.txn_id)}
-                    className="flex justify-between gap-3 font-mono text-xs"
-                  >
-                    <span>{String(t.ts).slice(0, 10)}</span>
-                    <span>
-                      EUR {Number(t.amount_eur).toLocaleString()} ·{" "}
-                      {String(t.country)}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            </section>
-          </div>
-          <div className="space-y-4">
-            <CaseAi alertId={String(alert.alert_id)} stub={narrative} />
-            <section className="rounded-2xl bg-muted p-5">
-              <DecideBar
-                alertId={String(alert.alert_id)}
-                redFlag={redFlag}
-                current={
-                  disposition?.human_decision
-                    ? String(disposition.human_decision)
-                    : null
-                }
-              />
-            </section>
-            {sources.map((s) => (
-              <section
-                key={String(s.doc_id)}
-                id={String(s.doc_id)}
-                className="rounded-2xl border border-border p-5"
-              >
-                <h2 className="text-sm font-medium">{String(s.title)}</h2>
-                <p className="mt-1 text-xs text-muted-foreground">
-                  {String(s.source)}
-                </p>
-                <p className="mt-3 text-sm leading-6">{String(s.text)}</p>
-              </section>
-            ))}
-          </div>
+        <p className="text-base text-muted-foreground">
+          {severityLabel(view.severity)}
+        </p>
+        <h1 className="mt-2 text-4xl font-semibold tracking-tight">
+          {view.customerName}
+        </h1>
+        <p className="mt-3 text-2xl leading-8 text-muted-foreground">
+          {view.headline}
+        </p>
+        <nav className="mt-6 flex flex-wrap gap-2 text-base">
+          <a href="#why" className="rounded-full bg-muted px-4 py-2 hover:bg-muted/80">
+            Why it&apos;s open
+          </a>
+          <a href="#payments" className="rounded-full bg-muted px-4 py-2 hover:bg-muted/80">
+            Payments
+          </a>
+          <a href="#disposition" className="rounded-full bg-muted px-4 py-2 hover:bg-muted/80">
+            Disposition
+          </a>
+          <a href="#decision" className="rounded-full bg-muted px-4 py-2 hover:bg-muted/80">
+            Decision
+          </a>
+        </nav>
+        <div className="mt-8">
+          <CaseWorkspace view={view} />
         </div>
       </main>
     </Shell>
