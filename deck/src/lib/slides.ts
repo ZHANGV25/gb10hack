@@ -20,31 +20,31 @@ export type Slide = {
   narration: string[];
 };
 
-export const REVISION = 'V17 · cut to 400 words — every sentence earns its place';
+export const REVISION = 'V18 · problem and solution — hardened by adversarial review (codex xhigh)';
 
 export const SLIDES: Slide[] = [
   {
     n: 1,
     act: 'I — Two slides in',
-    label: 'THE READING PROBLEM',
+    label: 'THE PROBLEM — A NEW LAW, AN OLD BACK BOOK',
     onscreen:
       'DORA Art. 28(8) — exit strategies for ICT behind critical functions, incl. reincorporation in-house — over the Art. 30 spec: 9 elements for every arrangement, +6 critical. A shelf of contract spines, one reader.',
     narration: [
-      'Every bank in Europe is legally required to be able to walk away from its technology vendors. Whether it actually can is buried in hundreds of contracts nobody has read.',
-      'So the exit plan is a piece of paper, and it works until the day you need it.',
+      'Last year a law called DORA came into force for every bank in Europe. Banks now have to show the regulator a working exit plan for every critical technology contract. The problem: those contracts were signed years ago. No lawyer read them with this law in hand.',
+      'So banks are paying law firms to re-read the whole back book, and that review is a snapshot: months of billed hours, stale the moment any contract changes.',
     ],
     loadBearing:
-      'So the exit plan is a piece of paper, and it works until the day you need it.',
+      'No lawyer read them with this law in hand.',
   },
   {
     n: 2,
     act: 'I — Two slides in',
-    label: 'WHY THIS CANNOT BE A CLOUD SERVICE',
+    label: 'THE SOLUTION — AND WHY IT CANNOT BE A CLOUD SERVICE',
     onscreen:
       'Left: WHAT THE ANALYSIS CONTAINS — vendors it cannot exit (3) · refuses security testing (2) · data locations undisclosed (2) · annual charges (all) · chip: A MAP OF THE BANK’S WEAK POINTS. Right: WHERE COULD IT LIVE — a cloud AI service ✗ (the vendors on the map include the cloud providers) vs. hardware the bank owns ✓.',
     narration: [
-      'Fixing that means writing down every way the bank is trapped: which vendors it can’t leave, what it pays them, who refuses security testing. That document is a map of the bank’s weak points, and the cloud providers are on it. You can’t store your escape plan with the people you might be escaping from.',
-      'So ExitPlan runs on one machine the bank owns. Here it is.',
+      'So we built ExitPlan: an agent that does that review continuously. It reads every contract, quotes the clause behind every verdict, and the moment anything changes it re-checks on its own. But look at what it produces: a map of the bank’s weak points, and the cloud providers are on that map. You can’t store your escape plan with the people you might be escaping from.',
+      'That’s why it runs on one machine the bank owns. Here it is.',
     ],
     loadBearing:
       'You can’t store your escape plan with the people you might be escaping from.',
@@ -66,7 +66,7 @@ export const SLIDES: Slide[] = [
     onscreen:
       '(video: the register scrolls — tiles, sixteen rows, the weakest-estate panel — then opens Helvetia: 14/15, the missing exit clause.) Appendix frame #6 is the fallback.',
     narration: [
-      'This is Nordhafen, a fictional bank: twelve synthetic contracts we wrote, four real ones from SEC filings. The agent read them all and found seven million euros a year in contracts this bank could never walk out of. Regulators ask for that number, and no bank can produce it.',
+      'This is Nordhafen, a fictional bank: twelve synthetic contracts we wrote, four real ones from SEC filings. The agent read them all and found seven million euros a year in contracts this bank could never walk out of. Until now, no bank could put that number on paper.',
       'And this contract runs core banking, four million a year, one exit clause short of freedom.',
     ],
     loadBearing:
@@ -79,11 +79,11 @@ export const SLIDES: Slide[] = [
     onscreen:
       '(video: Castellan’s finding, the review panel, the provision picked, the correction typed, Store rule clicked… then the sweep: 12 re-checked in ~0.5s, Aurora reached unopened, Nordlys withheld.) Appendix frames #7–8 are the fallback.',
     narration: [
-      'Here’s my favorite part. The machine called a serious weakness routine, and a risk officer corrects it with two sentences of plain English.',
-      'Click store, and in half a second the agent re-checks every contract in the register. It catches the same flaw in a contract nobody opened and skips the one that was clean. That used to be a yearly audit.',
+      'Here’s what a law firm can’t do. The machine called a serious weakness routine, and a risk officer corrects it with two sentences of plain English.',
+      'Click store, and in half a second the agent re-checks every contract in the register, catching the same flaw in a contract nobody opened. That correction now applies forever, to every contract the bank ever signs.',
     ],
     loadBearing:
-      'Click store, and in half a second the agent re-checks every contract in the register.',
+      'That correction now applies forever, to every contract the bank ever signs.',
   },
   {
     n: 9,
@@ -149,6 +149,14 @@ export const PRESHOW: string[] = [
 
 /** Rehearsed Q&A — the questions this arc invites. */
 export const QA: { q: string; a: string }[] = [
+  {
+    q: 'Why not just have lawyers do this?',
+    a: 'Lawyers reviewed these contracts once, at signing, for commercial terms, before DORA existed. The regulator now asks a portfolio question that has to stay current: across every arrangement, can you exit, and what is your exposure. A law firm answers that with a snapshot that takes months and goes stale on the next amendment. The agent applies one consistent checklist to the whole estate, quotes its evidence, and re-checks in half a second whenever anything changes. Lawyers still make the judgment calls, and the corrections they type become permanent rules.',
+  },
+  {
+    q: 'A compliant contract doesn’t mean the bank can actually execute an exit. Isn’t this incomplete?',
+    a: 'Right, and we don’t claim otherwise. A real exit also needs an operational transition plan and periodic testing. ExitPlan covers the layer underneath: the contractual rights that make any of that possible. If the paper blocks you, no operational plan survives it, and this finds every place the paper blocks you, with the clause quoted as evidence.',
+  },
   {
     q: 'Why not run this in your Azure tenant?',
     a: 'Even in your own tenant, two problems survive. The output is a live map of the bank’s weak points, and it would now live inside one of the bank’s largest ICT dependencies, because the hyperscalers are themselves in scope for a real register. And the tool that audits your ICT third parties would become an ICT third party itself, with an exit clause of its own. DORA doesn’t forbid cloud and we don’t claim it does, but the complete agent fits on one machine you own, so nothing has to leave.',
