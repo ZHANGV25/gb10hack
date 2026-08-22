@@ -79,6 +79,50 @@ def ask_medgemma(image_b64, question, patient_context):
         return json.loads(r.read())["response"]
 
 
+PANEL = [
+    "pneumonia or consolidation", "pleural effusion", "pneumothorax",
+    "cardiomegaly", "tuberculosis pattern (upper-lobe patchy or cavitary opacities)",
+    "rib fracture", "foreign body (bullet, shrapnel, metallic object)",
+    "pulmonary edema",
+]
+PANEL_ESCALATE = {"pneumothorax", "rib fracture",
+                  "foreign body (bullet, shrapnel, metallic object)"}
+
+
+# Terms that indicate each panel condition in a free-text read.
+PANEL_TERMS = {
+    "pneumonia or consolidation": r"pneumonia|consolidat|patchy opacit|infiltrat|airspace opacit",
+    "pleural effusion": r"(pleural\s+)?effusion",
+    "pneumothorax": r"pneumothorax",
+    "cardiomegaly": r"cardiomegaly|enlarged (cardiac|heart)|increased cardiothoracic",
+    "tuberculosis pattern (upper-lobe patchy or cavitary opacities)": r"tubercul|cavitary|cavitation|upper.lobe (patchy|fibro)",
+    "rib fracture": r"(rib\s+)?fracture",
+    "foreign body (bullet, shrapnel, metallic object)": r"foreign\s+body|bullet|shrapnel|metallic|radiopaque object|projectile",
+    "pulmonary edema": r"(pulmonary\s+)?edema|vascular congestion|kerley",
+}
+
+
+def ask_panel(image_b64, patient_context):
+    """Findings panel derived from the (stronger) free-text read: the model describes,
+    deterministic matching classifies. One model call; negation-aware; auditable."""
+    raw = ask_medgemma(image_b64, "General read. Mention pertinent negatives.", patient_context)
+    low = raw.lower()
+    results = {}
+    for cond in PANEL:
+        pat = PANEL_TERMS[cond]
+        verdict = "ABSENT"  # radiology convention: unmentioned = pertinent negative
+        for m in re.finditer(pat, low, re.I):
+            if negated(low, m):
+                verdict = "ABSENT"
+                break
+            verdict = "PRESENT"
+            break
+        if verdict == "PRESENT" and re.search(ABSTAIN, low, re.I):
+            verdict = "UNCERTAIN" if "possibl" in low or "difficult" in low else verdict
+        results[cond] = verdict
+    return results, raw
+
+
 def parse_sections(text):
     out = {}
     for key in ("QUALITY", "FINDINGS", "IMPRESSION", "CONFIDENCE"):
@@ -110,6 +154,26 @@ class Handler(BaseHTTPRequestHandler):
             self._send(404, {"error": "not found"})
 
     def do_POST(self):
+        if self.path == "/panel":
+            t0 = time.time()
+            try:
+                length = int(self.headers.get("Content-Length", 0))
+                req = json.loads(self.rfile.read(length))
+                results, raw = ask_panel(req["image_b64"], req.get("patient_context", ""))
+                present = [c for c, v in results.items() if v == "PRESENT"]
+                uncertain = [c for c, v in results.items() if v == "UNCERTAIN"]
+                escalate = bool((set(present) | set(uncertain)) & PANEL_ESCALATE) or len(uncertain) >= 4
+                resp = {"panel": results, "present": present, "uncertain": uncertain,
+                        "escalate": escalate, "disclaimer": DISCLAIMER, "model": MODEL,
+                        "latency_ms": int((time.time() - t0) * 1000)}
+                with open(AUDIT, "a") as f:
+                    f.write(json.dumps({"ts": time.time(), "endpoint": "panel",
+                                        "present": present, "escalate": escalate,
+                                        "latency_ms": resp["latency_ms"]}) + "\n")
+                return self._send(200, resp)
+            except Exception as e:
+                return self._send(500, {"error": str(e), "escalate": True,
+                                        "disclaimer": DISCLAIMER})
         if self.path != "/xray":
             return self._send(404, {"error": "not found"})
         t0 = time.time()
