@@ -1,375 +1,294 @@
 "use client";
-import { AnimatePresence, motion, useReducedMotion } from "motion/react";
-import { EASE, GiantWord, Panel, SlideLabel, useStages } from "./primitives";
-import { Callout, Crosshair, RegMarks } from "./marks";
+import { motion } from "motion/react";
+import NumberFlow from "@number-flow/react";
+import { EASE, Panel, SlideLabel } from "./primitives";
+import { Callout, RegMarks } from "./marks";
 
-/* The carried object: alert ALR-0142 appears in the queue, opens, is
-   drafted, red-flagged, decided and survives the unplug. Slides 4–5 and
-   6–7 are builds — a keypress changes a prop, never remounts. */
+/* ── Slide 3 — the register (demo §1 fallback) ───────────────────────────
+   The real register, restyled: real vendors, real values from book.py,
+   the €7,030,000 tile carrying the argument. Live, the presenter is on
+   the product — this frame exists for the public URL and for disaster. */
 
-const ROWS: [string, string, string, string, string][] = [
-  ["ALR-0135", "MERIDIAN FREIGHT LLC", "R-04 STRUCTURING", "0.31", "noise"],
-  ["ALR-0136", "KOVAL & PARTNERS", "R-11 PEP-ADJACENT", "0.22", "noise"],
-  ["ALR-0137", "BALT SEA CHARTER OU", "R-02 VELOCITY", "0.18", "noise"],
-  ["ALR-0138", "H. OKONKWO", "R-04 STRUCTURING", "0.27", "noise"],
-  ["ALR-0139", "ARGENT PAY SP Z O.O.", "R-08 CORRIDOR", "0.35", "noise"],
-  ["ALR-0140", "LUMEN GLASSWORKS", "R-02 VELOCITY", "0.12", "noise"],
-  ["ALR-0141", "T. VASQUEZ HOLDINGS", "R-11 PEP-ADJACENT", "0.29", "noise"],
-  ["ALR-0142", "NOVAK TRADING s.r.o.", "R-17 SANCTIONS-ADJ", "0.93", "review"],
-  ["ALR-0143", "PORTVIEW MARINE", "R-08 CORRIDOR", "0.24", "noise"],
-  ["ALR-0144", "DELTA KILIM EXPORT", "R-02 VELOCITY", "0.21", "noise"],
-  ["ALR-0145", "S. LINDQVIST AB", "R-04 STRUCTURING", "0.16", "noise"],
-  ["ALR-0146", "CASPIAN AGRO TRADE", "R-08 CORRIDOR", "0.41", "noise"],
-  ["ALR-0147", "WRENFIELD & CO", "R-11 PEP-ADJACENT", "0.19", "noise"],
-  ["ALR-0148", "AZURE FORWARDING", "R-02 VELOCITY", "0.23", "noise"],
+const ROWS: [string, string, string, "blocking" | "material" | null][] = [
+  ["Helvetia Cloud Services AG", "Core banking hosting", "4,180,000", "blocking"],
+  ["Castellan Core Systems Ltd", "Core banking software", "3,320,000", "material"],
+  ["Meridian Payments B.V.", "Card processing", "2,640,000", "blocking"],
+  ["Nordlys Data Centre A/S", "Colocation", "1,950,000", null],
+  ["Orion Trading Systems Ltd", "Market data", "1,460,000", null],
+  ["Aurora KYC Ltd", "Sanctions screening", "890,000", "material"],
+  ["Skyward Analytics SA", "Regulatory reporting", "720,000", "material"],
+  ["Tessera Identity BV", "Identity verification", "640,000", null],
+  ["Vantage HR Cloud Inc.", "HR and payroll", "210,000", "blocking"],
+  ["Brightmail Secure GmbH", "Email security", "145,000", null],
+  ["Larsen Legal Archive AB", "Document archive", "132,000", "material"],
+  ["Pinnacle Managed Print BV", "Printing", "88,000", null],
 ];
 
-function ActWord({ word, tone = "ink" }: { word: string; tone?: "ink" | "tan" }) {
+function Tile({
+  label,
+  value,
+  sub,
+  emphasis,
+  delay,
+  numeric,
+}: {
+  label: string;
+  value: string;
+  sub: string;
+  emphasis?: boolean;
+  delay: number;
+  numeric?: number;
+}) {
   return (
-    <AnimatePresence mode="popLayout" initial={false}>
-      <motion.div
-        key={word}
-        className="absolute inset-0"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        transition={{ duration: 0.4 }}
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay, duration: 0.6, ease: EASE }}
+      className={`border px-[1.8vmin] py-[1.4vmin] ${
+        emphasis ? "border-ink bg-chip text-paper" : "border-ink/15 bg-surface"
+      }`}
+      style={emphasis ? undefined : { boxShadow: "var(--shadow-panel)" }}
+    >
+      <div
+        className={`mark-label text-[1vmin] ${emphasis ? "text-paper/70" : "text-g500"}`}
       >
-        <GiantWord size="26vh" top="26%" tone={tone} delay={0}>
-          {word}
-        </GiantWord>
-      </motion.div>
-    </AnimatePresence>
+        {label}
+      </div>
+      <div className="tnum mt-[0.5vmin] font-mono text-[2.6vmin] font-semibold tracking-tight">
+        {numeric != null ? (
+          <>
+            €<NumberFlow value={numeric} transformTiming={{ duration: 1200, easing: "ease-out" }} />
+          </>
+        ) : (
+          value
+        )}
+      </div>
+      <div
+        className={`mt-[0.35vmin] text-[1.05vmin] leading-[1.4] ${
+          emphasis ? "text-paper/70" : "text-g500"
+        }`}
+      >
+        {sub}
+      </div>
+    </motion.div>
   );
 }
 
-/* ── Slides 4 + 5 — the Monday, then the screener's reason (build) ────── */
-
-export function SceneQueue({ opened }: { opened: boolean }) {
-  const rm = useReducedMotion();
+export function SceneRegister() {
   return (
     <div className="absolute inset-0">
-      <ActWord word={opened ? "RULES" : "MONDAY"} />
       <RegMarks />
-      <div className="absolute inset-0 z-10 flex items-center justify-center gap-[3vmin]">
-        {/* the queue */}
-        <motion.div
-          layout
-          transition={{ duration: 0.7, ease: EASE }}
-          className="border border-ink/15 bg-surface"
-          style={{ boxShadow: "var(--shadow-panel)", width: opened ? "52vmin" : "78vmin" }}
-        >
-          <div className="flex items-center justify-between border-b border-ink/12 px-[2vmin] py-[1.3vmin]">
-            <div className="mark-label text-[1.25vmin] text-g600">Alert queue</div>
-            <div className="flex items-center gap-[1vmin]">
-              <div className="mark-label bg-chip px-[1vmin] py-[0.5vmin] text-[1.05vmin] text-paper">
-                200 alerts · 99% noise
-              </div>
-              <div className="mark-label border border-ink/25 px-[1vmin] py-[0.5vmin] text-[1.05vmin] text-g500">
-                synthetic data
-              </div>
-            </div>
-          </div>
-          <div className="px-[1vmin] py-[0.8vmin] font-mono text-[1.35vmin] leading-[2.1]">
-            {ROWS.map(([id, name, rule, score, status], i) => {
-              const hot = id === "ALR-0142";
-              return (
-                <motion.div
-                  key={id}
-                  initial={rm ? { opacity: 0 } : { opacity: 0, x: -8 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.5 + i * 0.055, duration: 0.4, ease: EASE }}
-                  className={`grid grid-cols-[8em_1fr_auto_4em] items-center gap-[1.6vmin] px-[1vmin] ${
-                    hot ? "bg-ink/6" : ""
-                  }`}
-                  style={hot ? { boxShadow: "inset 0.35vmin 0 0 var(--color-ink)" } : undefined}
-                >
-                  <span className="text-g500">{id}</span>
-                  <span className={`truncate ${hot ? "font-semibold" : ""}`}>{name}</span>
-                  {!opened && <span className="text-g500">{rule}</span>}
-                  {opened && <span />}
-                  <span className={`tnum text-right ${hot ? "font-semibold" : "text-g500"}`}>
-                    {score}
-                  </span>
-                </motion.div>
-              );
-            })}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 1.6 }}
-              className="px-[1vmin] pt-[0.4vmin] text-g400"
-            >
-              ··· 186 more
-            </motion.div>
-          </div>
-        </motion.div>
+      <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-[2vmin]">
+        {/* tiles */}
+        <div className="grid w-[84vmin] grid-cols-4 gap-[1.4vmin]">
+          <Tile label="Arrangements with gaps" value="7" sub="of 12 read" delay={0.3} />
+          <Tile
+            label="Cannot be cleanly exited"
+            value="€7,030,000"
+            numeric={7030000}
+            sub="annual charge · blocking gap present"
+            emphasis
+            delay={0.45}
+          />
+          <Tile label="Article 30 gaps found" value="10" sub="3 blocking" delay={0.6} />
+          <Tile
+            label="Total contracted"
+            value="€16,375,000"
+            sub="12 suppliers · 8 critical"
+            delay={0.75}
+          />
+        </div>
 
-        {/* the screener's reason */}
-        <AnimatePresence>
-          {opened && (
-            <motion.div
-              initial={{ opacity: 0, x: 24 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 24 }}
-              transition={{ duration: 0.7, ease: EASE }}
-              className="w-[38vmin] border border-ink/15 bg-surface px-[2.4vmin] py-[2.2vmin]"
-              style={{ boxShadow: "var(--shadow-panel)" }}
-            >
-              <div className="mark-label mb-[1.6vmin] text-[1.25vmin] text-g600">
-                Why this fired — deterministic screener
-              </div>
-              <div className="mb-[1.8vmin] border border-ink/20 bg-white px-[1.6vmin] py-[1.4vmin] font-mono text-[1.45vmin] leading-[1.9]">
-                <div className="text-g500">RULE R-17 · SANCTIONS-ADJACENT NAME</div>
-                <div className="mt-[0.8vmin]">NOVAK TRADING s.r.o.</div>
-                <div className="text-g500">≈ NOVAK TRADING SRO · match 0.93</div>
-                <div className="mt-[0.8vmin] text-g500">
-                  corridor CZ → IR · thr ≥ 0.85
-                </div>
-              </div>
-              <div className="font-mono text-[1.3vmin] leading-[1.8] text-g600">
-                The model never picks the hit.
-                <br />
-                Rules own the queue — the model
-                <br />
-                cannot add an alert, or lose one.
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+        <div className="flex w-[84vmin] items-start gap-[1.6vmin]">
+          {/* the register table */}
+          <Panel className="flex-1 px-[1.6vmin] py-[1.2vmin]" delay={0.6}>
+            <div className="mark-label flex items-center justify-between pb-[0.8vmin] text-[1.05vmin] text-g500">
+              <span>ICT third-party register</span>
+              <span className="bg-chip px-[0.9vmin] py-[0.35vmin] text-[0.9vmin] text-paper">
+                12 arrangements · €16.4M/yr · measured 22 aug
+              </span>
+            </div>
+            <div className="font-mono text-[1.22vmin] leading-[1.92]">
+              {ROWS.map(([vendor, fn, value, gap], i) => (
+                <motion.div
+                  key={vendor}
+                  initial={{ opacity: 0, x: -6 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.8 + i * 0.05, duration: 0.35, ease: EASE }}
+                  className="grid grid-cols-[1.4vmin_18em_1fr_7em] items-center gap-[1.2vmin] border-t border-ink/8 px-[0.6vmin]"
+                >
+                  <span className="text-[1.1vmin]">
+                    {gap === "blocking" ? "●" : gap === "material" ? "○" : ""}
+                  </span>
+                  <span className={gap === "blocking" ? "font-semibold" : ""}>
+                    {vendor}
+                  </span>
+                  <span className="truncate text-g500">{fn}</span>
+                  <span className="tnum text-right">{value}</span>
+                </motion.div>
+              ))}
+            </div>
+            <div className="mark-label mt-[0.7vmin] border-t border-ink/8 pt-[0.7vmin] text-[0.95vmin] text-g500">
+              ● blocking gap · ○ material gap · values EUR/yr
+            </div>
+          </Panel>
+
+          {/* the estate view */}
+          <motion.div
+            initial={{ opacity: 0, x: 16 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 1.5, duration: 0.7, ease: EASE }}
+            className="w-[26vmin] border border-ink/15 bg-surface px-[1.8vmin] py-[1.5vmin]"
+            style={{ boxShadow: "var(--shadow-panel)" }}
+          >
+            <div className="mark-label mb-[1.2vmin] text-[1.05vmin] text-g500">
+              Where the estate is weakest
+            </div>
+            {[
+              ["No penetration-testing clause", "2 contracts"],
+              ["Data locations undisclosed", "2 contracts"],
+              ["No exit strategy", "1 contract — core banking"],
+            ].map(([label, count], i) => (
+              <motion.div
+                key={label}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 1.8 + i * 0.2, duration: 0.4 }}
+                className="border-t border-ink/10 py-[1vmin]"
+              >
+                <div className="text-[1.3vmin] leading-[1.5]">{label}</div>
+                <div className="tnum font-mono text-[1.1vmin] text-g500">{count}</div>
+              </motion.div>
+            ))}
+            <div className="mt-[1vmin] border-t border-ink/10 pt-[1vmin] font-mono text-[1.1vmin] leading-[1.7] text-g600">
+              The same clause missing across suppliers is a contracting problem,
+              not a supplier problem.
+            </div>
+          </motion.div>
+        </div>
       </div>
-      <SlideLabel delay={1.2}>
-        {opened ? "The screener owns the candidate set" : "A compliance analyst's Monday"}
+      <SlideLabel delay={2.2}>
+        Demo §1 · the register — every arrangement, checked against Article 30
       </SlideLabel>
     </div>
   );
 }
 
-/* ── Slides 6 + 7 — the draft, then the override (build) ──────────────── */
+/* ── Slide 4 — Helvetia (demo §2 fallback) ───────────────────────────────
+   The good contract with the one absent clause that matters. One passed
+   row is expanded to its verbatim quote — the model's entire authority. */
 
-const SENTENCES: [string, string][] = [
-  ["Name matches watchlist entity NOVAK TRADING SRO at 0.93 similarity.", "C1 · WATCHLIST SDN-778"],
-  ["KYC file shows machine-parts exporter, CZ registry, est. 2011.", "C2 · KYC FILE §2.1"],
-  ["Pattern is consistent with 14 months of invoiced trade.", "C3 · LEDGER 2025-Q2"],
-  ["Policy dismisses sub-0.95 matches with a clean corridor history.", "C4 · POLICY 4.3(b)"],
+const CHECKLIST: [string, "ok" | "absent"][] = [
+  ["Clear description of the services", "ok"],
+  ["Service and data locations disclosed", "ok"],
+  ["Availability, integrity, confidentiality", "ok"],
+  ["Access, recovery and return of data", "ok"],
+  ["Service level descriptions", "ok"],
+  ["Assistance on ICT incidents", "ok"],
+  ["Cooperation with competent authorities", "ok"],
+  ["Termination rights and notice periods", "ok"],
+  ["Security awareness participation", "ok"],
+  ["Quantitative performance targets", "ok"],
+  ["Notice periods and reporting", "ok"],
+  ["Contingency plans and security measures", "ok"],
+  ["Threat-led penetration testing", "ok"],
+  ["Access, inspection and audit", "ok"],
+  ["Exit strategy and transition period", "absent"],
 ];
 
-export function SceneDraft({ overridden }: { overridden: boolean }) {
-  const rm = useReducedMotion();
+export function SceneHelvetia() {
   return (
     <div className="absolute inset-0">
-      <ActWord word={overridden ? "OVERRULED" : "CITED"} />
       <RegMarks />
-      <Crosshair x="7%" y="80%" delay={1.5} />
-      <div className="absolute inset-0 z-10 flex items-center justify-center gap-[3vmin]">
-        {/* the draft */}
-        <Panel className="w-[56vmin] px-[3vmin] py-[2.6vmin]" delay={0.25}>
-          <div className="flex items-center justify-between">
-            <div className="mark-label text-[1.25vmin] text-g600">
-              Draft disposition — ALR-0142
+      <div className="absolute inset-0 z-10 flex items-center justify-center gap-[2.4vmin]">
+        <Panel className="w-[44vmin] px-[2.6vmin] py-[2.2vmin]" delay={0.3}>
+          <div className="flex items-baseline justify-between">
+            <div>
+              <div className="text-[2vmin] font-medium tracking-tight">
+                Helvetia Cloud Services AG
+              </div>
+              <div className="mark-label mt-[0.4vmin] text-[1.05vmin] text-g500">
+                Core banking platform · €4,180,000/yr
+              </div>
             </div>
-            <div className="mark-label bg-chip px-[1vmin] py-[0.4vmin] text-[1vmin] text-paper">
-              agent draft · not filed
+            <div className="flex items-center gap-[0.8vmin]">
+              <span className="mark-label border border-ink/30 px-[0.9vmin] py-[0.4vmin] text-[0.95vmin] text-g600">
+                critical
+              </span>
+              <span className="mark-label bg-chip px-[0.9vmin] py-[0.4vmin] text-[0.95vmin] text-paper">
+                14 / 15
+              </span>
             </div>
           </div>
-
-          {/* red-flag bar stamps over the document */}
-          <AnimatePresence>
-            {overridden && (
+          <div className="mt-[1.6vmin] columns-2 gap-[2vmin] font-mono text-[1.18vmin] leading-[2]">
+            {CHECKLIST.map(([label, state], i) => (
               <motion.div
-                initial={rm ? { opacity: 0 } : { opacity: 0, scaleX: 0.6 }}
-                animate={{ opacity: 1, scaleX: 1 }}
-                transition={{ duration: 0.45, ease: EASE }}
-                className="mark-label mt-[1.6vmin] origin-left bg-chip px-[1.4vmin] py-[0.9vmin] text-[1.2vmin] text-paper"
+                key={label}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.6 + i * 0.07, duration: 0.3 }}
+                className={`break-inside-avoid ${
+                  state === "absent"
+                    ? "bg-ink/6 px-[0.6vmin] font-semibold"
+                    : "px-[0.6vmin] text-g600"
+                }`}
+                style={
+                  state === "absent"
+                    ? { boxShadow: "inset 0.3vmin 0 0 var(--color-ink)" }
+                    : undefined
+                }
               >
-                Red flag — counterparty paid SDN-778 subsidiary · 12 Aug
-              </motion.div>
-            )}
-          </AnimatePresence>
-
-          <div className="mt-[1.8vmin] space-y-[1.5vmin]">
-            {SENTENCES.map(([s, cite], i) => (
-              <motion.div
-                key={i}
-                initial={rm ? { opacity: 0 } : { opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.6 + i * 0.55, duration: 0.55, ease: EASE }}
-                className="flex items-baseline justify-between gap-[2vmin] text-[1.75vmin] leading-[1.55]"
-              >
-                <span className={overridden && i === 3 ? "text-g400" : ""}>{s}</span>
-                <span className="mark-label shrink-0 border border-ink/30 px-[0.8vmin] py-[0.3vmin] font-mono text-[1vmin] text-g600">
-                  {cite}
-                </span>
+                {state === "ok" ? "✓ " : "✗ "}
+                {label}
               </motion.div>
             ))}
           </div>
-
-          {/* recommendation — struck through when the rule wins */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 3.0, duration: 0.5 }}
-            className="mt-[2.2vmin] border-t border-ink/12 pt-[1.6vmin] font-mono text-[1.5vmin]"
+            transition={{ delay: 1.9, duration: 0.5 }}
+            className="mark-label mt-[1.6vmin] border-t border-ink/12 pt-[1.2vmin] text-[1.1vmin] text-g600"
           >
-            <span className="relative inline-block">
-              <span className={overridden ? "text-g400" : ""}>
-                RECOMMEND: CLOSE AS FALSE POSITIVE
-              </span>
-              <motion.span
-                initial={{ scaleX: 0 }}
-                animate={{ scaleX: overridden ? 1 : 0 }}
-                transition={{ duration: 0.4, ease: EASE }}
-                className="absolute left-0 top-1/2 h-px w-full origin-left bg-ink"
-              />
-            </span>
-            <AnimatePresence>
-              {overridden && (
-                <motion.div
-                  initial={{ opacity: 0, y: 6 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.35, duration: 0.5, ease: EASE }}
-                  className="mt-[0.9vmin] font-semibold"
-                >
-                  ESCALATE — the rule outranks the model.
-                </motion.div>
-              )}
-            </AnimatePresence>
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 3.5, duration: 0.5 }}
-              className="mt-[1.2vmin] text-[1.25vmin] text-g500"
-            >
-              ◇ UBO chain beyond depth 2 unverified — abstention noted.
-            </motion.div>
+            Absent — blocking: no transition period · no duty to assist
+            migration · Art. 28(8) cannot be evidenced
           </motion.div>
         </Panel>
 
-        {/* the cited span */}
+        {/* the quoted clause */}
         <motion.div
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 2.6, duration: 0.7, ease: EASE }}
-          className="w-[30vmin] border border-ink/15 bg-white px-[2.2vmin] py-[2vmin]"
+          transition={{ delay: 1.4, duration: 0.7, ease: EASE }}
+          className="w-[32vmin] border border-ink/15 bg-white px-[2.2vmin] py-[2vmin]"
           style={{ boxShadow: "var(--shadow-panel)" }}
         >
-          <div className="mark-label mb-[1.2vmin] text-[1.1vmin] text-g500">
-            Source span — Policy 4.3(b)
+          <div className="mark-label mb-[1vmin] text-[1.05vmin] text-g500">
+            ✓ Access, inspection and audit — the clause the model relied on
           </div>
-          <p className="text-[1.45vmin] leading-[1.8] text-g600">
-            …where the composite name-similarity score falls below 0.95 and the
-            counterparty corridor shows{" "}
+          <p className="font-mono text-[1.3vmin] leading-[1.85] text-g700">
+            &ldquo;&hellip;the Customer shall have{" "}
             <span className="bg-g200 px-[0.3vmin] text-ink">
-              no adverse events in the trailing 24 months
-            </span>
-            , the alert may be recommended for closure by the drafting layer,
-            subject to human disposition under §6.
+              unrestricted rights of access to, inspection of and audit of
+            </span>{" "}
+            the Supplier&rsquo;s premises, systems, records and personnel
+            relating to the Services&hellip;&rdquo;
           </p>
+          <div className="mark-label mt-[1.4vmin] border-t border-ink/10 pt-[1.1vmin] text-[1vmin] text-g500">
+            §14 · quoted verbatim · a claim with no quote is recorded as absent
+          </div>
         </motion.div>
       </div>
-      <AnimatePresence>
-        {!overridden && (
-          <motion.div exit={{ opacity: 0, transition: { duration: 0.3 } }}>
-            <Callout
-              x={84} y={20} to={{ x: 72, y: 36 }}
-              title="Every sentence"
-              lines={["cited to a span", "or it abstains"]}
-              delay={2.9}
-            />
-          </motion.div>
-        )}
-      </AnimatePresence>
-      <SlideLabel delay={1.4}>
-        {overridden ? "The model never overrules the rules" : "Constrained to the corpus — nothing invented"}
+      <Callout
+        x={9.5}
+        y={26}
+        to={{ x: 29, y: 26.5 }}
+        title="A good contract"
+        lines={["fourteen of fifteen —", "and an exit that isn't there"]}
+        delay={2.3}
+      />
+      <SlideLabel delay={2.6}>
+        Demo §2 · an exit plan that cannot be executed
       </SlideLabel>
-    </div>
-  );
-}
-
-/* ── Slide 8 — the human decides ─────────────────────────────────────────
-   The one warm slide: the act word itself is tan, and so are the only two
-   buttons in the deck. A cursor — the deck's only cursor — does the two
-   clicks the law reserves for a person. */
-
-export function SceneDecide() {
-  const stage = useStages([900, 2000, 2450, 3600, 4050, 4600]);
-  const rm = useReducedMotion();
-  const decided = stage >= 3 || !!rm;
-  const filed = stage >= 5 || !!rm;
-  return (
-    <div className="absolute inset-0">
-      <GiantWord size="30vh" top="33%" tone="tan">DECIDE</GiantWord>
-      <RegMarks />
-      <div className="absolute inset-0 z-10 flex items-center justify-center">
-        <Panel className="w-[58vmin] px-[3vmin] py-[2.6vmin]" delay={0.2}>
-          <div className="flex items-center justify-between">
-            <div className="mark-label text-[1.25vmin] text-g600">
-              ALR-0142 — escalated by rule R-09
-            </div>
-            <div className="mark-label border border-ink/25 px-[1vmin] py-[0.4vmin] font-mono text-[1vmin] text-g500">
-              draft sha-256 · 9f3a…c1
-            </div>
-          </div>
-          <div className="mt-[2.2vmin] flex gap-[2vmin]">
-            <div
-              className={`mark-label relative flex h-[6.4vmin] flex-1 items-center justify-center text-[1.6vmin] transition-colors duration-300 ${
-                decided ? "bg-tan text-white" : "border-2 border-tan text-tan"
-              }`}
-            >
-              {decided ? "✓ Decided — escalate" : "Decide"}
-            </div>
-            <div
-              className={`mark-label relative flex h-[6.4vmin] flex-1 items-center justify-center text-[1.6vmin] transition-colors duration-300 ${
-                filed ? "bg-tan text-white" : decided ? "border-2 border-tan text-tan" : "border border-ink/20 text-g400"
-              }`}
-            >
-              {filed ? "✓ STR filed" : "File STR"}
-            </div>
-          </div>
-          <AnimatePresence>
-            {filed && (
-              <motion.div
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, ease: EASE }}
-                className="mt-[2vmin] border border-ink/15 bg-white px-[1.6vmin] py-[1.2vmin] font-mono text-[1.3vmin] leading-[1.9] text-g600"
-              >
-                <span className="mark-label text-[1.05vmin] text-g500">audit ledger · append-only</span>
-                <br />
-                FILED · M. ANALYST · 14:02:37 · input 9f3a…c1 · rationale attached
-              </motion.div>
-            )}
-          </AnimatePresence>
-          <div className="mark-label mt-[2vmin] text-[1.15vmin] text-g500">
-            AMLR Art 18(3) — the decision cannot be outsourced. Not to a vendor. Not to a model.
-          </div>
-        </Panel>
-      </div>
-
-      {/* the deck's only cursor */}
-      {!rm && stage >= 1 && (
-        <motion.div
-          className="absolute z-30"
-          initial={{ left: "63%", top: "78%", opacity: 0 }}
-          animate={{
-            left: stage >= 4 ? "56.5%" : "41.5%",
-            top: stage >= 2 ? "43.5%" : "68%",
-            opacity: 1,
-            scale: stage === 3 || stage === 5 ? 0.82 : 1,
-          }}
-          transition={{ duration: 0.8, ease: EASE, scale: { duration: 0.18 } }}
-        >
-          <svg width="26" height="26" viewBox="0 0 24 24">
-            <path
-              d="M5 3 L19 12.5 L12.2 13.6 L15.2 20.2 L12.6 21.3 L9.6 14.7 L5 18 Z"
-              fill="var(--color-ink)"
-              stroke="var(--color-paper)"
-              strokeWidth="1.2"
-            />
-          </svg>
-        </motion.div>
-      )}
-      <SlideLabel delay={0.8}>The agent drafts. A human decides and files.</SlideLabel>
     </div>
   );
 }

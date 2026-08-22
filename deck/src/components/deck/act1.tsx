@@ -1,200 +1,215 @@
 "use client";
-import { motion, useReducedMotion } from "motion/react";
-import { EASE, GiantWord, Panel, SlideLabel, useStages } from "./primitives";
-import { Callout, Crosshair, RegMarks, Ruler, Sparkline } from "./marks";
+import { motion } from "motion/react";
+import { EASE, Panel, SlideLabel } from "./primitives";
+import { Callout, Crosshair, RegMarks, Ruler } from "./marks";
 
-/* ── Slide 1 — the regulation ────────────────────────────────────────────
-   A statute page floating over the act word. The only color on the slide
-   arrives when the four words that matter are spoken. */
+/* ── Slide 1 — the reading problem ───────────────────────────────────────
+   The statute on the left, the Article 30 spec on the right, and below
+   them the reason the duty goes unmet: a shelf of contracts, one reader. */
 
-export function SceneRegulation() {
-  const stage = useStages([2600]);
-  const rm = useReducedMotion();
+const CRITICAL_EXTRAS = [
+  "Performance targets",
+  "Reporting to the entity",
+  "Contingency plans",
+  "Threat-led pen testing",
+  "Access, inspection, audit",
+  "Exit strategy & transition",
+];
+
+function Spine({ i, delay }: { i: number; delay: number }) {
+  // deterministic pseudo-random heights so the shelf looks shelved
+  const h = 7.2 + ((i * 37) % 5) * 0.9;
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 6 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay, duration: 0.4, ease: EASE }}
+      className="border border-ink/40 bg-surface"
+      style={{ width: "1.55vmin", height: `${h}vmin` }}
+    />
+  );
+}
+
+export function SceneReading() {
   return (
     <div className="absolute inset-0">
-      <GiantWord size="26vh" top="33%">IN-HOUSE</GiantWord>
       <RegMarks />
-      <Crosshair x="8%" y="14%" delay={0.9} />
-      <Crosshair x="93%" y="82%" delay={1.1} />
-      <div className="absolute inset-0 z-10 flex items-center justify-center">
-        <Panel className="w-[64vmin] px-[5.2vmin] py-[4.6vmin]" delay={0.5}>
-          <div className="mark-label mb-[0.9vmin] text-[1.3vmin] text-g500">
-            Regulation (EU) 2022/2554 — DORA
-          </div>
-          <div className="mb-[2.6vmin] text-[2.5vmin] font-medium tracking-tight">
-            Article 28(8)
-          </div>
-          <p className="text-[2.05vmin] leading-[1.75] text-g700">
-            &ldquo;&hellip;financial entities shall put in place{" "}
-            <span className="text-ink">transition plans</span> enabling them to{" "}
-            <span className="text-ink">remove the contracted ICT services</span>{" "}
-            and the relevant data from the ICT third-party service provider and
-            to securely and integrally transfer them to alternative providers or{" "}
-            <span className="relative inline-block whitespace-nowrap">
-              <motion.span
-                initial={{ color: "var(--color-ink)" }}
-                animate={{
-                  color: stage >= 1 ? "var(--color-tan)" : "var(--color-ink)",
-                }}
-                transition={{ duration: 0.5 }}
-                className="font-medium"
-              >
+      <Crosshair x="7%" y="16%" delay={1.2} />
+      <Crosshair x="94%" y="78%" delay={1.4} />
+      <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-[3.4vmin]">
+        <div className="flex items-stretch gap-[3vmin]">
+          {/* the duty */}
+          <Panel className="w-[46vmin] px-[3.4vmin] py-[3vmin]" delay={0.4}>
+            <div className="mark-label mb-[0.8vmin] text-[1.2vmin] text-g500">
+              Regulation (EU) 2022/2554 — DORA · Article 28(8)
+            </div>
+            <p className="text-[1.9vmin] leading-[1.75] text-g700">
+              For ICT services supporting{" "}
+              <span className="text-ink">critical or important functions</span>,
+              financial entities shall have exit strategies — transfer to
+              another provider, or{" "}
+              <span className="relative inline-block font-medium text-ink">
                 reincorporate them in-house
-              </motion.span>
-              <motion.span
-                initial={{ scaleX: 0 }}
-                animate={{ scaleX: stage >= 1 ? 1 : 0 }}
-                transition={{ duration: rm ? 0 : 0.7, ease: EASE }}
-                className="absolute -bottom-[0.3vmin] left-0 h-[0.35vmin] w-full origin-left bg-tan"
-              />
-            </span>
-            .&rdquo;
-          </p>
-        </Panel>
-      </div>
-      <SlideLabel>Every EU bank on a cloud AI has this duty</SlideLabel>
-    </div>
-  );
-}
+                <motion.span
+                  initial={{ scaleX: 0 }}
+                  animate={{ scaleX: 1 }}
+                  transition={{ delay: 1.6, duration: 0.7, ease: EASE }}
+                  className="absolute -bottom-[0.25vmin] left-0 h-[0.3vmin] w-full origin-left bg-ink"
+                />
+              </span>
+              .
+            </p>
+            <p className="mt-[1.6vmin] text-[1.55vmin] leading-[1.7] text-g600">
+              Whether that is possible is written in the contracts — Article 30
+              says what each one must contain.
+            </p>
+          </Panel>
 
-/* ── Slide 2 — a slide ───────────────────────────────────────────────────
-   The industry's actual exit plan, rendered faithfully: one sad corporate
-   slide. The act word does the talking. */
+          {/* the checklist spec */}
+          <Panel className="w-[34vmin] px-[2.6vmin] py-[2.4vmin]" delay={0.7}>
+            <div className="mark-label mb-[1.4vmin] text-[1.2vmin] text-g500">
+              Article 30 — required contract elements
+            </div>
+            <div className="flex items-baseline justify-between border-t border-ink/15 py-[1.1vmin]">
+              <span className="text-[1.5vmin] text-g600">Every arrangement</span>
+              <span className="tnum font-mono text-[2.2vmin]">9</span>
+            </div>
+            <div className="flex items-baseline justify-between border-t border-ink/15 py-[1.1vmin]">
+              <span className="text-[1.5vmin] text-g600">
+                Critical functions add
+              </span>
+              <span className="tnum font-mono text-[2.2vmin]">+6</span>
+            </div>
+            <div className="mt-[1vmin] flex flex-wrap gap-[0.6vmin] border-t border-ink/15 pt-[1.3vmin]">
+              {CRITICAL_EXTRAS.map((t, i) => (
+                <motion.span
+                  key={t}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 1.3 + i * 0.1, duration: 0.4 }}
+                  className="mark-label border border-ink/25 px-[0.8vmin] py-[0.35vmin] text-[0.95vmin] text-g600"
+                >
+                  {t}
+                </motion.span>
+              ))}
+            </div>
+          </Panel>
+        </div>
 
-export function ScenePowerpoint() {
-  return (
-    <div className="absolute inset-0">
-      <GiantWord size="30vh" top="35%">A SLIDE</GiantWord>
-      <RegMarks />
-      <Sparkline x="6%" y="72%" delay={1.4} />
-      <Ruler x="88%" y="30%" vertical len={16} label="fig. 1" delay={1.2} />
-      <div className="absolute inset-0 z-10 flex items-center justify-center">
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.8, duration: 0.8, ease: EASE }}
-          className="aspect-video w-[52vmin] border border-ink/12 bg-white px-[3.6vmin] py-[2.8vmin]"
-          style={{ boxShadow: "var(--shadow-panel)" }}
-        >
-          <div className="text-[2.5vmin] font-semibold tracking-tight text-g700">
-            Exit Strategy
-          </div>
-          <div className="mb-[2.2vmin] mt-[0.6vmin] h-px w-[9vmin] bg-g300" />
-          <ul className="space-y-[1.35vmin] text-[1.75vmin] text-g600">
-            <li>• Assess alternative providers</li>
-            <li>• Define migration timeline</li>
-            <li>• Reincorporate in-house (TBD)</li>
-          </ul>
-          <div className="mt-[2.6vmin] flex gap-[0.8vmin]">
-            {["PLAN", "MIGRATE", "DONE?"].map((t, i) => (
-              <div
-                key={t}
-                className="mark-label flex h-[3.4vmin] flex-1 items-center justify-center bg-g200 text-[1.05vmin] text-g500"
-                style={{
-                  clipPath:
-                    "polygon(0 0, calc(100% - 1.2vmin) 0, 100% 50%, calc(100% - 1.2vmin) 100%, 0 100%, 1.2vmin 50%)",
-                  opacity: 1 - i * 0.18,
-                }}
-              >
-                {t}
-              </div>
-            ))}
-          </div>
-          <div className="mt-[2vmin] text-right text-[1.1vmin] text-g400">
-            Slide 47 of 63 · last reviewed 2024
-          </div>
-        </motion.div>
-      </div>
-      <SlideLabel>Ask a bank what the plan looks like</SlideLabel>
-    </div>
-  );
-}
-
-/* ── Slide 3 — the box ───────────────────────────────────────────────────
-   The subject, SLEEPER-composed: a line-drawn GB10 against its own name,
-   annotated like a spec sheet. The drawing occludes the word. */
-
-function Gb10Drawing() {
-  const rm = useReducedMotion();
-  const draw = (delay: number) => ({
-    initial: rm ? { opacity: 0 } : { pathLength: 0, opacity: 1 },
-    animate: { pathLength: 1, opacity: 1 },
-    transition: { delay, duration: 1.0, ease: EASE },
-  });
-  return (
-    <svg viewBox="0 0 400 300" className="h-full w-full overflow-visible">
-      <defs>
-        <pattern id="lattice" width="14" height="14" patternUnits="userSpaceOnUse">
-          <circle cx="7" cy="7" r="2.4" fill="none" stroke="var(--color-ink)" strokeWidth="0.7" opacity="0.5" />
-        </pattern>
-      </defs>
-      {/* faces fill first so the drawing occludes the act word behind it */}
-      <motion.g
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.5, duration: 0.6 }}
-      >
-        <polygon points="140,60 360,60 300,30 80,30" fill="#eceae5" />
-        <polygon points="140,60 80,30 80,230 140,260" fill="#e0ded8" />
-        <rect x="140" y="60" width="220" height="200" fill="#f4f3f0" />
-      </motion.g>
-      {/* edges draw in */}
-      <motion.rect x="140" y="60" width="220" height="200" fill="none" stroke="var(--color-ink)" strokeWidth="1.6" {...draw(0.6)} />
-      <motion.path d="M140 60 L80 30 L300 30 L360 60" fill="none" stroke="var(--color-ink)" strokeWidth="1.6" {...draw(0.85)} />
-      <motion.path d="M80 30 L80 230 L140 260" fill="none" stroke="var(--color-ink)" strokeWidth="1.6" {...draw(1.05)} />
-      {/* the lattice front face */}
-      <motion.rect
-        x="152" y="72" width="196" height="176" fill="url(#lattice)"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1.5, duration: 0.9 }}
-      />
-      {/* power stud */}
-      <motion.circle
-        cx="344" cy="76" r="3.4" fill="var(--color-ink)"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 2.0, duration: 0.4 }}
-      />
-    </svg>
-  );
-}
-
-export function SceneBox() {
-  return (
-    <div className="absolute inset-0">
-      <GiantWord size="32vh" top="37%">EXITPLAN</GiantWord>
-      <RegMarks />
-      <Sparkline x="5.5%" y="66%" delay={2.6} />
-      <Ruler x="90%" y="26%" vertical len={18} label="scale 1:1" delay={2.4} />
-      <div className="absolute inset-0 z-10 flex items-center justify-center">
-        <div className="relative h-[46vmin] w-[61vmin] translate-y-[6vmin]">
-          <Gb10Drawing />
+        {/* the shelf */}
+        <div className="relative flex items-end gap-[0.55vmin] border-b border-ink/40 px-[1vmin] pb-0">
+          {Array.from({ length: 26 }, (_, i) => (
+            <Spine key={i} i={i} delay={1.2 + i * 0.045} />
+          ))}
         </div>
       </div>
       <Callout
-        x={24} y={30} to={{ x: 45.5, y: 44 }}
-        title="Compute"
-        lines={["NVIDIA GB10", "128GB unified memory"]}
-        delay={2.1}
+        x={76}
+        y={72}
+        to={{ x: 60, y: 79 }}
+        title="The reading problem"
+        lines={["hundreds of these", "nobody reads them all"]}
+        delay={2.4}
       />
-      <Callout
-        x={77} y={68} to={{ x: 60, y: 58 }}
-        title="Models"
-        lines={["on the disk,", "not an API"]}
-        delay={2.6}
-      />
-      <Callout
-        x={26} y={79} to={{ x: 43, y: 64 }}
-        title="Uplink"
-        lines={["not required"]}
-        delay={3.1}
-      />
-      <div className="absolute bottom-[10vh] left-1/2 z-10 -translate-x-1/2">
-        <Ruler x="0" y="0" len={26} ticks={9} label="150 × 150 × 50.5 mm" delay={2.9} />
+      <Ruler x="24%" y="86%" len={16} ticks={9} delay={2.2} />
+      <SlideLabel delay={2.8}>
+        The exit plan stays a slide — until something reads the contracts
+      </SlideLabel>
+    </div>
+  );
+}
+
+/* ── Slide 2 — the authority split ───────────────────────────────────────
+   Three lanes. The machine is monochrome; the third lane is the human,
+   and it is the only warm thing on the slide. No database is named here —
+   the store gets its reveal on slide 7. */
+
+const LANES: {
+  title: string;
+  lines: string[];
+  chip: string;
+  tan?: boolean;
+}[] = [
+  {
+    title: "The model extracts",
+    lines: [
+      "reads the contract",
+      "labels each provision:",
+      "present · inadequate · absent",
+      "must produce the clause it relied on",
+    ],
+    chip: "NO QUOTE, NO CLAIM",
+  },
+  {
+    title: "Policy disposes",
+    lines: [
+      "deterministic Python",
+      "fixed severity map",
+      "verdict: approve · escalate · reject",
+      "exit / audit / data return = blocking",
+    ],
+    chip: "THE CHECKLIST DECIDES",
+  },
+  {
+    title: "Reviewers teach",
+    lines: [
+      "a named reviewer disagrees",
+      "in writing, with a scope",
+      "the correction becomes a readable rule",
+      "retrieval — not retraining",
+    ],
+    chip: "RULES ONLY ACT ON AN EXISTING GAP",
+    tan: true,
+  },
+];
+
+export function SceneCage() {
+  return (
+    <div className="absolute inset-0">
+      <RegMarks />
+      <Crosshair x="8%" y="82%" delay={1.6} />
+      <div className="absolute inset-0 z-10 flex items-center justify-center gap-[2.2vmin]">
+        {LANES.map((lane, i) => (
+          <div key={lane.title} className="flex items-center gap-[2.2vmin]">
+            <Panel
+              className="w-[27vmin] px-[2.4vmin] py-[2.2vmin]"
+              delay={0.3 + i * 0.45}
+            >
+              <div
+                className="mark-label mb-[1.4vmin] text-[1.35vmin]"
+                style={{ color: lane.tan ? "var(--color-tan)" : undefined }}
+              >
+                {String(i + 1).padStart(2, "0")} · {lane.title}
+              </div>
+              <div className="space-y-[0.7vmin] text-[1.45vmin] leading-[1.6] text-g700">
+                {lane.lines.map((l) => (
+                  <div key={l}>{l}</div>
+                ))}
+              </div>
+              <div
+                className={`mark-label mt-[1.8vmin] inline-block px-[1vmin] py-[0.55vmin] text-[0.95vmin] ${
+                  lane.tan ? "bg-tan text-white" : "bg-chip text-paper"
+                }`}
+              >
+                {lane.chip}
+              </div>
+            </Panel>
+            {i < LANES.length - 1 && (
+              <motion.div
+                initial={{ opacity: 0, scaleX: 0 }}
+                animate={{ opacity: 1, scaleX: 1 }}
+                transition={{ delay: 0.7 + i * 0.45, duration: 0.5, ease: EASE }}
+                className="flex origin-left items-center"
+              >
+                <div className="h-px w-[3.4vmin] bg-ink/50" />
+                <div className="h-[0.7vmin] w-[0.7vmin] bg-ink" />
+              </motion.div>
+            )}
+          </div>
+        ))}
       </div>
-      <SlideLabel delay={3.4}>
-        Financial-crime triage · drafts, cites, never decides
+      <SlideLabel delay={2}>
+        The model&rsquo;s authority stops at extraction
       </SlideLabel>
     </div>
   );

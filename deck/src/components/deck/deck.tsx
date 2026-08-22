@@ -1,37 +1,39 @@
 "use client";
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
-import { SceneRegulation, ScenePowerpoint, SceneBox } from "./act1";
-import { SceneQueue, SceneDraft, SceneDecide } from "./act2";
-import { SceneUnplug } from "./act3";
-import { SceneSpec, SceneNumber, SceneClose } from "./act4";
+import { SceneCage, SceneReading } from "./act1";
+import { SceneHelvetia, SceneRegister } from "./act2";
+import { SceneTeach } from "./act3";
+import { SceneArtifact, SceneClose, SceneMongo } from "./act4";
 
-export const LAST = 12;
+export const LAST = 9;
 
 /**
  * Slides that share a visual composition share a group; within a group a
- * keypress changes a prop, never remounts — 4→5 and 6→7 are builds: the
- * queue opens, the draft gets overruled.
+ * keypress changes a prop, never remounts — 5→6 is the deck's one build:
+ * the rule is stored and the agent's sweep fills the right column.
  */
 const GROUP: Record<number, string> = {
-  1: "reg", 2: "ppt", 3: "box",
-  4: "queue", 5: "queue",
-  6: "draft", 7: "draft",
-  8: "decide", 9: "unplug",
-  10: "spec", 11: "number", 12: "close",
+  1: "reading",
+  2: "cage",
+  3: "register",
+  4: "helvetia",
+  5: "teach",
+  6: "teach",
+  7: "mongo",
+  8: "artifact",
+  9: "close",
 };
 
 function Scene({ n }: { n: number }) {
   switch (GROUP[n]) {
-    case "reg": return <SceneRegulation />;
-    case "ppt": return <ScenePowerpoint />;
-    case "box": return <SceneBox />;
-    case "queue": return <SceneQueue opened={n >= 5} />;
-    case "draft": return <SceneDraft overridden={n >= 7} />;
-    case "decide": return <SceneDecide />;
-    case "unplug": return <SceneUnplug />;
-    case "spec": return <SceneSpec />;
-    case "number": return <SceneNumber />;
+    case "reading": return <SceneReading />;
+    case "cage": return <SceneCage />;
+    case "register": return <SceneRegister />;
+    case "helvetia": return <SceneHelvetia />;
+    case "teach": return <SceneTeach swept={n >= 6} />;
+    case "mongo": return <SceneMongo />;
+    case "artifact": return <SceneArtifact />;
     case "close": return <SceneClose />;
     default: return null;
   }

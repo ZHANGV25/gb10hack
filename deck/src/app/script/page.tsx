@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { REVISION, SLIDES, spokenWordCount } from "@/lib/slides";
+import { PRESHOW, QA, REVISION, SLIDES, spokenWordCount } from "@/lib/slides";
 
 export const metadata = { title: "ExitPlan — pitch script" };
 
@@ -48,6 +48,18 @@ export default function Script() {
             a keypress on the same scene, not a new slide.
           </p>
         </div>
+
+        {/* operator prep */}
+        <section className="mt-10 border border-ink/20 bg-surface px-5 py-4">
+          <div className="mark-label mb-3 text-[11px] text-g600">
+            Before you present — operator prep, never spoken
+          </div>
+          <ol className="list-decimal space-y-2 pl-4 text-[13px] leading-relaxed text-g700">
+            {PRESHOW.map((line, i) => (
+              <li key={i}>{line}</li>
+            ))}
+          </ol>
+        </section>
 
         {/* acts */}
         {acts.map((act) => (
@@ -104,9 +116,27 @@ export default function Script() {
           </section>
         ))}
 
+        {/* rehearsed Q&A */}
+        <section className="mt-14">
+          <div className="mark-label mb-6 flex items-center gap-3 text-[11px] text-g500">
+            <span className="hairline h-px w-8" />
+            Q&amp;A — rehearsed answers
+          </div>
+          <dl className="space-y-6">
+            {QA.map((item) => (
+              <div key={item.q} className="border-l border-ink/15 pl-4">
+                <dt className="text-[14px] font-medium">{item.q}</dt>
+                <dd className="mt-1.5 text-[13px] leading-relaxed text-g600">
+                  {item.a}
+                </dd>
+              </div>
+            ))}
+          </dl>
+        </section>
+
         <div className="mark-label mt-16 border-t border-ink/15 pt-6 text-[10px] text-g500">
-          Generated from src/lib/slides.ts — do not hand-edit this page. Full staging
-          rationale: docs/PITCH-V2.md. Deck scenes are being updated to this arc.
+          Generated from src/lib/slides.ts — do not hand-edit this page. Framing and
+          staging rationale: docs/PITCH.md · demo ground truth: DEMO.md.
         </div>
       </div>
     </main>
