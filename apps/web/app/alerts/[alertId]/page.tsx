@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { DecideBar } from "@/components/decide-bar";
-import { Shell, severityLabel } from "@/components/shell";
+import { Shell, ruleOrigin, severityLabel } from "@/components/shell";
 import { getAlert } from "@/lib/exitplan";
 
 export const dynamic = "force-dynamic";
@@ -24,70 +24,99 @@ export default async function AlertPage({
 
   return (
     <Shell current="/">
-      <main className="mx-auto max-w-6xl px-6 py-10 pb-24">
-        <p className="mb-6 text-sm text-muted-foreground">
+      <main className="mx-auto max-w-6xl px-6 py-8 pb-24">
+        <p className="mb-5 text-sm text-muted-foreground">
           <Link href="/" className="hover:text-foreground">
-            Queue
+            Alerts
           </Link>
           <span className="mx-2">/</span>
-          {alert.alert_id}
+          <span className="font-mono">{alert.alert_id}</span>
         </p>
-        <div className="grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">
+        <div className="mb-8 flex flex-wrap items-end justify-between gap-3">
+          <div>
+            <p className="text-sm text-muted-foreground">
+              {severityLabel(String(alert.severity))} · {ruleOrigin(String(alert.rule_id))}
+            </p>
+            <h1 className="mt-1 text-3xl font-semibold tracking-tight">
+              {String(alert.customer_name)}
+            </h1>
+          </div>
+        </div>
+        <div className="grid gap-5 lg:grid-cols-[0.95fr_1.05fr]">
           <div className="space-y-4">
-            <div>
-              <p className="text-sm text-muted-foreground">
-                {severityLabel(String(alert.severity))} · {alert.rule_id}
-              </p>
-              <h1 className="font-heading mt-1 text-4xl font-semibold tracking-tight">
-                {String(alert.customer_name)}
-              </h1>
-            </div>
-            <div className="rounded-[2rem] bg-muted p-6">
-              <p className="text-sm font-medium">Why the screener fired</p>
-              <p className="mt-2 text-[15px] leading-6">{String(alert.reason)}</p>
-              <p className="mt-4 text-sm text-muted-foreground">
-                The model did not pick this hit. A rule did.
-              </p>
+            <section className="rounded-2xl border border-border p-5">
+              <h2 className="text-sm font-medium">Where this case came from</h2>
+              <ol className="mt-3 list-decimal space-y-2 pl-4 text-sm leading-6 text-muted-foreground">
+                <li>
+                  Demo data: a fake customer record and payments were generated
+                  on this machine. Not a real bank book.
+                </li>
+                <li>
+                  A Python rule scanned them. It fired{" "}
+                  <span className="font-mono text-foreground">
+                    {String(alert.rule_id)}
+                  </span>
+                  : {String(alert.reason)}
+                </li>
+                <li>
+                  That opened this case. Nobody uploaded a PDF or spreadsheet.
+                </li>
+                <li>
+                  A draft memo was written from policy/regulation already stored
+                  in Mongo. The model cannot create a new alert.
+                </li>
+              </ol>
               {redFlag ? (
                 <p className="mt-3 text-sm">
-                  Hard red-flag gate is active. The draft cannot close this
-                  case.
+                  Exact name on the watchlist — dismiss is disabled.
                 </p>
               ) : null}
-            </div>
-            <div className="rounded-[2rem] border border-border p-6">
-              <p className="text-sm font-medium">Customer file</p>
+            </section>
+            <section className="rounded-2xl bg-muted p-5">
+              <h2 className="text-sm font-medium">Customer record</h2>
               <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                {String(customer?.kyc ?? "Synthetic KYC.")} City{" "}
-                {String(customer?.city)}. Segment {String(customer?.risk_segment)}.
+                {String(customer?.kyc ?? "Synthetic KYC.")} {String(customer?.city)}{" "}
+                · {String(customer?.risk_segment)} risk
               </p>
-              <ul className="mt-4 space-y-1 text-sm text-muted-foreground">
+              <p className="mt-4 text-xs tracking-wide text-muted-foreground uppercase">
+                Recent payments
+              </p>
+              <ul className="mt-2 space-y-1 text-sm">
                 {txns.map((t) => (
-                  <li key={String(t.txn_id)}>
-                    EUR {Number(t.amount_eur).toLocaleString()} · {String(t.country)}{" "}
-                    · {String(t.ts).slice(0, 10)}
+                  <li
+                    key={String(t.txn_id)}
+                    className="flex justify-between gap-3 font-mono text-xs"
+                  >
+                    <span>{String(t.ts).slice(0, 10)}</span>
+                    <span>
+                      EUR {Number(t.amount_eur).toLocaleString()} ·{" "}
+                      {String(t.country)}
+                    </span>
                   </li>
                 ))}
               </ul>
-            </div>
+            </section>
           </div>
           <div className="space-y-4">
-            <div className="rounded-[2rem] bg-muted p-6">
-              <p className="text-sm font-medium">Draft disposition</p>
-              <p className="mt-3 text-[17px] leading-7">{narrative}</p>
-              <div className="mt-5 flex flex-wrap gap-2">
+            <section className="rounded-2xl border border-border p-5">
+              <h2 className="text-sm font-medium">Draft memo</h2>
+              <p className="mt-1 text-xs text-muted-foreground">
+                Suggested wording only. Not a decision.
+              </p>
+              <p className="mt-3 text-[15px] leading-7">{narrative}</p>
+              <div className="mt-4 flex flex-wrap gap-2">
                 {citations.map((c: { doc_id?: string; title?: string }) => (
                   <a
                     key={String(c.doc_id)}
                     href={`#${c.doc_id}`}
-                    className="rounded-full bg-background px-3 py-1 text-xs"
+                    className="rounded-full bg-muted px-3 py-1 text-xs"
                   >
                     {String(c.title ?? c.doc_id)}
                   </a>
                 ))}
               </div>
-            </div>
-            <div className="rounded-[2rem] border border-border p-6">
+            </section>
+            <section className="rounded-2xl bg-muted p-5">
               <DecideBar
                 alertId={String(alert.alert_id)}
                 redFlag={redFlag}
@@ -97,22 +126,20 @@ export default async function AlertPage({
                     : null
                 }
               />
-            </div>
-            <div className="space-y-3">
-              {sources.map((s) => (
-                <div
-                  key={String(s.doc_id)}
-                  id={String(s.doc_id)}
-                  className="rounded-[1.5rem] border border-border p-5"
-                >
-                  <p className="text-sm font-medium">{String(s.title)}</p>
-                  <p className="mt-1 text-xs text-muted-foreground">
-                    {String(s.source)}
-                  </p>
-                  <p className="mt-3 text-sm leading-6">{String(s.text)}</p>
-                </div>
-              ))}
-            </div>
+            </section>
+            {sources.map((s) => (
+              <section
+                key={String(s.doc_id)}
+                id={String(s.doc_id)}
+                className="rounded-2xl border border-border p-5"
+              >
+                <h2 className="text-sm font-medium">{String(s.title)}</h2>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  {String(s.source)}
+                </p>
+                <p className="mt-3 text-sm leading-6">{String(s.text)}</p>
+              </section>
+            ))}
           </div>
         </div>
       </main>

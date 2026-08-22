@@ -5,6 +5,27 @@ import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 
+const ACTIONS = [
+  {
+    id: "close_noise",
+    label: "Dismiss as false positive",
+    hint: "No report. Case closed.",
+    variant: "outline" as const,
+  },
+  {
+    id: "escalate",
+    label: "Send to MLRO",
+    hint: "Money-laundering reporting officer reviews it.",
+    variant: "outline" as const,
+  },
+  {
+    id: "file_sar",
+    label: "Submit SAR to FIU",
+    hint: "Suspicious Activity Report — not a computer file.",
+    variant: "default" as const,
+  },
+];
+
 export function DecideBar({
   alertId,
   redFlag,
@@ -29,51 +50,53 @@ export function DecideBar({
     const body = await res.json().catch(() => ({}));
     setPending(null);
     if (!res.ok) {
-      setError(body.error ?? "Could not record the human decision");
+      setError(body.error ?? "Could not record the decision");
       return;
     }
     router.refresh();
   }
 
   return (
-    <div className="space-y-3">
-      <p className="text-sm text-muted-foreground">
-        The agent drafted. Only you can decide or file.
-      </p>
-      <div className="flex flex-wrap gap-2">
-        <Button
-          className="rounded-full px-5"
-          variant="outline"
-          disabled={redFlag || pending !== null}
-          onClick={() => decide("close_noise")}
-        >
-          {pending === "close_noise" ? "…" : "Close as noise"}
-        </Button>
-        <Button
-          className="rounded-full px-5"
-          variant="outline"
-          disabled={pending !== null}
-          onClick={() => decide("escalate")}
-        >
-          {pending === "escalate" ? "…" : "Escalate to MLRO"}
-        </Button>
-        <Button
-          className="rounded-full px-5"
-          disabled={pending !== null}
-          onClick={() => decide("file_sar")}
-        >
-          {pending === "file_sar" ? "…" : "Decide and file"}
-        </Button>
+    <div className="space-y-4">
+      <div>
+        <p className="text-sm font-medium">Your decision</p>
+        <p className="mt-1 text-sm leading-6 text-muted-foreground">
+          There is nothing to attach. These buttons record what{" "}
+          <span className="text-foreground">you</span> want done with the case.
+          The model cannot click them.
+        </p>
+      </div>
+      <div className="grid gap-2">
+        {ACTIONS.map((a) => (
+          <div key={a.id} className="flex items-center justify-between gap-3">
+            <div>
+              <p className="text-sm">{a.label}</p>
+              <p className="text-xs text-muted-foreground">{a.hint}</p>
+            </div>
+            <Button
+              className="rounded-full px-4"
+              size="sm"
+              variant={a.variant}
+              disabled={
+                pending !== null || (redFlag && a.id === "close_noise")
+              }
+              onClick={() => decide(a.id)}
+            >
+              {pending === a.id ? "…" : "Record"}
+            </Button>
+          </div>
+        ))}
       </div>
       {redFlag ? (
         <p className="text-sm">
-          Red-flag gate is on. Closing as noise is blocked — the model cannot
-          overrule the rules.
+          Exact watchlist match — dismiss is locked. A human still has to send
+          it on.
         </p>
       ) : null}
       {current ? (
         <p className="text-sm text-muted-foreground">
-          Human decision on file: {current.replaceAll("_", " ")}
+          Recorded:{" "}
+          {ACTIONS.find((a) => a.id === current)?.label ?? current}
         </p>
       ) : null}
       {error ? <p className="text-sm text-destructive">{error}</p> : null}

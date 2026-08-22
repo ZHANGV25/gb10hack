@@ -30,14 +30,14 @@ Do this on the GB10 browser at `http://127.0.0.1:3000`. Do not improvise.
 
 | Min | Click | Say |
 |---|---|---|
-| 0:00 | Home | “This is a real analyst Monday. Synthetic alerts. Most of them are noise.” |
-| 0:30 | **Open a review case** (Viktor Kovalev) | “The **screener** fired, not the model. Name fuzzy-match. The LLM is not allowed to invent an alert.” |
-| 1:30 | Point at the draft + citation pills | “Every sentence is cited to policy or DORA/AMLR. Click a pill — that is the source span.” |
-| 2:15 | **Escalate to MLRO** | “The agent drafted. I am the human. That’s Article 18(3).” |
-| 2:45 | Home → **Open the red flag** (Viktor Kovalenko) | “Exact watchlist match. Hard gate. **Close as noise** is disabled. The model cannot overrule the rules.” |
-| 3:30 | **Decide and file** | “Now a human filed. The agent still did not.” |
-| 4:00 | **Audit** | “Append-only ledger in Mongo. Wipe the sandbox, this remains.” |
-| 4:30 | Unplug / disable Wi-Fi | “Still up. That is the exit plan, running.” |
+| 0:00 | **Alerts** | “This is the analyst queue. Synthetic customers. Rules opened every case — nobody uploaded a file.” |
+| 0:40 | Top row / search `Kovalev` | “Fuzzy watchlist hit. The **screener** fired, not the model.” |
+| 1:30 | Citation pills | “The memo cites policy. Click through to the source span.” |
+| 2:15 | **Send to MLRO** | “I am recording a human decision. The model cannot.” |
+| 2:45 | Search `Kovalenko` | “Exact watchlist. **Dismiss** is locked.” |
+| 3:30 | **Submit SAR to FIU** | “SAR = Suspicious Activity Report to the financial intelligence unit. Not a document upload.” |
+| 4:00 | **Activity** | “Mongo ledger. Survive a sandbox wipe.” |
+| 4:30 | Kill Wi-Fi | “Still up. That’s the exit plan.” |
 
 If a judge asks “is this medical?” — no. FieldMedic is the old tag `pre-bank-pivot`. This product is bank financial-crime triage.
 

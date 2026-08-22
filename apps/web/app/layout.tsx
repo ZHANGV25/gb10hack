@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "ExitPlan",
-  description: "On-box financial-crime triage. The agent drafts. A human decides.",
+  title: "Alerts · Nordhafen Bank",
+  description: "On-prem financial crime queue",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
