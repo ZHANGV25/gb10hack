@@ -86,8 +86,14 @@ systemctl --user status dora-watch
 journalctl --user -u dora-watch -f
 ```
 
-⚠ Start long-running processes on the box with `systemd-run --user`, **not**
-`nohup … &` over ssh — the ssh channel closing kills them.
+⚠ The agent is a **persistent** unit ([`deploy/dora-watch.service`](./deploy/dora-watch.service)),
+enabled and lingering. Do not start it with `nohup … &` over ssh (dies with the
+channel) or with `systemd-run` (transient — `systemctl stop` destroys the unit
+and it cannot be started again).
+
+Survives its own restart: the change-stream resume token is persisted in
+`watch_state`, so a policy change made while the agent is down is replayed when
+it comes back. Verified by stopping it, inserting a rule, and restarting.
 
 Deploy from the Mac (after commit + `git push origin main`):
 

@@ -1,0 +1,29 @@
+# The always-on reviewer, as a persistent user service.
+#
+#   mkdir -p ~/.config/systemd/user
+#   cp deploy/dora-watch.service ~/.config/systemd/user/
+#   systemctl --user daemon-reload
+#   systemctl --user enable --now dora-watch
+#
+# Lingering must be on so it survives logout:  loginctl enable-linger dell
+# Logs: journalctl --user -u dora-watch -f
+#
+# Do NOT start the agent with `nohup … &` over ssh — it dies when the channel
+# closes. And do not use `systemd-run` for it either: that creates a transient
+# unit which is destroyed by `systemctl stop`, so the agent cannot be restarted
+# afterwards.
+
+[Unit]
+Description=DORA contract reviewer (always-on)
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/home/dell/gyuri/gb10hack
+Environment=PYTHONPATH=apps/engine
+ExecStart=/home/dell/gyuri/gb10hack/.venv/bin/python -m covenant.watch
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=default.target
