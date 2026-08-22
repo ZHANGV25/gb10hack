@@ -310,6 +310,24 @@ export function SceneClose() {
         >
           It reads the contracts. It shows the way out. Nothing leaves the building.
         </motion.div>
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 2.0, duration: 0.7 }}
+          className="mark-label mt-[3vmin] flex items-center gap-[1.4vmin] text-[1.2vmin] text-g600"
+        >
+          <span>nemotron-3-nano · 30B</span>
+          <span className="text-g400">·</span>
+          <span>bge-m3</span>
+          <span className="text-g400">·</span>
+          <span>MongoDB Atlas Local</span>
+          <span className="text-g400">·</span>
+          <span>Dell Pro Max GB10</span>
+          <span className="text-g400">·</span>
+          <span className="bg-ink px-[0.9vmin] py-[0.35vmin] text-paper">
+            BUILT WITH OPENCLAW — DRIVING THE BOX
+          </span>
+        </motion.div>
       </div>
       <motion.div
         initial={{ opacity: 0 }}
