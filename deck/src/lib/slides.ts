@@ -21,7 +21,7 @@ export type Slide = {
   narration: string[];
 };
 
-export const REVISION = 'V10 · the escape framing, spoken in the keynote voice';
+export const REVISION = 'V11 · true to the box — real SEC filings, the 113k read, the deeper memory';
 
 export const SLIDES: Slide[] = [
   {
@@ -31,7 +31,7 @@ export const SLIDES: Slide[] = [
     onscreen:
       'DORA Art. 28(8) — exit strategies for ICT behind critical functions, incl. reincorporation in-house — over the Art. 30 spec: 9 elements for every arrangement, +6 critical (audit, exit assistance). A shelf of contract spines, one reader.',
     narration: [
-      'Every bank in Europe is locked into its tech vendors. The law is clear: they have to be able to leave, and take any critical service back in-house. But that answer lives in hundreds of contracts, and nobody has read them all.',
+      'Every bank in Europe is locked into its tech vendors. The law is clear: they have to be able to leave — to take any critical service back in-house. That answer lives in hundreds of contracts, and nobody has read them all.',
       'So the exit plan is just paper. It works right up until the day you need it.',
     ],
     loadBearing:
@@ -44,7 +44,7 @@ export const SLIDES: Slide[] = [
     onscreen:
       'Three lanes: MODEL EXTRACTS (present / inadequate / absent + the clause it relied on · chip: NO QUOTE, NO CLAIM) → POLICY DISPOSES (deterministic Python · chip: EXIT · AUDIT · DATA RETURN = BLOCKING) → REVIEWERS TEACH (tan · chip: RULES ONLY ACT ON AN EXISTING GAP). No database named here.',
     narration: [
-      'Today, that changes. ExitPlan reads every contract you’ve signed. It tells you if you could walk away today. And when you can’t, it shows you the exact clause that’s trapping you.',
+      'Today, that changes. ExitPlan reads every contract you’ve signed. It tells you if you could walk away today — and when you can’t, the exact clause that’s trapping you.',
       'Let me just show you.',
     ],
   },
@@ -53,14 +53,14 @@ export const SLIDES: Slide[] = [
     act: 'III — Live on the desk',
     label: 'THE REGISTER — demo §1',
     onscreen:
-      '(switch to the browser — deck parks here; frames 3–6 are the fallback) · Tiles: 7 with gaps · CANNOT BE CLEANLY EXITED €7,030,000 · 10 Art. 30 gaps · €16,375,000 total. Twelve real rows, Helvetia €4.18M → Pinnacle €88k. Weakest-estate panel: 2× no pen-testing clause, 2× data location undisclosed.',
+      '(switch to the browser — deck parks here; frames 3–7 are the fallback) · Tiles: 7 with gaps · CANNOT BE CLEANLY EXITED €7,030,000 · 10 Art. 30 gaps · €16,375,000 total. Sixteen rows: 12 curated (Helvetia €4.18M → Pinnacle €88k) + 4 marked FILED (Sunrise, Edgemode, Platinum Analytics, NuScale). Weakest-estate panel unchanged.',
     narration: [
       '(switch display to the browser — 1440×1250, seeded, desk at 127.0.0.1:3000)',
-      'Meet Nordhafen Bank. It’s fictional, the data is synthetic. Twelve vendors. Sixteen million euros a year. The agent read every contract, and it found the trapped money:',
-      'Seven million euros a year, flowing through contracts this bank could never walk out of. Regulators ask for exactly that number. No bank can produce it. This one just did.',
+      'Meet Nordhafen Bank. Sixteen contracts: twelve we wrote, synthetic on purpose — and four real ones, straight off the SEC. Hold that thought. The agent read them all and found the trapped money:',
+      'Seven million euros a year, flowing through contracts this bank could never walk out of. Regulators ask for that number. No bank can produce it. This one just did.',
     ],
     loadBearing:
-      'Seven million euros a year, flowing through contracts this bank could never walk out of. Regulators ask for exactly that number. No bank can produce it. This one just did.',
+      'Seven million euros a year, flowing through contracts this bank could never walk out of. Regulators ask for that number. No bank can produce it. This one just did.',
   },
   {
     n: 4,
@@ -69,7 +69,7 @@ export const SLIDES: Slide[] = [
     onscreen:
       'HELVETIA CLOUD SERVICES AG · core banking platform · €4,180,000/yr · CRITICAL. Checklist 14/15; absent row EXIT STRATEGY AND TRANSITION PERIOD marked blocking. One passed row expanded to its verbatim clause (14. Access, Inspection and Audit).',
     narration: [
-      'Take a look at the core banking contract. Four million a year. Fourteen of fifteen boxes ticked — and every tick is a quote, straight out of the contract. So what’s missing? The exit clause. Fix that one clause, and four million a year stops being hostage.',
+      'Take core banking. Four million a year. Fourteen of fifteen boxes ticked, and every tick is a quote from the contract. So what’s missing? The exit clause. Fix that one clause, and four million stops being hostage.',
     ],
   },
   {
@@ -93,7 +93,7 @@ export const SLIDES: Slide[] = [
       'Build: the right column fills. Timeline: RULE STORED → INDEX SEARCHABLE → 12 RE-CHECKED · 0 RE-READ · ~0.5s. Three evidence cards: CASTELLAN — verdict changed (origin) · AURORA KYC — rule retrieved & applied, contract never opened · NORDLYS — considered, withheld (no gap to attach to). Memory chip, verbatim UI: “changing 2 verdicts now”.',
     build: true,
     narration: [
-      'Half a second. That’s how long it took to re-check the whole register against the new standard. The correction caught the same flaw in a contract nobody opened — and it skipped the one that was clean.',
+      'Half a second. That’s how long it took to re-check the whole register against the new standard. It caught the same flaw in a contract nobody opened, and skipped the one that was clean.',
       'This used to be a yearly audit. Now it’s live.',
     ],
     loadBearing: 'This used to be a yearly audit. Now it’s live.',
@@ -101,31 +101,44 @@ export const SLIDES: Slide[] = [
   {
     n: 7,
     act: 'III — Live on the desk',
+    label: 'THE REAL ONES — the control group',
+    onscreen:
+      'SUNRISE COMMUNICATIONS AG · chip: FILED — SEC EDGAR. Reading strip: 113,731 CHARACTERS → SPLIT INTO PASSAGES → 11 RETRIEVED → READ IN ~77s, and a note: the model never saw the rest. Right rail: the four filed rows — Sunrise · Edgemode · Platinum Analytics · NuScale Power. Footer: no ground truth · same checks, unchanged.',
+    narration: [
+      'Now — remember those four real contracts? Nobody wrote those for us; they’re actual SEC filings. This one is a hundred and thirteen thousand characters — far too long for the model to read. So the agent found the eleven passages that matter, and read those. Same checklist. Same rules. Nothing tuned.',
+      'The synthetic ones prove it’s accurate. The real ones prove it’s no trick.',
+    ],
+    loadBearing:
+      'The synthetic ones prove it’s accurate. The real ones prove it’s no trick.',
+  },
+  {
+    n: 8,
+    act: 'III — Live on the desk',
     label: 'ONE DATABASE, THREE JOBS — demo §5',
     onscreen:
       'First naming of the store. OPERATIONAL REGISTER (contracts · verdicts · corrections) · VECTOR MEMORY (rules + $vectorSearch · bge-m3 1024-d) · EVENT BUS (change streams → the always-on agent). Live counts row. Dashed on-prem boundary.',
     narration: [
-      'And underneath it all, there are three systems. A system of record — the evidence you hand the regulator. A memory — that rule was found by meaning, not keywords. And an alarm — it wakes the agent the moment anything changes. Three systems. Except they’re not three systems. It’s one database. It’s MongoDB.',
+      'And underneath it all, there are three systems. A record — the evidence you hand the regulator. A memory — twelve precedents from three reviewers, found by meaning. And an alarm that wakes the agent when anything changes. Three systems. Except they’re not three systems. It’s one database. It’s MongoDB.',
     ],
     loadBearing:
-      'And underneath it all, there are three systems. A system of record — the evidence you hand the regulator. A memory — that rule was found by meaning, not keywords. And an alarm — it wakes the agent the moment anything changes. Three systems. Except they’re not three systems. It’s one database. It’s MongoDB.',
+      'And underneath it all, there are three systems. A record — the evidence you hand the regulator. A memory — twelve precedents from three reviewers, found by meaning. And an alarm that wakes the agent when anything changes. Three systems. Except they’re not three systems. It’s one database. It’s MongoDB.',
   },
   {
-    n: 8,
+    n: 9,
     act: 'IV — The artifact',
     label: 'UNPLUGGED — demo §6',
     onscreen:
       'Unit spec: nemotron-3-nano · 30B (Ollama) / bge-m3 / MongoDB Atlas Local — streams + vectors / BUILT WITH: OpenClaw · driving the box / Next.js register / Dell Pro Max GB10 / uplink: NOT REQUIRED. Measured line: CLAUSE AGREEMENT 138/141 · 98%.',
     narration: [
       '(live first: pull the cable, reload, teach another rule — then back to the deck)',
-      'Oh, and one more thing. The network cable came out of the wall a minute ago. Did you notice? Everything you just watched ran on this one Dell box — built and driven by OpenClaw — at ninety-eight percent measured accuracy.',
+      'Oh, and one more thing. The network cable came out of the wall a minute ago. Did you notice? Everything you just watched ran on this one Dell box, built and driven by OpenClaw.',
       'Because a tool that helps you leave your vendors should never be one more vendor you can’t leave.',
     ],
     loadBearing:
       'Because a tool that helps you leave your vendors should never be one more vendor you can’t leave.',
   },
   {
-    n: 9,
+    n: 10,
     act: 'V — Close',
     label: 'CLOSE',
     onscreen:
@@ -143,9 +156,10 @@ export const PRESHOW: string[] = [
   'Reset between runs is instant: reset_demo.py retires what you taught and the agent reverts the verdicts itself. Full seed_dora.py + review_all.py (~12 min) only if the contracts changed. Confirm the register tiles (7 with gaps · 10 gaps · €7,030,000 · €16,375,000), Castellan shows “Gaps to close”, and the agreement line (script says 138/141 · 98%); update these strings if the run differs.',
   'Browser ≥1440×1250, desk at 127.0.0.1:3000. Deck parked on slide 2 during the demo.',
   'Drill the dropdown: on Castellan the provision pre-fill is WRONG (termination rights). Select “Participation in threat-led penetration testing”, scope “critical functions only”, or Aurora never fires.',
-  'Live route: Register → Helvetia → Castellan → store rule → Agent activity → What it has learned → Aurora KYC → Nordlys → How it works → pull cable, reload, teach again → back to deck (slide 8).',
+  'Live route: Register → Helvetia → Castellan → store rule → Agent activity → What it has learned → Aurora KYC → Nordlys → Sunrise Communications (filed · 113k chars · 11 passages) → How it works → pull cable, reload, teach again → back to deck (slide 9).',
   'Say “synthetic” out loud once (slide 3). It appears nowhere in the product.',
-  '91f4f3c added four real SEC-filed contracts (value €0, non-critical) beside the curated book. If they are ingested tonight the register shows 16 rows and extra gaps while the script says twelve — either reconcile the spoken numbers with the live tiles, or skip ingest_real for the demo seed. The € figures are unaffected.',
+  'The register should show 16 rows: 12 curated plus 4 marked FILED (Sunrise, Edgemode, Platinum Analytics, NuScale) — that is the slide-7 beat, not drift. The € tiles are unchanged; filed contracts carry €0. Confirm Sunrise’s page shows 113,731 characters · 11 passages retrieved.',
+  'A narrated 3:18 recording of the full demo sits on the box Desktop (ExitPlan-DORA-agent-demo-narrated.mp4) — the fallback of last resort. Its voiceover is cloud text-to-speech, post-production on the video only; the runtime path never leaves the box. Say so if anyone asks.',
 ];
 
 /** Rehearsed Q&A — the three questions this arc invites, plus one reserve. */
@@ -156,7 +170,15 @@ export const QA: { q: string; a: string }[] = [
   },
   {
     q: 'You wrote the contracts and the ground truth. What does 98% mean?',
-    a: 'That the model finds what we know is there and doesn’t invent what isn’t — a validity check on the harness, not a benchmark claim about real contracts. On a real estate you’d re-measure. What carries over is the constraint: no quote, no claim.',
+    a: 'The synthetic twelve are the calibration: we know exactly what’s in them, which is the only reason 98% means anything. The four SEC filings are the control: nobody wrote them for us, they carry no ground truth, and the same checks run over them unchanged. Accuracy proven on the book; generalization shown on the filings.',
+  },
+  {
+    q: 'Does the agent survive its own sandbox?',
+    a: 'Yes, and it’s a click, not a claim: stop the service, teach a rule while it’s dead, start it again. It replays what it missed from the resume token in watch_state and re-evaluates without being asked. Nothing lives in process memory — verdicts, memory, cached readings and the stream position are all in MongoDB.',
+  },
+  {
+    q: 'Does the retriever actually change behaviour?',
+    a: 'Twice over. One retriever decides what the model reads: the 113k-character Sunrise filing is unreadable without it — eleven passages retrieved per provision, the rest never seen. The other decides what the bank makes of a gap: on Vantage HR the data-return rule shows Applied at 0.767 while others were considered and withheld. And rule search is scoped per gap, because a blended query ranked the deciding rule seventh of twelve.',
   },
   {
     q: 'Everyone here pulled a cable. What’s actually hard?',

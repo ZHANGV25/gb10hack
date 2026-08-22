@@ -4,7 +4,104 @@ import NumberFlow from "@number-flow/react";
 import { EASE, Panel, SlideLabel } from "./primitives";
 import { Callout, Crosshair, RegMarks, Ruler } from "./marks";
 
-/* ── Slide 7 — one database, three jobs (demo §5) ────────────────────────
+/* ── Slide 7 — the real ones (the control group) ─────────────────────────
+   Four genuine EX-10 filings off SEC EDGAR sit beside the curated book.
+   The Sunrise agreement is too long for the model to read at all — the
+   reading strip shows retrieval deciding what the model sees. */
+
+const FILED: [string, string][] = [
+  ["Sunrise Communications AG", "113,731 chars"],
+  ["Edgemode Inc.", "58k–114k chars"],
+  ["Platinum Analytics", "EX-10 · EDGAR"],
+  ["NuScale Power LLC", "EX-10 · EDGAR"],
+];
+
+const READ_STRIP: [string, string][] = [
+  ["113,731 characters", "far past the context window"],
+  ["Split into passages", "chunked and embedded on the box"],
+  ["11 retrieved", "vector search per provision"],
+  ["Read in ~77s", "the model never saw the rest"],
+];
+
+export function SceneFilings() {
+  return (
+    <div className="absolute inset-0">
+      <RegMarks />
+      <Crosshair x="8%" y="18%" delay={1.8} />
+      <div className="absolute inset-0 z-10 flex items-center justify-center gap-[2.2vmin]">
+        <Panel className="w-[46vmin] px-[2.6vmin] py-[2.2vmin]" delay={0.3}>
+          <div className="flex items-baseline justify-between">
+            <div className="text-[2vmin] font-medium tracking-tight">
+              Sunrise Communications AG
+            </div>
+            <span className="mark-label bg-chip px-[0.9vmin] py-[0.4vmin] text-[0.95vmin] text-paper">
+              filed · SEC EDGAR
+            </span>
+          </div>
+          <div className="mark-label mt-[0.5vmin] text-[1.05vmin] text-g500">
+            EX-10 material contract · written by other people, for other purposes
+          </div>
+          <div className="mt-[1.8vmin]">
+            {READ_STRIP.map(([step, detail], i) => (
+              <motion.div
+                key={step}
+                initial={{ opacity: 0, x: -8 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.7 + i * 0.45, duration: 0.45, ease: EASE }}
+                className="flex items-baseline gap-[1.4vmin] border-t border-ink/10 py-[1.2vmin]"
+              >
+                <span className="h-[0.7vmin] w-[0.7vmin] shrink-0 translate-y-[-0.1vmin] bg-ink" />
+                <div>
+                  <div className={`tnum font-mono text-[1.7vmin] ${i === 2 ? "font-semibold" : ""}`}>
+                    {step}
+                  </div>
+                  <div className="text-[1.1vmin] text-g500">{detail}</div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+          <div className="mark-label mt-[1.2vmin] border-t border-ink/10 pt-[1.1vmin] text-[1.05vmin] text-g600">
+            Retrieval decides what the model reads — without it, this contract
+            cannot be read at all
+          </div>
+        </Panel>
+
+        <motion.div
+          initial={{ opacity: 0, x: 16 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 1.6, duration: 0.7, ease: EASE }}
+          className="w-[30vmin] border border-ink/15 bg-surface px-[2vmin] py-[1.8vmin]"
+          style={{ boxShadow: "var(--shadow-panel)" }}
+        >
+          <div className="mark-label mb-[1.2vmin] text-[1.05vmin] text-g500">
+            The control group — nobody wrote these for us
+          </div>
+          {FILED.map(([vendor, meta], i) => (
+            <motion.div
+              key={vendor}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 1.9 + i * 0.2, duration: 0.4 }}
+              className="flex items-baseline justify-between border-t border-ink/10 py-[1vmin]"
+            >
+              <span className="text-[1.35vmin] font-medium">{vendor}</span>
+              <span className="mark-label font-mono text-[0.95vmin] text-g500">{meta}</span>
+            </motion.div>
+          ))}
+          <div className="mt-[1.2vmin] border-t border-ink/10 pt-[1.1vmin] font-mono text-[1.1vmin] leading-[1.7] text-g600">
+            No ground truth, on purpose. The same checks run over them,
+            unchanged.
+          </div>
+        </motion.div>
+      </div>
+      <SlideLabel delay={2.4}>
+        The real ones — same checklist, same rules, nothing tuned
+      </SlideLabel>
+    </div>
+  );
+}
+
+/* ── Slide 8 — one database, three jobs (demo §5) ────────────────────────
    The first time the store is named. Three job columns inside one panel,
    a live-counts row, and the dashed on-prem boundary drawn around it all. */
 

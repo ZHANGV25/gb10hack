@@ -4,9 +4,9 @@ import { AnimatePresence, motion } from "motion/react";
 import { SceneCage, SceneReading } from "./act1";
 import { SceneHelvetia, SceneRegister } from "./act2";
 import { SceneTeach } from "./act3";
-import { SceneArtifact, SceneClose, SceneMongo } from "./act4";
+import { SceneArtifact, SceneClose, SceneFilings, SceneMongo } from "./act4";
 
-export const LAST = 9;
+export const LAST = 10;
 
 /**
  * Slides that share a visual composition share a group; within a group a
@@ -20,9 +20,10 @@ const GROUP: Record<number, string> = {
   4: "helvetia",
   5: "teach",
   6: "teach",
-  7: "mongo",
-  8: "artifact",
-  9: "close",
+  7: "filings",
+  8: "mongo",
+  9: "artifact",
+  10: "close",
 };
 
 function Scene({ n }: { n: number }) {
@@ -32,6 +33,7 @@ function Scene({ n }: { n: number }) {
     case "register": return <SceneRegister />;
     case "helvetia": return <SceneHelvetia />;
     case "teach": return <SceneTeach swept={n >= 6} />;
+    case "filings": return <SceneFilings />;
     case "mongo": return <SceneMongo />;
     case "artifact": return <SceneArtifact />;
     case "close": return <SceneClose />;
