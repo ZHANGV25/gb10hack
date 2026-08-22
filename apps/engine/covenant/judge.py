@@ -119,19 +119,22 @@ def judge_contract(
     result = verdicts().insert_one(verdict)
     verdict["_id"] = result.inserted_id
 
-    runs().insert_one(
-        {
-            "kind": "review" if extracted_fresh else "re-review",
-            "ref": ref,
-            "trigger": trigger,
-            "verdict_id": result.inserted_id,
-            "decision": final["decision"],
-            "gaps": len(final["gaps"]),
-            "started_at": started,
-            "finished_at": datetime.now(timezone.utc),
-            "seconds": round((datetime.now(timezone.utc) - started).total_seconds(), 1),
-        }
-    )
+    # A policy-only re-check is one of a dozen inside a sweep, and the sweep
+    # already reports what changed. Logging each one buries the story.
+    if extracted_fresh:
+        runs().insert_one(
+            {
+                "kind": "review",
+                "ref": ref,
+                "trigger": trigger,
+                "verdict_id": result.inserted_id,
+                "decision": final["decision"],
+                "gaps": len(final["gaps"]),
+                "started_at": started,
+                "finished_at": datetime.now(timezone.utc),
+                "seconds": round((datetime.now(timezone.utc) - started).total_seconds(), 1),
+            }
+        )
     contracts().update_one(
         {"_id": doc["_id"]},
         {

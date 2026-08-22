@@ -27,15 +27,25 @@ ssh -S /tmp/dell.sock dell@10.0.0.166 'systemctl --user status dora-watch --no-p
 Expect `active (running)`. That is the agent. It is a supervised user service,
 so it survives logout and restarts itself on failure.
 
-Reset the register to its demo state:
+Reset between runs — **instant**, use this one:
+
+```bash
+ssh -S /tmp/dell.sock dell@10.0.0.166 'cd /home/dell/gyuri/gb10hack && PYTHONPATH=apps/engine .venv/bin/python apps/engine/scripts/reset_demo.py'
+```
+
+It retires whatever you taught during the last run and leaves the two seeded
+rules. Deleting a rule goes through the same change stream as adding one, so
+the agent reverts the verdicts by itself. Nothing is re-read.
+
+Full rebuild — only if the contracts themselves change:
 
 ```bash
 ssh -S /tmp/dell.sock dell@10.0.0.166 'cd /home/dell/gyuri/gb10hack && PYTHONPATH=apps/engine .venv/bin/python apps/engine/scripts/seed_dora.py && PYTHONPATH=apps/engine .venv/bin/python apps/engine/scripts/review_all.py'
 ```
 
-The seed is instant. **The review takes about 12 minutes** — the agent reads
-all twelve contracts with the local model. Do it well before you present, not
-during. Expect `clause_agreement: 138/141 (98%)`.
+The seed is instant; **the review takes about 12 minutes** because the agent
+reads all twelve contracts with the local model. Do it well before you
+present. Expect `clause_agreement: 138/141 (98%)`.
 
 Checks:
 
@@ -43,6 +53,7 @@ Checks:
 |---|---|
 | `curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:3000/` | `200` |
 | Register page | 12 arrangements, 7 with gaps, €7,030,000 not cleanly exitable |
+| Castellan Core | **Gaps to close** — this is the one you flip |
 | Memory page | 2 rules, both from earlier reviews |
 
 Browser at **1440×1250 or wider**.
@@ -104,7 +115,9 @@ provision. Set **Apply this to → critical functions only**, and write:
 > production environment cannot be assured for a critical function. Treat a
 > self-testing-only clause as not compliant, not a routine gap.
 
-Click **Store rule and re-check the register**.
+Click **Store rule and re-check the register**. It takes about three
+seconds — that is the local embedding model turning your sentence into a
+vector.
 
 > No retraining. That sentence was embedded and written to MongoDB. The agent
 > is subscribed to that collection, so it woke up on its own.
