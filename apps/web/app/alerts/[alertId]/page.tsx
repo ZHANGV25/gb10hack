@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import { CaseAi } from "@/components/case-ai";
 import { DecideBar } from "@/components/decide-bar";
 import { Shell, ruleOrigin, severityLabel } from "@/components/shell";
 import { getAlert } from "@/lib/exitplan";
@@ -18,9 +19,6 @@ export default async function AlertPage({
   const { alert, customer, txns, disposition, sources } = data;
   const redFlag = alert.severity === "red_flag";
   const narrative = String(disposition?.narrative ?? "No draft yet.");
-  const citations = Array.isArray(disposition?.citations)
-    ? disposition.citations
-    : [];
 
   return (
     <Shell current="/">
@@ -62,8 +60,9 @@ export default async function AlertPage({
                   That opened this case. Nobody uploaded a PDF or spreadsheet.
                 </li>
                 <li>
-                  A draft memo was written from policy/regulation already stored
-                  in Mongo. The model cannot create a new alert.
+                  Click <span className="text-foreground">Run Nemotron</span>{" "}
+                  on the right to draft a memo live on this GPU. That is the
+                  model. It still cannot decide the case.
                 </li>
               </ol>
               {redFlag ? (
@@ -98,24 +97,7 @@ export default async function AlertPage({
             </section>
           </div>
           <div className="space-y-4">
-            <section className="rounded-2xl border border-border p-5">
-              <h2 className="text-sm font-medium">Draft memo</h2>
-              <p className="mt-1 text-xs text-muted-foreground">
-                Suggested wording only. Not a decision.
-              </p>
-              <p className="mt-3 text-[15px] leading-7">{narrative}</p>
-              <div className="mt-4 flex flex-wrap gap-2">
-                {citations.map((c: { doc_id?: string; title?: string }) => (
-                  <a
-                    key={String(c.doc_id)}
-                    href={`#${c.doc_id}`}
-                    className="rounded-full bg-muted px-3 py-1 text-xs"
-                  >
-                    {String(c.title ?? c.doc_id)}
-                  </a>
-                ))}
-              </div>
-            </section>
+            <CaseAi alertId={String(alert.alert_id)} stub={narrative} />
             <section className="rounded-2xl bg-muted p-5">
               <DecideBar
                 alertId={String(alert.alert_id)}

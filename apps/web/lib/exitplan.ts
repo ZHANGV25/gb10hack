@@ -73,6 +73,49 @@ export async function listAudit(limit = 40) {
     .toArray();
 }
 
+export async function embedQuery(text: string): Promise<number[]> {
+  const model = process.env.EMBED_MODEL ?? "bge-m3";
+  const base = process.env.OLLAMA_URL ?? "http://127.0.0.1:11434";
+  const r = await fetch(`${base}/api/embeddings`, {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ model, prompt: text.slice(0, 4000) }),
+  });
+  if (!r.ok) throw new Error(`embed failed ${r.status}`);
+  const json = (await r.json()) as { embedding?: number[] };
+  if (!json.embedding?.length) throw new Error("empty embedding");
+  return json.embedding;
+}
+
+export async function searchCorpus(query: string, k = 4) {
+  const database = await db();
+  const queryVector = await embedQuery(query);
+  try {
+    return await database
+      .collection("corpus")
+      .aggregate([
+        {
+          $vectorSearch: {
+            index: "corpus_vector",
+            path: "embedding",
+            queryVector,
+            numCandidates: 40,
+            limit: k,
+          },
+        },
+        { $addFields: { score: { $meta: "vectorSearchScore" } } },
+        { $project: { embedding: 0 } },
+      ])
+      .toArray();
+  } catch {
+    return database
+      .collection("corpus")
+      .find({}, { projection: { embedding: 0 } })
+      .limit(k)
+      .toArray();
+  }
+}
+
 export async function stats() {
   const rows = await listAlerts();
   return {

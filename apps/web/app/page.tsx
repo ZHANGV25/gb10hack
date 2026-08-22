@@ -16,7 +16,9 @@ export default async function HomePage() {
               Nobody uploaded these. A rule engine scanned a{" "}
               <span className="text-foreground">synthetic</span> customer
               ledger against a sanctions watchlist and opened a case for each
-              hit. The model only writes a memo after that.
+              hit. Open a case and press{" "}
+              <span className="text-foreground">Run Nemotron</span> — that is
+              the 30B model on this GPU, pulling policy from Mongo.
             </p>
           </div>
           <p className="text-sm text-muted-foreground">
