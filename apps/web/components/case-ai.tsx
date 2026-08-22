@@ -49,30 +49,26 @@ export function CaseAi({
   }, [busy, live]);
 
   return (
-    <section className="rounded-2xl border border-border p-6">
-      <div className="flex flex-wrap items-start justify-between gap-3">
-        <div>
-          <h2 className="text-xl font-semibold">Disposition</h2>
-          <p className="mt-2 max-w-xl text-base leading-7 text-muted-foreground">
-            Assisted drafting against current policy. This is not a decision
-            and not a SAR filing.
-          </p>
-        </div>
-      </div>
+    <section className="rounded-xl border border-border p-4">
+      <h2 className="text-sm font-medium">Disposition</h2>
+      <p className="mt-1 text-xs leading-5 text-muted-foreground">
+        Assisted drafting against current policy. This is not a decision and
+        not a SAR filing.
+      </p>
 
       {!live ? (
-        <div className="mt-5 rounded-2xl bg-muted/70 p-5">
-          <p className="text-sm tracking-wide text-muted-foreground uppercase">
+        <div className="mt-3 rounded-lg bg-muted/70 p-3">
+          <p className="text-[11px] tracking-wide text-muted-foreground uppercase">
             Last saved draft
           </p>
-          <p className="mt-3 text-lg leading-8">{stub}</p>
+          <p className="mt-1.5 text-sm leading-6">{stub}</p>
         </div>
       ) : null}
 
-      <div className="mt-5 space-y-4 text-lg leading-8">
+      <div className="mt-3 space-y-3 text-sm leading-6">
         {messages.map((message) => (
           <div key={message.id}>
-            <p className="text-sm tracking-wide text-muted-foreground uppercase">
+            <p className="text-[11px] tracking-wide text-muted-foreground uppercase">
               {message.role === "user" ? "Analyst" : "Drafter"}
             </p>
             {message.parts.map((part, i) => {
@@ -91,7 +87,7 @@ export function CaseAi({
                 return (
                   <div
                     key={`${message.id}-${i}`}
-                    className="my-3 rounded-2xl bg-muted px-4 py-3 text-base"
+                    className="my-2 rounded-lg bg-muted px-3 py-2 text-xs"
                   >
                     <p className="font-medium">{toolState(part.state)}</p>
                     {rows.map((row: { title?: string; score?: number }) => (
@@ -107,15 +103,13 @@ export function CaseAi({
           </div>
         ))}
         {busy ? (
-          <p className="text-base text-muted-foreground">
-            Generating disposition…
-          </p>
+          <p className="text-xs text-muted-foreground">Generating disposition…</p>
         ) : null}
       </div>
 
-      <div className="mt-5">
+      <div className="mt-3">
         <Button
-          className="h-12 rounded-full px-6 text-base"
+          className="rounded-full px-4"
           disabled={busy}
           onClick={() => sendMessage({ text: DRAFT_PROMPT })}
         >
@@ -125,7 +119,7 @@ export function CaseAi({
 
       {live ? (
         <form
-          className="mt-4 flex flex-col gap-3 sm:flex-row"
+          className="mt-3 flex gap-2"
           onSubmit={(e) => {
             e.preventDefault();
             if (!input.trim() || busy) return;
@@ -136,16 +130,10 @@ export function CaseAi({
           <Input
             value={input}
             onChange={(e) => setInput(e.currentTarget.value)}
-            placeholder="Ask about this case or the applicable policy"
+            placeholder="Ask about this case or policy"
             disabled={busy}
-            className="h-12 rounded-full px-5 text-base md:text-base"
           />
-          <Button
-            type="submit"
-            variant="outline"
-            className="h-12 rounded-full px-6 text-base"
-            disabled={busy}
-          >
+          <Button type="submit" variant="outline" className="rounded-full" disabled={busy}>
             Send
           </Button>
         </form>

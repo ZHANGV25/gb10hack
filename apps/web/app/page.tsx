@@ -9,20 +9,21 @@ export default async function HomePage() {
   const [alerts, s] = await Promise.all([listAlerts(), stats()]);
   return (
     <Shell current="/">
-      <main className="mx-auto max-w-6xl px-6 py-10">
-        <div className="mb-8">
-          <h1 className="text-4xl font-semibold tracking-tight">Alert queue</h1>
-          <p className="mt-3 max-w-2xl text-lg leading-8 text-muted-foreground">
-            Open these cases, read what happened, generate a disposition, then
-            record your decision.
-          </p>
-          <p className="mt-3 text-base text-muted-foreground">
-            {s.total} cases · {s.redFlag} red flag · {s.review} need review ·{" "}
-            {s.noise} likely false alert
+      <main className="mx-auto max-w-6xl px-5 py-6">
+        <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
+          <div>
+            <h1 className="text-xl font-semibold tracking-tight">Alert queue</h1>
+            <p className="mt-1 max-w-xl text-sm text-muted-foreground">
+              Open a case, generate a disposition, then record the decision.
+            </p>
+          </div>
+          <p className="text-xs text-muted-foreground">
+            {s.total} cases · {s.redFlag} red flag · {s.review} review ·{" "}
+            {s.noise} false alert
           </p>
         </div>
         <AlertQueue alerts={alerts} />
-        <div className="mt-12">
+        <div className="mt-6">
           <ArchitectureChart
             counts={{
               customers: s.customers,

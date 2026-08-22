@@ -8,16 +8,19 @@ export default async function AuditPage() {
   const rows = await listAudit(80);
   return (
     <Shell current="/audit">
-      <main className="mx-auto max-w-6xl px-6 py-10 pb-24">
-        <h1 className="text-4xl font-semibold tracking-tight">Activity</h1>
-        <p className="mt-3 max-w-2xl text-lg leading-8 text-muted-foreground">
+      <main className="mx-auto max-w-6xl px-5 py-6 pb-16">
+        <h1 className="text-xl font-semibold tracking-tight">Activity</h1>
+        <p className="mt-1 max-w-xl text-sm text-muted-foreground">
           Alerts opened by monitoring, dispositions drafted, and analyst
           decisions. Kept for audit.
         </p>
-        <div className="mt-8 divide-y divide-border overflow-hidden rounded-2xl border border-border">
+        <div className="mt-4 overflow-hidden rounded-xl border border-border">
           {rows.map((r) => (
-            <div key={String(r._id)} className="grid gap-1 px-5 py-4 sm:grid-cols-[7rem_9rem_1fr]">
-              <p className="text-base text-muted-foreground">
+            <div
+              key={String(r._id)}
+              className="grid gap-1 border-b border-border px-4 py-2 text-sm last:border-b-0 sm:grid-cols-[5.5rem_7rem_1fr]"
+            >
+              <p className="font-mono text-xs text-muted-foreground">
                 {r.ts
                   ? new Date(r.ts).toLocaleTimeString("en-GB", {
                       hour: "2-digit",
@@ -26,13 +29,14 @@ export default async function AuditPage() {
                     })
                   : ""}
               </p>
-              <p className="text-base">{auditActor(String(r.agent))}</p>
-              <div>
-                <p className="text-lg font-medium">{auditAction(String(r.action))}</p>
-                <p className="text-base leading-7 text-muted-foreground">
+              <p className="text-xs">{auditActor(String(r.agent))}</p>
+              <p className="min-w-0">
+                <span className="font-medium">{auditAction(String(r.action))}</span>
+                <span className="text-muted-foreground">
+                  {" "}
                   {String(r.alert_id)} — {String(r.rationale ?? "")}
-                </p>
-              </div>
+                </span>
+              </p>
             </div>
           ))}
         </div>

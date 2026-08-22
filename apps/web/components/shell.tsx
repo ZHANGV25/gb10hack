@@ -2,7 +2,7 @@ import Link from "next/link";
 
 const links = [
   { href: "/", label: "Alerts" },
-  { href: "/system", label: "How a case moves" },
+  { href: "/system", label: "System" },
   { href: "/audit", label: "Activity" },
 ];
 
@@ -21,25 +21,25 @@ export function Shell({
   return (
     <div className="min-h-full">
       <header className="sticky top-0 z-20 border-b border-border bg-background/95 backdrop-blur">
-        <div className="mx-auto flex min-h-16 max-w-6xl flex-wrap items-center justify-between gap-3 px-6 py-3">
-          <div className="flex flex-wrap items-center gap-8">
+        <div className="mx-auto flex h-12 max-w-6xl items-center justify-between px-5">
+          <div className="flex items-center gap-6">
             <Link href="/" className="leading-tight">
-              <span className="block text-sm tracking-wide text-muted-foreground">
+              <span className="block text-[11px] tracking-wide text-muted-foreground">
                 Nordhafen Bank
               </span>
-              <span className="text-lg font-semibold tracking-tight">
+              <span className="text-sm font-semibold tracking-tight">
                 Financial crime
               </span>
             </Link>
-            <nav className="flex flex-wrap items-center gap-1 text-base">
+            <nav className="flex items-center gap-4 text-sm text-muted-foreground">
               {links.map((l) => (
                 <Link
                   key={l.href}
                   href={l.href}
                   className={
                     active(current, l.href)
-                      ? "rounded-full bg-foreground px-4 py-2 text-background"
-                      : "rounded-full px-4 py-2 text-muted-foreground hover:bg-muted hover:text-foreground"
+                      ? "text-foreground"
+                      : "hover:text-foreground"
                   }
                 >
                   {l.label}
@@ -47,7 +47,7 @@ export function Shell({
               ))}
             </nav>
           </div>
-          <span className="rounded-full bg-muted px-4 py-1.5 text-sm">
+          <span className="rounded-full bg-muted px-2.5 py-0.5 text-[11px]">
             Confidential
           </span>
         </div>

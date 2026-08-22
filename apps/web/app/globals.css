@@ -123,9 +123,8 @@
   }
   html {
     @apply font-sans;
-    font-size: 18px;
   }
   body {
-    @apply bg-background text-foreground text-base leading-7;
+    @apply bg-background text-foreground text-sm leading-6;
   }
 }

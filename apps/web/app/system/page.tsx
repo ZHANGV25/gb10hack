@@ -8,16 +8,13 @@ export default async function SystemPage() {
   const s = await stats();
   return (
     <Shell current="/system">
-      <main className="mx-auto max-w-6xl px-6 py-10">
-        <h1 className="text-4xl font-semibold tracking-tight">
-          How a case moves
-        </h1>
-        <p className="mt-3 max-w-3xl text-lg leading-8 text-muted-foreground">
-          This is the running system. Counts update as alerts open, drafts are
-          written, and analysts record decisions. The language model cannot
-          open an alert or file a report.
+      <main className="mx-auto max-w-6xl px-5 py-6">
+        <h1 className="text-xl font-semibold tracking-tight">How a case moves</h1>
+        <p className="mt-1 max-w-2xl text-sm text-muted-foreground">
+          Counts update as alerts open, drafts are written, and analysts record
+          decisions. The language model cannot open an alert or file a report.
         </p>
-        <div className="mt-8">
+        <div className="mt-4">
           <ArchitectureChart
             counts={{
               customers: s.customers,
