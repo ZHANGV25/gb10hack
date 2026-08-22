@@ -119,7 +119,87 @@ export function SceneReading() {
   );
 }
 
-/* ── Slide 2 — the authority split ───────────────────────────────────────
+/* ── Slide 2 — why this cannot be a cloud service ────────────────────────
+   The map argument: what the analysis contains is a chart of the bank's
+   weak points, and the vendors on that chart include the cloud providers.
+   All counts are seed-true (3 blocking, 2 no-TLPT, 2 locations). */
+
+const MAP_ROWS: [string, string][] = [
+  ["Vendors it cannot exit", "3 contracts · €7.03M/yr"],
+  ["Refuses security testing", "2 contracts"],
+  ["Data locations undisclosed", "2 contracts"],
+  ["Annual charges, itemised", "every contract"],
+];
+
+export function SceneMap() {
+  return (
+    <div className="absolute inset-0">
+      <RegMarks />
+      <Crosshair x="8%" y="80%" delay={1.8} />
+      <div className="absolute inset-0 z-10 flex items-center justify-center gap-[2.6vmin]">
+        {/* what the analysis contains */}
+        <Panel className="w-[36vmin] px-[2.6vmin] py-[2.2vmin]" delay={0.3}>
+          <div className="mark-label mb-[1.4vmin] text-[1.15vmin] text-g500">
+            What the analysis contains
+          </div>
+          {MAP_ROWS.map(([label, count], i) => (
+            <motion.div
+              key={label}
+              initial={{ opacity: 0, x: -8 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.6 + i * 0.25, duration: 0.45, ease: EASE }}
+              className="flex items-baseline justify-between border-t border-ink/12 py-[1.15vmin]"
+            >
+              <span className="text-[1.5vmin]">{label}</span>
+              <span className="mark-label font-mono text-[1vmin] text-g500">{count}</span>
+            </motion.div>
+          ))}
+          <div className="mark-label mt-[1.6vmin] inline-block bg-chip px-[1.1vmin] py-[0.6vmin] text-[1vmin] text-paper">
+            A map of the bank&rsquo;s weak points
+          </div>
+        </Panel>
+
+        {/* where could it live */}
+        <motion.div
+          initial={{ opacity: 0, x: 16 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 1.7, duration: 0.7, ease: EASE }}
+          className="w-[34vmin] border border-ink/15 bg-surface px-[2.4vmin] py-[2.2vmin]"
+          style={{ boxShadow: "var(--shadow-panel)" }}
+        >
+          <div className="mark-label mb-[1.4vmin] text-[1.15vmin] text-g500">
+            Where could it live?
+          </div>
+          <div className="border border-ink/20 bg-white px-[1.6vmin] py-[1.3vmin]">
+            <div className="flex items-baseline justify-between">
+              <span className="text-[1.5vmin]">A cloud AI service</span>
+              <span className="font-mono text-[1.6vmin]">✗</span>
+            </div>
+            <p className="mt-[0.5vmin] text-[1.15vmin] leading-[1.6] text-g600">
+              The vendors on the map include the cloud providers themselves.
+            </p>
+          </div>
+          <div className="mt-[1.2vmin] border-2 border-ink bg-white px-[1.6vmin] py-[1.3vmin]">
+            <div className="flex items-baseline justify-between">
+              <span className="text-[1.5vmin] font-medium">Hardware the bank owns</span>
+              <span className="font-mono text-[1.6vmin]">✓</span>
+            </div>
+            <p className="mt-[0.5vmin] text-[1.15vmin] leading-[1.6] text-g600">
+              The map is drawn, stored and corrected on the premises. Nothing
+              leaves.
+            </p>
+          </div>
+        </motion.div>
+      </div>
+      <SlideLabel delay={2.4}>
+        You can&rsquo;t store the escape plan with the people you might escape
+        from
+      </SlideLabel>
+    </div>
+  );
+}
+
+/* ── Slide 3 — the authority split ───────────────────────────────────────
    Three lanes. The machine is monochrome; the third lane is the human,
    and it is the only warm thing on the slide. No database is named here —
    the store gets its reveal on slide 7. */

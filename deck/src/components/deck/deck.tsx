@@ -1,8 +1,8 @@
 "use client";
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
-import { SceneCage, SceneReading } from "./act1";
-import { SceneHelvetia, SceneRegister } from "./act2";
+import { SceneCage, SceneMap, SceneReading } from "./act1";
+import { SceneRegister } from "./act2";
 import { SceneTeach } from "./act3";
 import { SceneArtifact, SceneClose, SceneFilings, SceneMongo } from "./act4";
 
@@ -15,9 +15,9 @@ export const LAST = 10;
  */
 const GROUP: Record<number, string> = {
   1: "reading",
-  2: "cage",
-  3: "register",
-  4: "helvetia",
+  2: "map",
+  3: "cage",
+  4: "register",
   5: "teach",
   6: "teach",
   7: "filings",
@@ -29,9 +29,9 @@ const GROUP: Record<number, string> = {
 function Scene({ n }: { n: number }) {
   switch (GROUP[n]) {
     case "reading": return <SceneReading />;
+    case "map": return <SceneMap />;
     case "cage": return <SceneCage />;
     case "register": return <SceneRegister />;
-    case "helvetia": return <SceneHelvetia />;
     case "teach": return <SceneTeach swept={n >= 6} />;
     case "filings": return <SceneFilings />;
     case "mongo": return <SceneMongo />;

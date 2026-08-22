@@ -1,14 +1,12 @@
 /** The pitch script — single source of truth for the person at the microphone.
- *  Rendered at /script. V10 — the escape framing (V9) spoken in the keynote
- *  voice (V8): setup-payoff questions, number-then-meaning, and the 2007
- *  "three systems… it's one database" turn for MongoDB. The sell is that ExitPlan
- *  makes leaving a vendor possible and provable — trapped money found, the
- *  blocking clause named, exit-readiness live instead of a yearly audit. The
- *  anti-hallucination machinery is one clause in the back (slide 4). Voice
- *  stays V8's keynote register. ~395 words ≈ 2:28 at stage pace; bookends
- *  alone ≈ 45s, the rest is spoken over the demo. Every number still
- *  traces to DEMO.md or the code; OpenClaw is claimed as builder/driver of
- *  the box, never as the runtime (graveyard #4).
+ *  Rendered at /script. V13 "why local, up front": the reason this cannot be
+ *  a cloud service is now slide 2, before anything else — the tool's output
+ *  is a map of the bank's weak points, and the vendors on that map include
+ *  the cloud providers themselves. The cable pull (slide 9) is the receipt
+ *  for that promise, not a stunt. Helvetia's frame folded into the register
+ *  beat to pay for it. Keynote voice throughout; every number traces to
+ *  DEMO.md or the code; no claim that any law requires on-prem (graveyard
+ *  #1) and OpenClaw stays builder/driver, never runtime (graveyard #4).
  *  Lines wrapped in (parens) are stage directions, not spoken. */
 
 export type Slide = {
@@ -21,17 +19,17 @@ export type Slide = {
   narration: string[];
 };
 
-export const REVISION = 'V12 · the problem made real, the privacy made explicit';
+export const REVISION = 'V13 · why local, up front — the map argument opens, the cable is the receipt';
 
 export const SLIDES: Slide[] = [
   {
     n: 1,
-    act: 'I — The job',
+    act: 'I — The trap',
     label: 'THE READING PROBLEM',
     onscreen:
-      'DORA Art. 28(8) — exit strategies for ICT behind critical functions, incl. reincorporation in-house — over the Art. 30 spec: 9 elements for every arrangement, +6 critical (audit, exit assistance). A shelf of contract spines, one reader.',
+      'DORA Art. 28(8) — exit strategies for ICT behind critical functions, incl. reincorporation in-house — over the Art. 30 spec: 9 elements for every arrangement, +6 critical. A shelf of contract spines, one reader.',
     narration: [
-      'Every bank in Europe is locked into its tech vendors, and the law says they must be able to leave — to take any critical service back in-house. The answer lives in hundreds of contracts. Banks paid lawyers to read them once, when the law came in. That snapshot went stale the day it was finished.',
+      'Every bank in Europe is locked into its tech vendors, and the law says they must be able to leave — take any critical service back in-house. The answer is buried in hundreds of contracts nobody reads.',
       'So the exit plan is just paper. It works right up until the day you need it.',
     ],
     loadBearing:
@@ -39,38 +37,43 @@ export const SLIDES: Slide[] = [
   },
   {
     n: 2,
-    act: 'II — The cage',
-    label: 'THE AUTHORITY SPLIT',
+    act: 'I — The trap',
+    label: 'WHY THIS CANNOT BE A CLOUD SERVICE',
     onscreen:
-      'Three lanes: MODEL EXTRACTS (present / inadequate / absent + the clause it relied on · chip: NO QUOTE, NO CLAIM) → POLICY DISPOSES (deterministic Python · chip: EXIT · AUDIT · DATA RETURN = BLOCKING) → REVIEWERS TEACH (tan · chip: RULES ONLY ACT ON AN EXISTING GAP). No database named here.',
+      'Left: WHAT THE ANALYSIS CONTAINS — vendors it cannot exit (3) · refuses security testing (2) · data locations undisclosed (2) · annual charges (all) · chip: A MAP OF THE BANK’S WEAK POINTS. Right: WHERE COULD IT LIVE — a cloud AI service ✗ (the vendors on the map include the cloud providers) vs. hardware the bank owns ✓.',
     narration: [
-      'Today, that changes. ExitPlan reads every contract you’ve signed. It tells you if you could walk away today — and when you can’t, the exact clause that’s trapping you.',
+      'Here’s the catch. To fix that, something has to read every contract the bank has signed and write down every way it’s trapped — which vendors it can’t exit, what it pays, who refuses security testing. That document is a map of the bank’s weak points. And the vendors on that map include the cloud providers themselves.',
+      'You can’t store your escape plan with the people you might be escaping from.',
+    ],
+    loadBearing:
+      'You can’t store your escape plan with the people you might be escaping from.',
+  },
+  {
+    n: 3,
+    act: 'II — What we built',
+    label: 'THE AGENT ON ONE BOX',
+    onscreen:
+      'Three lanes: MODEL EXTRACTS (present / inadequate / absent + the clause it relied on · chip: NO QUOTE, NO CLAIM) → POLICY DISPOSES (deterministic Python) → REVIEWERS TEACH (tan). No database named here.',
+    narration: [
+      'So ExitPlan runs on hardware the bank owns. A complete AI agent — a thirty-billion-parameter open model, search, memory, the database — on one Dell box. It reads every contract, and every claim it makes has to quote the contract.',
       'Let me just show you.',
     ],
   },
   {
-    n: 3,
-    act: 'III — Live on the desk',
-    label: 'THE REGISTER — demo §1',
-    onscreen:
-      '(switch to the browser — deck parks here; frames 3–7 are the fallback) · Tiles: 7 with gaps · CANNOT BE CLEANLY EXITED €7,030,000 · 10 Art. 30 gaps · €16,375,000 total. Sixteen rows: 12 curated (Helvetia €4.18M → Pinnacle €88k) + 4 marked FILED (Sunrise, Edgemode, Platinum Analytics, NuScale). Weakest-estate panel unchanged.',
-    narration: [
-      '(switch display to the browser — 1440×1250, seeded, desk at 127.0.0.1:3000)',
-      'Meet Nordhafen Bank. Sixteen contracts: twelve we wrote, synthetic on purpose — and four real ones, straight off the SEC. Hold that thought. The agent read them all and found the trapped money:',
-      'Seven million euros a year, flowing through contracts this bank could never walk out of. Regulators ask for that number. No bank can produce it. This one just did.',
-    ],
-    loadBearing:
-      'Seven million euros a year, flowing through contracts this bank could never walk out of. Regulators ask for that number. No bank can produce it. This one just did.',
-  },
-  {
     n: 4,
     act: 'III — Live on the desk',
-    label: 'HELVETIA — the missing exit — demo §2',
+    label: 'THE REGISTER — demo §1 + §2',
     onscreen:
-      'HELVETIA CLOUD SERVICES AG · core banking platform · €4,180,000/yr · CRITICAL. Checklist 14/15; absent row EXIT STRATEGY AND TRANSITION PERIOD marked blocking. One passed row expanded to its verbatim clause (14. Access, Inspection and Audit).',
+      '(switch to the browser — deck parks here; frames 4–7 are the fallback) · Tiles: 7 with gaps · CANNOT BE CLEANLY EXITED €7,030,000 · 10 Art. 30 gaps · €16,375,000 total. Sixteen rows: 12 curated + 4 marked FILED. Live: open Helvetia (14/15, missing exit clause) before moving on.',
     narration: [
-      'Take core banking. Four million a year. Fourteen of fifteen boxes ticked, and every tick is a quote from the contract. So what’s missing? The exit clause. Fix that one clause, and four million stops being hostage.',
+      '(switch display to the browser — 1440×1250, seeded, desk at 127.0.0.1:3000)',
+      'Meet Nordhafen Bank. Sixteen contracts: twelve synthetic, on purpose — and four real ones, straight off the SEC. Hold that thought. The agent read them all and found the trapped money:',
+      'Seven million euros a year in contracts this bank could never walk out of. Regulators ask for that number. No bank can produce it. This one just did.',
+      '(open Helvetia live)',
+      'Even core banking — four million a year — is exactly one exit clause short of freedom.',
     ],
+    loadBearing:
+      'Seven million euros a year in contracts this bank could never walk out of. Regulators ask for that number. No bank can produce it. This one just did.',
   },
   {
     n: 5,
@@ -105,7 +108,7 @@ export const SLIDES: Slide[] = [
     onscreen:
       'SUNRISE COMMUNICATIONS AG · chip: FILED — SEC EDGAR. Reading strip: 113,731 CHARACTERS → SPLIT INTO PASSAGES → 11 RETRIEVED → READ IN ~77s, and a note: the model never saw the rest. Right rail: the four filed rows — Sunrise · Edgemode · Platinum Analytics · NuScale Power. Footer: no ground truth · same checks, unchanged.',
     narration: [
-      'Now — remember those four real contracts? Nobody wrote those for us; they’re actual SEC filings. This one is a hundred and thirteen thousand characters — far too long for the model to read. So the agent found the eleven passages that matter, and read those. Same checklist. Same rules. Nothing tuned.',
+      'Now — those four real contracts. Nobody wrote them for us; they’re actual SEC filings. This one is a hundred and thirteen thousand characters — too long for the model to read. So the agent found the eleven passages that matter, and read those. Same checklist, nothing tuned.',
       'The synthetic ones prove it’s accurate. The real ones prove it’s no trick.',
     ],
     loadBearing:
@@ -118,25 +121,24 @@ export const SLIDES: Slide[] = [
     onscreen:
       'First naming of the store. OPERATIONAL REGISTER (contracts · verdicts · corrections) · VECTOR MEMORY (rules + $vectorSearch · bge-m3 1024-d) · EVENT BUS (change streams → the always-on agent). Live counts row. Dashed on-prem boundary.',
     narration: [
-      'And underneath it all, there are three systems. A record — the evidence you hand the regulator. A memory — twelve precedents from three reviewers, found by meaning. And an alarm that wakes the agent when anything changes. Three systems. Except they’re not three systems. It’s one database. It’s MongoDB.',
+      'And underneath it all, there are three systems. A record — the evidence for the regulator. A memory — twelve precedents from three reviewers, found by meaning. And an alarm that wakes the agent when anything changes. Except they’re not three systems. It’s one database. It’s MongoDB.',
     ],
     loadBearing:
-      'And underneath it all, there are three systems. A record — the evidence you hand the regulator. A memory — twelve precedents from three reviewers, found by meaning. And an alarm that wakes the agent when anything changes. Three systems. Except they’re not three systems. It’s one database. It’s MongoDB.',
+      'And underneath it all, there are three systems. A record — the evidence for the regulator. A memory — twelve precedents from three reviewers, found by meaning. And an alarm that wakes the agent when anything changes. Except they’re not three systems. It’s one database. It’s MongoDB.',
   },
   {
     n: 9,
-    act: 'IV — The artifact',
+    act: 'IV — The receipt',
     label: 'UNPLUGGED — demo §6',
     onscreen:
       'Unit spec: nemotron-3-nano · 30B (Ollama) / bge-m3 / MongoDB Atlas Local — streams + vectors / BUILT WITH: OpenClaw · driving the box / Next.js register / Dell Pro Max GB10 / uplink: NOT REQUIRED. Measured line: CLAUSE AGREEMENT 138/141 · 98%.',
     narration: [
       '(live first: pull the cable, reload, teach another rule — then back to the deck)',
-      'Oh, and one more thing. The network cable came out of the wall a minute ago. Did you notice? Everything you just watched ran on this one Dell box, built and driven by OpenClaw.',
-      'And that’s not a stunt. These contracts are confidential paper, and what this tool finds — where you’re weak, what you pay, where you’re trapped — is a map of the bank you could never upload.',
-      'So the analysis of whether you can leave your vendors never touches a vendor.',
+      'Oh, and one more thing. The network cable came out of the wall a minute ago. Did you notice? That was the promise. Everything — the reading, the memory, the map — happened on this one Dell box, built and driven by OpenClaw.',
+      'The analysis of whether you can leave your vendors never touched a vendor.',
     ],
     loadBearing:
-      'So the analysis of whether you can leave your vendors never touches a vendor.',
+      'The analysis of whether you can leave your vendors never touched a vendor.',
   },
   {
     n: 10,
@@ -145,7 +147,7 @@ export const SLIDES: Slide[] = [
     onscreen:
       'EXITPLAN · tan rule · It reads the contracts. It shows the way out. Nothing leaves the building. · footer: synthetic register · business analysis, not legal advice.',
     narration: [
-      'So that’s ExitPlan. It reads the contracts. It shows you the way out. And nothing ever leaves the building. Thank you.',
+      'So that’s ExitPlan. It reads the contracts. It shows you the way out. And the way out never leaves the building. Thank you.',
       '(stop talking)',
     ],
   },
@@ -155,19 +157,19 @@ export const SLIDES: Slide[] = [
 export const PRESHOW: string[] = [
   'systemctl --user status dora-watch → active (running) — without it the teach beat dies.',
   'Reset between runs is instant: reset_demo.py retires what you taught and the agent reverts the verdicts itself. Full seed_dora.py + review_all.py (~12 min) only if the contracts changed. Confirm the register tiles (7 with gaps · 10 gaps · €7,030,000 · €16,375,000), Castellan shows “Gaps to close”, and the agreement line (script says 138/141 · 98%); update these strings if the run differs.',
-  'Browser ≥1440×1250, desk at 127.0.0.1:3000. Deck parked on slide 2 during the demo.',
+  'Browser ≥1440×1250, desk at 127.0.0.1:3000. Deck parked on slide 3 during the demo.',
   'Drill the dropdown: on Castellan the provision pre-fill is WRONG (termination rights). Select “Participation in threat-led penetration testing”, scope “critical functions only”, or Aurora never fires.',
-  'Live route: Register → Helvetia → Castellan → store rule → Agent activity → What it has learned → Aurora KYC → Nordlys → Sunrise Communications (filed · 113k chars · 11 passages) → How it works → pull cable, reload, teach again → back to deck (slide 9).',
-  'Say “synthetic” out loud once (slide 3). It appears nowhere in the product.',
-  'The register should show 16 rows: 12 curated plus 4 marked FILED (Sunrise, Edgemode, Platinum Analytics, NuScale) — that is the slide-7 beat, not drift. The € tiles are unchanged; filed contracts carry €0. Confirm Sunrise’s page shows 113,731 characters · 11 passages retrieved.',
+  'Live route: Register → Helvetia (during slide 4’s last line) → Castellan → store rule → Agent activity → What it has learned → Aurora KYC → Nordlys → Sunrise Communications (filed · 113k chars · 11 passages) → How it works → pull cable, reload, teach again → back to deck (slide 9).',
+  'Say “synthetic” out loud once (slide 4). It appears nowhere in the product.',
+  'The register should show 16 rows: 12 curated plus 4 marked FILED (Sunrise, Edgemode, Platinum Analytics, NuScale). The € tiles are unchanged; filed contracts carry €0. Confirm Sunrise’s page shows 113,731 characters · 11 passages retrieved.',
   'A narrated 3:18 recording of the full demo sits on the box Desktop (ExitPlan-DORA-agent-demo-narrated.mp4) — the fallback of last resort. Its voiceover is cloud text-to-speech, post-production on the video only; the runtime path never leaves the box. Say so if anyone asks.',
 ];
 
-/** Rehearsed Q&A — the three questions this arc invites, plus one reserve. */
+/** Rehearsed Q&A — the questions this arc invites. */
 export const QA: { q: string; a: string }[] = [
   {
     q: 'Why not run this in your Azure tenant?',
-    a: 'Two reasons. First, the data: these contracts carry confidentiality clauses, and the output is a map of the bank’s weak points — which vendors you can’t exit, who refuses penetration testing, what you pay. That is the last dataset to hand a third party. Second, the irony: the tool that audits your ICT third parties would itself be an ICT third party, a new row in its own register. DORA doesn’t forbid cloud and we don’t claim it does — but the complete agent fits on one machine you own, so nothing has to leave.',
+    a: 'Even in-tenant, two problems survive. First, the output: a live map of the bank’s weak points — which vendors it can’t exit, who refuses penetration testing, what it pays — now lives inside one of its largest ICT dependencies, and the hyperscalers are themselves in scope for a real bank’s register. Second, the register grows a row: the tool that audits your ICT third parties becomes an ICT third party with an exit clause of its own. DORA doesn’t forbid cloud and we don’t claim it does — but the complete agent fits on one machine you own, so nothing has to leave.',
   },
   {
     q: 'You wrote the contracts and the ground truth. What does 98% mean?',
