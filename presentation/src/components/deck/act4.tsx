@@ -127,6 +127,14 @@ export function SceneMongo() {
           <div className="mark-label absolute -top-[1.1vmin] left-[3vmin] bg-paper px-[0.8vmin] text-[1vmin] text-g600">
             Nordhafen&rsquo;s own hardware — Dell Pro Max GB10
           </div>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 2.6, duration: 0.5 }}
+            className="mark-label absolute -bottom-[1.2vmin] right-[3vmin] bg-ink px-[0.9vmin] py-[0.3vmin] text-[1vmin] text-paper"
+          >
+            built with OpenClaw — driving the box
+          </motion.div>
 
           <Panel className="w-[64vmin] px-[2.8vmin] py-[2.4vmin]" delay={0.5}>
             <div className="flex items-baseline justify-between">
