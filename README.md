@@ -6,6 +6,8 @@ An always-on compliance agent for the DORA exit-capability duty, running **entir
 
 Synthetic register plus four real SEC-filed agreements. Business analysis, not legal advice.
 
+**▶ The pitch deck (with the film embedded): [exitplan-deck.vercel.app](https://exitplan-deck.vercel.app/#0)**
+
 ## What the agent does
 
 1. **It reads every contract.** For each ICT arrangement it works through the provisions DORA Article 30 requires (9 for every arrangement, 15 where a critical function is involved) and must **quote the clause it relied on** — a claim with no verbatim text behind it is recorded as absent. Contracts too big for the context window (one SEC filing is 113,731 characters) are split; vector retrieval picks the passages worth reading.
@@ -57,7 +59,7 @@ npm run dev --prefix apps/web -- --hostname 127.0.0.1 --port 3000
 
 Between demo runs: `reset_demo.py` retires taught rules and the agent reverts the verdicts itself (instant). Mongo is `mongodb://127.0.0.1:27018` — ours; do not touch `:27017`.
 
-The pitch site: `npm run dev --prefix presentation -- --port 3010`. Keys: → / Space advance, ← back, **Enter rolls the film** on slide 3. Presenter narration and rehearsed Q&A at `/script`.
+The pitch site: live at [exitplan-deck.vercel.app](https://exitplan-deck.vercel.app/#0), or locally with `npm run dev --prefix presentation -- --port 3010`. Keys: → / Space advance, ← back, **Enter rolls the film** on slide 3. Presenter narration and rehearsed Q&A at `/script`.
 
 ## The film
 
