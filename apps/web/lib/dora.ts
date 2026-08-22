@@ -45,6 +45,13 @@ export type RegisterRow = {
   requiredCount: number;
   exposureEur: number;
   reviewedAt: string | null;
+  /** Set when the contract is a real filing rather than the curated book. */
+  source: string | null;
+  sourceUrl: string | null;
+  sourceForm: string | null;
+  chars: number;
+  readMode: string | null;
+  passagesRead: number;
 };
 
 /**
@@ -67,7 +74,7 @@ export async function listRegister(): Promise<RegisterRow[]> {
             { $match: { $expr: { $eq: ["$ref", "$$ref"] } } },
             { $sort: { created_at: -1 } },
             { $limit: 1 },
-            { $project: { embedding: 0, provisions: 0 } },
+            { $project: { embedding: 0, provisions: 0, candidate_rules: 0 } },
           ],
           as: "verdict",
         },
@@ -101,6 +108,16 @@ export async function listRegister(): Promise<RegisterRow[]> {
       requiredCount: Number(v.required_count ?? 0),
       exposureEur: Number(v.exposure_eur ?? 0),
       reviewedAt: iso(v.created_at),
+      source: d.source ? str(d.source) : null,
+      sourceUrl: d.source_url ? str(d.source_url) : null,
+      sourceForm: d.source_form ? str(d.source_form) : null,
+      chars: num(d.chars),
+      readMode: (v.reading as Row | undefined)?.mode
+        ? str((v.reading as Row).mode)
+        : null,
+      passagesRead: Array.isArray((v.reading as Row | undefined)?.passages)
+        ? ((v.reading as Row).passages as unknown[]).length
+        : 0,
     };
   });
 }

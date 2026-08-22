@@ -30,7 +30,11 @@ def main() -> None:
         except Exception as exc:
             print(f"  {i}/{len(todo)} {ref} FAILED {exc}", flush=True)
             continue
-        gt = (contracts().find_one({"ref": ref}, {"ground_truth": 1}) or {}).get("ground_truth", {})
+        # Real filed contracts have no ground truth — that is the point of
+        # having them. Only the curated book can be scored.
+        gt = (contracts().find_one({"ref": ref}, {"ground_truth": 1}) or {}).get(
+            "ground_truth"
+        ) or {}
         ok = sum(
             1
             for k, truth in gt.items()
@@ -39,9 +43,10 @@ def main() -> None:
         n = sum(1 for k in gt if k in v["provisions"])
         agree_ok += ok
         agree_total += n
+        score = f"agree={ok}/{n}" if n else "no ground truth"
         print(
             f"  {i}/{len(todo)} {ref} {v['decision']:<8} "
-            f"gaps={len(v['gaps'])} agree={ok}/{n} {time.time()-t0:.0f}s",
+            f"gaps={len(v['gaps'])} {score} {time.time()-t0:.0f}s",
             flush=True,
         )
 

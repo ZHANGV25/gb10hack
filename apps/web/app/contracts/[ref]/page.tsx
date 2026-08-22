@@ -28,6 +28,10 @@ export default async function ContractPage({
   const candidates = Array.isArray(verdict?.candidate_rules)
     ? verdict!.candidate_rules
     : [];
+  const reading = (verdict?.reading ?? {}) as Record<string, unknown>;
+  const passageCount = Array.isArray(reading.passages)
+    ? (reading.passages as unknown[]).length
+    : 0;
   const appliedIds = new Set(
     (Array.isArray(verdict?.applied_rule_ids)
       ? verdict!.applied_rule_ids
@@ -77,13 +81,37 @@ export default async function ContractPage({
               <span>·</span>
               <span>Data in {String(contract.data_locations ?? "—")}</span>
             </p>
+            {contract.source ? (
+              <p className="mt-1.5 text-[12px] text-muted-foreground">
+                Real agreement filed with the SEC
+                {contract.source_form ? ` as ${String(contract.source_form)}` : ""}
+                {contract.source_filed ? ` on ${String(contract.source_filed)}` : ""} —
+                no ground truth, nothing tuned for it.{" "}
+                {contract.source_url ? (
+                  <a
+                    href={String(contract.source_url)}
+                    target="_blank"
+                    rel="noreferrer noopener"
+                    className="underline underline-offset-2 hover:text-foreground"
+                  >
+                    view the filing
+                  </a>
+                ) : null}
+              </p>
+            ) : null}
           </div>
 
           <dl className="flex gap-6">
             <div>
-              <dt className="text-[12px] text-muted-foreground">Annual charge</dt>
+              <dt className="text-[12px] text-muted-foreground">
+                {Number(contract.annual_value_eur ?? 0) > 0
+                  ? "Annual charge"
+                  : "Document"}
+              </dt>
               <dd className="mt-0.5 font-mono text-[20px] tabular-nums">
-                {euros(Number(contract.annual_value_eur ?? 0))}
+                {Number(contract.annual_value_eur ?? 0) > 0
+                  ? euros(Number(contract.annual_value_eur))
+                  : `${Math.round(Number(contract.chars ?? 0) / 1000)}k`}
               </dd>
             </div>
             <div>
@@ -120,6 +148,20 @@ export default async function ContractPage({
                     <p className="mt-2 rounded-md border border-flag/25 bg-flag-soft px-3 py-2 text-[13px] leading-5 text-flag">
                       {euros(Number(verdict.exposure_eur))} a year runs through an
                       arrangement the bank cannot cleanly exit or inspect.
+                    </p>
+                  ) : null}
+                  {reading.mode === "retrieved" ? (
+                    <p className="mt-2 rounded-md border border-hairline bg-surface-muted/60 px-3 py-2 text-[12px] leading-5 text-muted-foreground">
+                      This agreement is{" "}
+                      {Number(contract.chars ?? 0).toLocaleString("en-GB")}{" "}
+                      characters — too long to read in one pass. It was split
+                      into passages and, for each provision, the passages most
+                      likely to contain that clause were retrieved by vector
+                      search. The agent read{" "}
+                      <span className="font-medium text-foreground">
+                        {passageCount} of them
+                      </span>
+                      , not the whole document.
                     </p>
                   ) : null}
                   <p className="mt-2 text-[12px] leading-4 text-muted-foreground">

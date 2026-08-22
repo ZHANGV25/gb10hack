@@ -118,6 +118,14 @@ export function RegisterTable({ rows }: { rows: RegisterRow[] }) {
                       critical
                     </span>
                   ) : null}
+                  {r.source ? (
+                    <span
+                      title={`Real agreement filed with the SEC${r.sourceForm ? ` as ${r.sourceForm}` : ""}`}
+                      className="shrink-0 rounded border border-hairline px-1 py-px text-[10px] tracking-wide uppercase"
+                    >
+                      filed
+                    </span>
+                  ) : null}
                   <span className="truncate">
                     <span className="font-mono">{r.ref}</span> · {r.function}
                   </span>
@@ -174,10 +182,25 @@ export function RegisterTable({ rows }: { rows: RegisterRow[] }) {
               </div>
 
               <div className="md:text-right">
-                <p className="font-mono text-[14px] tabular-nums">
-                  {euros(r.annualValueEur)}
-                </p>
-                <p className="text-[12px] text-muted-foreground">per year</p>
+                {r.annualValueEur > 0 ? (
+                  <>
+                    <p className="font-mono text-[14px] tabular-nums">
+                      {euros(r.annualValueEur)}
+                    </p>
+                    <p className="text-[12px] text-muted-foreground">per year</p>
+                  </>
+                ) : (
+                  <>
+                    <p className="font-mono text-[14px] tabular-nums text-muted-foreground">
+                      {(r.chars / 1000).toFixed(0)}k
+                    </p>
+                    <p className="text-[12px] text-muted-foreground">
+                      {r.passagesRead
+                        ? `${r.passagesRead} passages read`
+                        : "characters"}
+                    </p>
+                  </>
+                )}
               </div>
 
               <div className="md:w-[132px] md:text-right">

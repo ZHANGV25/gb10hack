@@ -77,9 +77,18 @@ def main() -> None:
     print(f"{len(candidates)} EX-10 candidates from EDGAR", flush=True)
 
     added = 0
+    # One agreement per filer. The same contract is often filed several times
+    # across quarters, and three copies of one company is not a corpus.
+    issuers: set[str] = {
+        str(c.get("vendor", "")).lower()
+        for c in contracts().find({"source": "SEC EDGAR"}, {"vendor": 1})
+    }
     for h in candidates:
         if added >= want:
             break
+        issuer_key = clean_title(h).lower()
+        if issuer_key in issuers:
+            continue
         ref = f"SEC-{h['accession']}"
         if contracts().find_one({"ref": ref}, {"_id": 1}):
             continue
@@ -124,6 +133,7 @@ def main() -> None:
         }
         contracts().insert_one(doc)
         n = index_contract(ref, text)
+        issuers.add(issuer_key)
         added += 1
         print(
             f"  + {ref}  {vendor[:34]:<34} {len(text):>7} chars  {n:>3} passages indexed",
