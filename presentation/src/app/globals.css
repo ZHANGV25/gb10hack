@@ -1,0 +1,100 @@
+@import "tailwindcss";
+
+/* ─── SLEEPER design tokens ──────────────────────────────────────────────
+   Technical-editorial: warm studio paper, one enormous display word per
+   act behind the subject, engineering-drawing annotation on top. The only
+   hue is leather tan, reserved exclusively for human action — the machine
+   is monochrome; the human is warm. */
+
+@theme {
+  --color-paper: #e9e7e2;
+  --color-surface: #f4f3f0;
+  --color-ink: #141412;
+  --color-tan: #a9683c;
+  --color-chip: #1b1a18;
+
+  --color-g200: #dedcd6;
+  --color-g300: #c9c6bf;
+  --color-g400: #a6a39b;
+  --color-g500: #807d75;
+  --color-g600: #5f5d56;
+  --color-g700: #43413c;
+
+  --font-display: var(--font-anton), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-grotesk), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, "SF Mono", monospace;
+
+  --shadow-panel:
+    0 1px 1px rgba(20, 20, 18, 0.04),
+    0 3px 8px rgba(20, 20, 18, 0.05),
+    0 14px 34px rgba(20, 20, 18, 0.07);
+}
+
+/* tabular lining numerals — every figure that changes uses this */
+@utility tnum {
+  font-variant-numeric: tabular-nums lining-nums;
+}
+
+/* mono annotation label: the small letterspaced caps on chips and marks */
+@utility mark-label {
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-weight: 500;
+}
+
+/* hairline: the 1px ink rule used by every instrument mark */
+@utility hairline {
+  background: color-mix(in srgb, var(--color-ink) 22%, transparent);
+}
+
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  body {
+    background: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+  }
+  ::selection {
+    background: var(--color-g200);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+/* ─── Deck background: still studio, not a drifting grid ─────────────────
+   The GRMNT frame is motionless — grain and a soft vignette only. Motion
+   belongs to the marks, never the canvas. */
+
+.deck-vignette {
+  background:
+    radial-gradient(
+      120% 90% at 50% 38%,
+      transparent 55%,
+      color-mix(in srgb, var(--color-ink) 7%, transparent) 100%
+    );
+}
+
+.deck-grain {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='260' height='260' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E");
+  opacity: 0.06;
+  mix-blend-mode: multiply;
+}
+
+/* zero chrome: the deck hides the cursor after 2s idle */
+.cursor-hidden,
+.cursor-hidden * {
+  cursor: none !important;
+}

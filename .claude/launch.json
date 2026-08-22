@@ -1,0 +1,23 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "exitplan-web",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "--prefix", "apps/web", "--", "--hostname", "127.0.0.1", "--port", "3000"],
+      "port": 3000
+    },
+    {
+      "name": "exitplan-deck",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "--prefix", "deck", "--", "--hostname", "127.0.0.1", "--port", "3001"],
+      "port": 3001
+    },
+    {
+      "name": "exitplan-presentation",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "--prefix", "presentation", "--", "--hostname", "127.0.0.1", "--port", "3010"],
+      "port": 3010
+    }
+  ]
+}
