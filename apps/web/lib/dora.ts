@@ -256,7 +256,7 @@ export async function registerSummary() {
 /** Live counts for the architecture diagram. */
 export async function systemCounts() {
   const database = await doraDb();
-  const [contracts, critical, verdicts, rules, runs, corrections] =
+  const [contracts, critical, verdicts, rules, runs, corrections, chunks, filed] =
     await Promise.all([
       database.collection("contracts").countDocuments(),
       database.collection("contracts").countDocuments({ critical: true }),
@@ -264,6 +264,8 @@ export async function systemCounts() {
       database.collection("rules").countDocuments({ active: true }),
       database.collection("runs").countDocuments(),
       database.collection("corrections").countDocuments(),
+      database.collection("chunks").countDocuments(),
+      database.collection("contracts").countDocuments({ source: "SEC EDGAR" }),
     ]);
   const summary = await registerSummary();
   return {
@@ -274,6 +276,8 @@ export async function systemCounts() {
     rules,
     runs,
     corrections,
+    chunks,
+    filed,
     gaps: summary.gapCount,
   };
 }

@@ -96,10 +96,13 @@ export type DiagramCounts = {
   verdicts: number;
   runs: number;
   gaps: number;
+  chunks: number;
+  filed: number;
 };
 
 const COLLECTIONS = [
   { name: "contracts", note: "The Art. 28(3) register itself", key: "contracts" as const },
+  { name: "chunks", note: "Long contracts, split and searchable", key: "chunks" as const, vector: true },
   { name: "verdicts", note: "One per review, with every quoted clause", key: "verdicts" as const },
   { name: "rules", note: "The memory — vector searchable", key: "rules" as const, vector: true },
   { name: "corrections", note: "Who taught what, and from which contract", key: null },
@@ -127,7 +130,7 @@ export function DoraDiagram({ counts }: { counts: DiagramCounts }) {
               title="Contract lands in the register"
               body="Signed ICT agreements are recorded with the supplier, the function they support, the annual charge, and whether that function is critical or important."
               tech="MongoDB · contracts"
-              meta={`${counts.contracts} arrangements · ${counts.critical} critical`}
+              meta={`${counts.contracts} arrangements · ${counts.critical} critical · ${counts.filed} real SEC filings`}
             />
             <Arrow label="change stream" />
             <Node
@@ -142,20 +145,32 @@ export function DoraDiagram({ counts }: { counts: DiagramCounts }) {
 
         <Down label="the agent reads the document" />
 
-        <Band n="02" title="Reading the contract" note="The model's only job: find the clause and quote it.">
+        <Band
+          n="02"
+          title="Reading the contract"
+          note="A real filed agreement does not fit in the context window."
+        >
           <div className="flex flex-col gap-2 lg:flex-row lg:items-stretch">
             <Node
-              title="Fifteen questions, one per provision"
-              body="For each provision DORA Art. 30 requires, the agent answers present, inadequate or absent — and must quote the contract text it relied on."
-              tech="Local language model · strict JSON"
-              meta="a claim with no quote behind it is downgraded to absent"
+              title="Split into passages"
+              body="A contract over 18,000 characters is chunked with overlap and embedded, so no clause is lost on a boundary. Short ones are read whole."
+              tech="MongoDB · chunks"
+              meta={`${counts.chunks} passages indexed`}
+            />
+            <Arrow label="per provision" />
+            <Node
+              title="Retrieve the clause, don't scan for it"
+              body="Each of the fifteen provisions searches that contract's own passages for the text most likely to satisfy it. Truncating instead would lose the middle, where the operative clauses live."
+              tech="MongoDB $vectorSearch · index chunks_vector · filter ref"
+              meta="retrieval decides what the model sees"
+              accent="solid"
             />
             <Arrow />
             <Node
-              title="Stored clause by clause"
-              body="The extraction is a property of the document, so it is kept. Re-reading is only needed when the contract itself changes."
-              tech="MongoDB · verdicts.provisions"
-              meta={`${counts.reviewed} contracts read`}
+              title="Answer and quote"
+              body="Present, inadequate or absent for each provision, with the contract text it relied on. Kept, because which clauses a document contains does not change."
+              tech="Local language model · strict JSON"
+              meta={`${counts.reviewed} contracts read · no quote means absent`}
             />
           </div>
         </Band>
@@ -173,8 +188,8 @@ export function DoraDiagram({ counts }: { counts: DiagramCounts }) {
             <Arrow />
             <Node
               title="Memory is consulted"
-              body="The contract's gaps become a query vector, matched against rules the bank's reviewers wrote. A rule only fires where its provision is actually missing."
-              tech="MongoDB $vectorSearch · filter active + provision"
+              body="Each gap is searched separately against the rules the bank's reviewers wrote — one blended query dilutes, and the rule that decides the case ranks below the cut. A rule only fires where its provision is actually missing."
+              tech="MongoDB $vectorSearch · index rules_vector · filter active + provision"
               meta={`${counts.rules} rules in memory`}
               accent="solid"
             />
