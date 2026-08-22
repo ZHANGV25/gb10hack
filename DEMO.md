@@ -175,6 +175,33 @@ Agent log: `journalctl --user -u dora-watch -f`
 
 ---
 
+## The recorded walkthrough
+
+A narrated 3:18 cut of everything below is on the Desktop:
+
+| File | What it is |
+|---|---|
+| `ExitPlan-DORA-agent-demo-narrated.mp4` | 3:18, voiceover, subtitles embedded |
+| `ExitPlan-DORA-agent-demo-narrated.srt` | the same subtitles, separately |
+| `ExitPlan-DORA-agent-demo.mp4` | an earlier 1:52 silent cut with on-screen captions |
+| `ExitPlan-DORA-agent-demo-transcript.md` | beat table, the narration, and what the video does *not* show |
+
+It was driven against the live desk by [`demo/record-demo.js`](./demo/record-demo.js)
+(Playwright), with each beat held for exactly as long as its narration segment
+— worst-case drift 11 ms. Narration text is in
+[`demo/narration-script.json`](./demo/narration-script.json). Re-record with:
+
+```bash
+node demo/record-demo.js /tmp/dora-vo
+```
+
+The voiceover was generated with a cloud text-to-speech service. That is
+post-production on a video; nothing in the product's runtime path leaves the
+box, and the cable-pull claim is unaffected. Say so if anyone asks how the
+video was made.
+
+---
+
 ## Answering the three judging criteria
 
 Have these ready — each one is a click, not a claim.
