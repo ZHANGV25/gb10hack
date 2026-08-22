@@ -149,6 +149,7 @@ export const PRESHOW: string[] = [
   'Drill the dropdown: on Castellan the provision pre-fill is WRONG (termination rights). Select “Participation in threat-led penetration testing”, scope “critical functions only”, or Aurora never fires.',
   'Live route: Register → Helvetia → Castellan → store rule → Agent activity → What it has learned → Aurora KYC → Nordlys → How it works → pull cable, reload, teach again → back to deck (slide 8).',
   'Say “synthetic” out loud once (slide 3). It appears nowhere in the product.',
+  '91f4f3c added four real SEC-filed contracts (value €0, non-critical) beside the curated book. If they are ingested tonight the register shows 16 rows and extra gaps while the script says twelve — either reconcile the spoken numbers with the live tiles, or skip ingest_real for the demo seed. The € figures are unaffected.',
 ];
 
 /** Rehearsed Q&A — the three questions this arc invites, plus one reserve. */

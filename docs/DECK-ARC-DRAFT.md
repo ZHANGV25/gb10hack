@@ -35,6 +35,11 @@ Tan = human action only: the reviewer's correction (slide 5) and the close rule.
    "a written correction"; team may want to shorten the demo text.
 5. **Castellan has two gaps** (termination + TLPT), page will show 13/15 — never say "one
    gap".
+6. **The SEC contracts change the register counts but DEMO.md doesn't know it** (91f4f3c):
+   four real filed contracts (value €0, non-critical) join the register. Ingested, the
+   page shows 16 rows and possibly extra gaps while the script says twelve. Reconcile the
+   spoken numbers with the live tiles before going on, or seed without `ingest_real.py`.
+   The €16,375,000 / €7,030,000 figures are unaffected either way.
 
 ## Before you present (operator prep — never spoken)
 
