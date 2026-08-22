@@ -39,9 +39,11 @@ Tan = human action only: the reviewer's correction (slide 5) and the close rule.
 ## Before you present (operator prep — never spoken)
 
 - `systemctl --user status dora-watch` → `active (running)`; else the teach beat dies.
-- `seed_dora.py` + `review_all.py` **~12 min, well before** — confirm the agreement line
-  (script says 138/141 · 98%) and the register tiles (script says 7 with gaps · 10 gaps ·
-  €7,030,000 · €16,375,000); update `slides.ts` strings if the run differs.
+- Reset **between runs** is instant (`reset_demo.py` — retires taught rules; the agent
+  reverts the verdicts itself). Full `seed_dora.py` + `review_all.py` (**~12 min, well
+  before**) only if contracts changed — confirm the agreement line (script says 138/141 ·
+  98%), the tiles (7 with gaps · 10 gaps · €7,030,000 · €16,375,000), and Castellan showing
+  "Gaps to close"; update `slides.ts` strings if the run differs.
 - Browser 1440×1250+, desk at `127.0.0.1:3000`, deck parked on slide 2.
 - Drill the dropdown: **provision = threat-led penetration testing, scope = critical
   functions only** (flag 1).

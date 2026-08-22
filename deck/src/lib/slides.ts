@@ -81,6 +81,7 @@ export const SLIDES: Slide[] = [
       'Castellan Core — core banking software. Look at its penetration-testing finding: the supplier tests itself, once a year, and refuses customer-initiated testing. The checklist calls that a material gap — something to schedule. A third-party risk officer would say: for core banking, that is not a gap to schedule. That’s a stop.',
       '(select the provision by hand — threat-led penetration testing — the pre-fill is wrong on this contract)',
       'So they disagree, in writing. The correction names the provision, is scoped to critical functions only, and says why, in plain language.',
+      '(the store click takes ~3s — the local embedding model turning the sentence into a vector; keep talking)',
       'Store the rule. No retraining happened. A sentence a human wrote just became policy — and the agent notices on its own.',
     ],
     loadBearing:
@@ -143,7 +144,7 @@ export const SLIDES: Slide[] = [
 /** Operator prep — read before going on, never spoken. Mirrors DEMO.md. */
 export const PRESHOW: string[] = [
   'systemctl --user status dora-watch → active (running) — without it the teach beat dies.',
-  'seed_dora.py, then review_all.py — ~12 minutes, well before. Confirm the agreement line (script says 138/141 · 98%) and the register tiles (7 with gaps · 10 gaps · €7,030,000 · €16,375,000); update these strings if the run differs.',
+  'Reset between runs is instant: reset_demo.py retires what you taught and the agent reverts the verdicts itself. Full seed_dora.py + review_all.py (~12 min) only if the contracts changed. Confirm the register tiles (7 with gaps · 10 gaps · €7,030,000 · €16,375,000), Castellan shows “Gaps to close”, and the agreement line (script says 138/141 · 98%); update these strings if the run differs.',
   'Browser ≥1440×1250, desk at 127.0.0.1:3000. Deck parked on slide 2 during the demo.',
   'Drill the dropdown: on Castellan the provision pre-fill is WRONG (termination rights). Select “Participation in threat-led penetration testing”, scope “critical functions only”, or Aurora never fires.',
   'Live route: Register → Helvetia → Castellan → store rule → Agent activity → What it has learned → Aurora KYC → Nordlys → How it works → pull cable, reload, teach again → back to deck (slide 8).',
