@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Alerts · Nordhafen Bank",
-  description: "Financial crime operations",
+  title: "ICT register · Nordhafen Bank",
+  description: "DORA Article 30 contract review",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

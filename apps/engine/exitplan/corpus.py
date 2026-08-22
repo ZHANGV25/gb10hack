@@ -1,8 +1,21 @@
 from __future__ import annotations
 
+# Two kinds of text live here and they must never be confused.
+#
+#   scope="case"      what governs a disposition: AMLR and the bank's own AML
+#                     policy. This is the only scope the drafter may retrieve.
+#   scope="platform"  what governs where the system runs: DORA's ICT
+#                     third-party exit duty. It is architecture rationale, not
+#                     evidence about a customer's payments, and citing it in a
+#                     disposition would be a regulatory category error.
+#
+# The split is enforced in the vector index (a filter field on `scope`), not
+# just by convention. See db.py and retrieve.py.
+
 CORPUS = [
     {
         "doc_id": "dora-28-8",
+        "scope": "platform",
         "title": "DORA Art 28(8) — in-house reincorporation",
         "source": "Regulation (EU) 2022/2554 Art. 28(8)",
         "text": (
@@ -15,6 +28,7 @@ CORPUS = [
     },
     {
         "doc_id": "dora-30-3",
+        "scope": "platform",
         "title": "DORA Art 30(3)(f)(ii) — change to in-house solutions",
         "source": "Regulation (EU) 2022/2554 Art. 30(3)(f)(ii)",
         "text": (
@@ -26,6 +40,7 @@ CORPUS = [
     },
     {
         "doc_id": "amlr-18-3",
+        "scope": "case",
         "title": "AMLR Art 18(3) — decisions cannot be outsourced",
         "source": "Regulation (EU) 2024/1624 Art. 18(3)",
         "text": (
@@ -36,6 +51,7 @@ CORPUS = [
     },
     {
         "doc_id": "policy-watchlist",
+        "scope": "case",
         "title": "Internal policy §4.2 — watchlist hits",
         "source": "Nordhafen Bank AML Policy §4.2",
         "text": (
@@ -46,6 +62,7 @@ CORPUS = [
     },
     {
         "doc_id": "policy-structuring",
+        "scope": "case",
         "title": "Internal policy §6.1 — structuring",
         "source": "Nordhafen Bank AML Policy §6.1",
         "text": (
@@ -55,6 +72,7 @@ CORPUS = [
     },
     {
         "doc_id": "policy-abstain",
+        "scope": "case",
         "title": "Internal policy §1.4 — abstention",
         "source": "Nordhafen Bank AML Policy §1.4",
         "text": (

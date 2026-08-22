@@ -216,7 +216,15 @@ export async function embedQuery(text: string): Promise<number[]> {
   return json.embedding;
 }
 
-export async function searchCorpus(query: string, k = 4) {
+/**
+ * Nearest policy spans for a disposition.
+ *
+ * Scoped to `case` on purpose: AMLR and the bank's own AML policy are what
+ * govern a customer's payments. Platform-scope text (DORA's ICT third-party
+ * exit duty) explains where this system runs and must never be cited as
+ * evidence about a customer.
+ */
+export async function searchCorpus(query: string, k = 4, scope = "case") {
   const database = await db();
   const collection = database.collection("corpus");
   try {
@@ -230,6 +238,7 @@ export async function searchCorpus(query: string, k = 4) {
             queryVector,
             numCandidates: 40,
             limit: k,
+            ...(scope ? { filter: { scope: { $eq: scope } } } : {}),
           },
         },
         { $addFields: { score: { $meta: "vectorSearchScore" } } },
@@ -243,7 +252,7 @@ export async function searchCorpus(query: string, k = 4) {
   } catch (err) {
     console.error("[retrieval] vector search failed", err);
   }
-  return keywordFallback(collection, query, k);
+  return keywordFallback(collection, query, k, scope);
 }
 
 /**
@@ -255,7 +264,9 @@ async function keywordFallback(
   collection: Collection,
   query: string,
   k: number,
+  scope: string,
 ) {
+  const scoped = scope ? { scope } : {};
   const terms = query
     .toLowerCase()
     .split(/[^a-z0-9€]+/)
@@ -265,7 +276,7 @@ async function keywordFallback(
     const rx = new RegExp(terms.join("|"), "i");
     const matched = await collection
       .find(
-        { $or: [{ title: rx }, { text: rx }, { source: rx }] },
+        { ...scoped, $or: [{ title: rx }, { text: rx }, { source: rx }] },
         { projection: { embedding: 0 } },
       )
       .limit(k)
@@ -273,7 +284,7 @@ async function keywordFallback(
     if (matched.length) return matched;
   }
   return collection
-    .find({}, { projection: { embedding: 0 } })
+    .find(scoped, { projection: { embedding: 0 } })
     .limit(k)
     .toArray();
 }

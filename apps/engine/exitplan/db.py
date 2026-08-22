@@ -46,6 +46,22 @@ def audit_log() -> Collection:
     return db()["audit_log"]
 
 
+# `scope` is a filter field so the drafter can be restricted to case-scope
+# policy at query time. Platform-scope text (DORA's ICT exit duty) explains
+# where this system runs; it is not evidence about a customer's payments.
+VECTOR_INDEX = {
+    "fields": [
+        {
+            "type": "vector",
+            "path": "embedding",
+            "numDimensions": EMBED_DIM,
+            "similarity": "cosine",
+        },
+        {"type": "filter", "path": "scope"},
+    ]
+}
+
+
 def ensure_indexes() -> None:
     customers().create_index("customer_id", unique=True)
     transactions().create_index("customer_id")
@@ -56,23 +72,20 @@ def ensure_indexes() -> None:
     dispositions().create_index("alert_id")
     audit_log().create_index("ts")
     try:
-        existing = {idx.get("name") for idx in corpus().list_search_indexes()}
-        if "corpus_vector" not in existing:
+        current = {
+            idx.get("name"): idx.get("latestDefinition")
+            for idx in corpus().list_search_indexes()
+        }
+        if "corpus_vector" not in current:
             corpus().create_search_index(
                 SearchIndexModel(
-                    definition={
-                        "fields": [
-                            {
-                                "type": "vector",
-                                "path": "embedding",
-                                "numDimensions": EMBED_DIM,
-                                "similarity": "cosine",
-                            }
-                        ]
-                    },
+                    definition=VECTOR_INDEX,
                     name="corpus_vector",
                     type="vectorSearch",
                 )
             )
+        elif current["corpus_vector"] != VECTOR_INDEX:
+            # e.g. an index built before `scope` existed.
+            corpus().update_search_index("corpus_vector", VECTOR_INDEX)
     except OperationFailure as exc:
         raise RuntimeError(f"vector index create failed: {exc}") from exc

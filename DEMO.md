@@ -1,146 +1,151 @@
 # ExitPlan — demo script
 
-Verified end to end in the browser on 22 Aug 2026 against the running desk.
-Total runtime **4–5 minutes**. Every step below was actually clicked and the
-result checked, including the timings.
+An **always-on DORA agent that reads every ICT contract** the bank depends on,
+finds the Article 30 provisions that are missing, and **learns from the people
+who correct it**. Every step below was clicked against the running system.
+
+Runtime **5 minutes**. All figures here are real, measured on the box.
+
+---
+
+## The one-sentence version
+
+> DORA Article 28(8) says a bank must be able to pull an ICT service back
+> in-house. To know whether it can, someone has to read every contract and
+> check for an exit clause, an audit right, a data-return clause. Nobody does,
+> because there are hundreds. This agent does it continuously, and it gets
+> better every time a reviewer disagrees with it.
 
 ---
 
 ## Before you start
 
 ```bash
-ssh -S /tmp/dell.sock dell@10.0.0.166 'cd /home/dell/gyuri/gb10hack && PYTHONPATH=apps/engine .venv/bin/python apps/engine/scripts/seed_exitplan.py'
+ssh -S /tmp/dell.sock dell@10.0.0.166 'systemctl --user status dora-watch --no-pager | head -3'
 ```
 
-Expect `8 customers · 27 transactions · 8 alerts · 6 corpus`. This wipes every
-decision, so the queue opens clean at **8 awaiting, 0 decided**.
+Expect `active (running)`. That is the agent. It is a supervised user service,
+so it survives logout and restarts itself on failure.
 
-Then check the three things that can break the demo:
-
-| Check | Command | Expect |
-|---|---|---|
-| Desk is up | `curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:3000/` | `200` |
-| Vector search returns real hits | see snippet below | 4 rows, top score ≈ 0.78 |
-| Draft model responds | open any case, click **Generate disposition** | first tokens in ~10s |
+Reset the register to its demo state:
 
 ```bash
-ssh -S /tmp/dell.sock dell@10.0.0.166 'cd /home/dell/gyuri/gb10hack && PYTHONPATH=apps/engine .venv/bin/python -c "
-from exitplan.embed import embed_text
-from exitplan.retrieve import similar_spans
-for h in similar_spans(embed_text(\"name similarity false positive watchlist policy\"), 4):
-    print(round(h[\"score\"],3), h[\"title\"])"'
+ssh -S /tmp/dell.sock dell@10.0.0.166 'cd /home/dell/gyuri/gb10hack && PYTHONPATH=apps/engine .venv/bin/python apps/engine/scripts/seed_dora.py && PYTHONPATH=apps/engine .venv/bin/python apps/engine/scripts/review_all.py'
 ```
 
-If that prints nothing, the corpus embeddings and the `corpus_vector` index
-disagree on dimensions — re-seed, and check that `.env` has exactly one
-`EMBED_MODEL` line and it says `bge-m3`.
+The seed is instant. **The review takes about 12 minutes** — the agent reads
+all twelve contracts with the local model. Do it well before you present, not
+during. Expect `clause_agreement: 138/141 (98%)`.
 
-Browser at **1440×900 or wider**, light mode. Below 1024px the sidebar collapses.
+Checks:
+
+| Check | Expect |
+|---|---|
+| `curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:3000/` | `200` |
+| Register page | 12 arrangements, 7 with gaps, €7,030,000 not cleanly exitable |
+| Memory page | 2 rules, both from earlier reviews |
+
+Browser at **1440×1250 or wider**.
 
 ---
 
 ## The run
 
-### 1 · The queue — "this is a real morning's work" (30s)
+### 1 · The register — "somebody has to read all of these" (45s)
 
 Open `http://127.0.0.1:3000/`.
 
-> Overnight, monitoring screened 27 payments across 8 customers and opened 8
-> cases. €112,000 is sitting in review. Every one of these needs an analyst
-> decision today — that's the job this desk exists to do.
+> Twelve ICT arrangements, €16.4 million a year. Eight support a critical
+> function, so the longer Article 30 list applies to them. The agent has read
+> every one and found ten gaps.
+>
+> **€7 million a year runs through contracts this bank cannot cleanly exit or
+> inspect.** That is the number a supervisor asks for and nobody can produce.
 
-Point at the three-step band: **rules open the case → the desk drafts → you
-decide**. Say the line that matters:
+Point at the right-hand panel:
 
-> The model never opens a case and never closes one.
+> The same provision missing across several suppliers is a contracting
+> problem, not a supplier problem. Two contracts have no penetration-testing
+> clause. Two don't disclose where the data actually sits.
 
-### 2 · Viktor Kovalev — the false positive (90s)
+### 2 · Helvetia Cloud — the Article 28(8) case (60s)
 
-Click **Viktor Kovalev** (`ALT-0004`, "Name similar to a sanctioned person").
+Click **Helvetia Cloud Services AG**.
 
-Point at **Why monitoring opened this**:
+> The core banking platform. €4.18 million a year. Fourteen of the fifteen
+> required provisions are in the contract — this is a *good* contract.
+>
+> The one it is missing is the exit strategy. There is no transition period
+> and no obligation to help the bank move. Which means the bank's DORA
+> Article 28(8) exit plan for its core banking platform is a document that
+> cannot be executed.
 
-> A deterministic rule scored his name against the sanctions list at 87% —
-> Viktor Kovalev versus Viktor Kovalenko. A rule found that, not a model.
-> His payments are salary, rent, freight, groceries.
+Expand a provision — click **show clause** on one that passed:
 
-Click **Generate disposition**. While it runs, narrate the pipeline strip
-lighting up:
+> Every tick is backed by the actual sentence in the contract. The model's job
+> is to find the clause and quote it. If it claims a provision is present and
+> can't produce the text, it gets recorded as absent.
 
-- **Policy retrieval** — the case becomes a 1024-dimension vector and MongoDB
-  `$vectorSearch` returns the four closest policy passages, with scores on
-  screen. *"It can only cite text that came back from that search."*
-- **Disposition draft** — the memo streams in. **30–60 seconds**; keep talking.
+### 3 · Castellan Core — teaching it (90s)
 
-The memo lands with bracketed citations and recommends **abstain from filing,
-refer to the MLRO** — which is the right answer for a weak match.
+Back to the register, open **Castellan Core Systems Ltd** (`NHB-ICT-2018-001`).
 
-### 3 · Ask it to file — the refusal (30s)
+> One gap: threat-led penetration testing. The clause says the supplier does
+> its own annual test and won't allow customer-initiated testing. The
+> checklist calls that a material gap — "gaps to close".
+>
+> A third-party risk officer would disagree. For a core banking supplier that
+> is not a gap to schedule, that's a stop.
 
-Click the suggestion chip **"Can you file this SAR for me?"**
+Click **Disagree — correct it**. The form is pre-filled with the right
+provision. Set **Apply this to → critical functions only**, and write:
 
-Verified response:
+> A supplier that refuses customer-initiated penetration testing of its
+> production environment cannot be assured for a critical function. Treat a
+> self-testing-only clause as not compliant, not a routine gap.
 
-> *"I'm not able to submit a SAR on your behalf. In our workflow the SAR must
-> be prepared and filed by a designated analyst after a formal review…"*
+Click **Store rule and re-check the register**.
 
-> That isn't politeness. AMLR Article 18(3) says reporting to the FIU cannot
-> be outsourced. The assistant has no filing capability at all.
+> No retraining. That sentence was embedded and written to MongoDB. The agent
+> is subscribed to that collection, so it woke up on its own.
 
-Click **Refer to MLRO**. The sidebar ticks to **Decided 1 · Awaiting 7**.
+### 4 · What just happened — the point of the whole thing (60s)
 
-### 4 · Viktor Kovalenko — the one that cannot be waved through (60s)
+Open **Agent activity**.
 
-Back to the queue, open **Viktor Kovalenko** (`ALT-0001`).
+> The rule landed, the agent waited for the vector index to catch up, then
+> re-checked **all twelve contracts in half a second**. It did not re-read a
+> single document — which clauses a contract contains hasn't changed, only
+> what the bank makes of them.
 
-Two rules fired: **exact match** on the sanctions list, and a **€61,000 payment
-to Pars International Trading Co. in Iran** — highlighted in the payment list.
+Open **What it has learned**. The new rule says *changing 2 verdicts now*.
 
-Point at the decision card: **Dismiss as false positive is locked**, with a lock
-icon and the reason.
+Now the punchline — open **Aurora KYC Ltd** (`NHB-ICT-2023-018`):
 
-> An exact sanctions match cannot be dismissed. And the block isn't in the
-> button — it's in the server.
+> Nobody opened this contract. It has the same weakness, so the agent found
+> the rule by meaning and applied it here too. That is the difference between
+> a rule engine and a memory.
 
-If a judge pushes, show it:
+And show it withholding correctly — open **Nordlys Data Centre**:
 
-```bash
-curl -s -w '\nHTTP %{http_code}\n' -X POST http://127.0.0.1:3000/api/decide \
-  -H 'content-type: application/json' \
-  -d '{"alertId":"ALT-0001","decision":"close_noise"}'
-```
+> Same rule considered, not applied. Nordlys has a penetration-testing clause,
+> so there is no gap for the rule to attach to. It can only make a verdict
+> stricter on a gap the checklist already found. It cannot invent one.
 
-Verified output: `{"error":"Red-flag gate: cannot close as noise"}` · `HTTP 409`.
-
-Click **Submit SAR to FIU**. The header pill flips to **SAR submitted**.
-
-### 5 · Activity — the trail (20s)
-
-Open **Activity**.
-
-> Monitoring opened it. The drafter drafted. The analyst decided and filed.
-> Three different actors, each entry appended with its reason, nothing edited.
-
-### 6 · How it works — the architecture (40s)
+### 5 · How it works (45s)
 
 Open **How it works**.
 
-> Everything inside that dashed boundary is on the bank's own hardware. Core
-> banking to rules to alert. Case to vector to MongoDB `$vectorSearch` to the
-> local model. Analyst decision behind a server-side gate. One MongoDB holds
-> the case data, the policy vectors and the audit log.
+> One MongoDB doing three jobs: the register, the vector store for the agent's
+> memory, and the event bus that makes it always-on. Change streams, not a
+> cron job. Everything inside the dashed line is on the bank's own hardware.
 
-Counts on the page are read live from the database.
+### 6 · Pull the cable (20s)
 
-### 7 · Pull the cable (20s)
+Unplug the network. Reload. Open a contract. Teach it a rule.
 
-Unplug the network. Reload the desk. Open a case. Click **Generate
-disposition**. It still works.
-
-> DORA Article 28(8) requires every EU financial entity to hold a plan to pull
-> its ICT services out of a third-party provider and reincorporate them
-> in-house. Ask a bank what that plan looks like and you'll get a slide.
-> This is the artifact.
+> Reading, embedding, retrieval, storage — all of it local. There is no third
+> party to lose.
 
 ---
 
@@ -148,16 +153,29 @@ disposition**. It still works.
 
 | Symptom | Cause | Fix |
 |---|---|---|
-| Draft says "0 passages matched" | corpus embeddings ≠ index dimension | re-seed; check the single `EMBED_MODEL=bge-m3` line in `.env` |
-| Draft never starts | Ollama busy or model cold | first call after boot is slow; run one warm-up generation before the demo |
-| Queue shows cases already decided | left over from a rehearsal | re-seed |
-| Sidebar missing | window under 1024px | widen the window |
+| Taught a rule, nothing changed | vector index hadn't caught up | the agent waits for it; check `indexed=True` in the journal |
+| Buttons do nothing | stale Turbopack dev chunks (403 on a JS chunk) | restart the dev server |
+| Register shows "Not yet read" | review never ran | `review_all.py`, ~12 min |
+| Agent not reacting | service stopped | `systemctl --user restart dora-watch` |
+
+Agent log: `journalctl --user -u dora-watch -f`
 
 ---
 
-## What not to say
+## Numbers worth knowing
 
-Read the Never/Always table in [`CLAUDE.md`](./CLAUDE.md) before you go on
-stage. The short version: *regulation requires an exit path, not on-prem*, and
-*the agent drafts — a human decides and files*. Say "synthetic data" out loud
-once; it is not written anywhere in the product.
+| | |
+|---|---|
+| Contracts in the register | 12 (8 critical), €16,375,000/yr |
+| Provisions checked | 15 per critical arrangement, 9 otherwise |
+| Clause agreement vs ground truth | **138/141 (98%)** |
+| Reading one contract | 35–95s (local model) |
+| Re-checking all 12 after a correction | **~0.5s** |
+| Cloud API calls | 0 |
+
+---
+
+## Also on this box
+
+The AML disposition desk (the earlier financial-crime build) still runs at
+`/aml`. It is not part of this demo.

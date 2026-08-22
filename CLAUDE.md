@@ -8,30 +8,43 @@ Read this before changing anything. Pitch and regulation live in [`PROJECT-CONTE
 
 ## What it is
 
-**ExitPlan** is an on-box **financial-crime triage desk** for a fictional bank (**Nordhafen Bank**).
+**ExitPlan** is an **always-on DORA agent** that reads every ICT third-party
+contract a fictional bank (**Nordhafen Bank**) depends on, checks it against
+the provisions **DORA Article 30** requires, and **learns from the reviewers
+who correct it**.
 
-- Monitoring **rules** open alerts (sanctions names, split payments under €10k, high-risk countries). The model **cannot invent an alert**.
-- A local **drafter** writes a disposition memo and cites policy. It **cannot dismiss, escalate, or file**.
-- An **analyst** records: dismiss as false positive, refer to MLRO, or submit a SAR to the FIU.
-- Exact sanctions match (**Viktor Kovalenko**) **cannot be dismissed**.
-- Everything stays on the Dell Pro Max GB10. **Zero cloud LLM** in the runtime path. No Vercel AI Gateway.
+- A local model **reads each contract** and answers, for each of the fifteen
+  Article 30 provisions: present, inadequate, or absent — and must quote the
+  clause. A claim with no quote is recorded as absent.
+- **Python decides**, not the model (`assess.py`). Missing exit rights, audit
+  rights or data return are *blocking*; the rest are *material*.
+- A reviewer who disagrees writes one sentence. It is embedded and stored in
+  MongoDB as a **rule**. The agent retrieves it by meaning on any contract with
+  a similar gap. **No fine-tuning.**
+- The agent is subscribed to MongoDB **change streams**. A new contract makes
+  it read; a new rule makes it **re-check the whole register in ~0.5s** by
+  reusing stored extractions.
+- Everything on the Dell Pro Max GB10. **Zero cloud API calls.**
 
-Pitch in one line: DORA Art. 28(8) is an **exit path** (reincorporate ICT in-house), not a cloud ban. AMLR Art. 18(3): the agent drafts; a human decides and files. Cable-pull is the demo closer.
+Pitch in one line: DORA Art. 28(8) requires a bank to be able to pull an ICT
+service back in-house — this is the agent that tells it, contract by contract,
+whether it actually can. Cable-pull is the demo closer.
 
-**Not** FieldMedic (old medical product, git tag `pre-bank-pivot`). **Not** Covenant (ICT contract register). Covenant Python still exists under `apps/engine/covenant/` but the **UI is ExitPlan**.
+Measured: **138/141 (98%)** clause agreement against the book's ground truth.
 
----
+**Not** FieldMedic (git tag `pre-bank-pivot`). The **AML disposition desk** —
+the earlier financial-crime build — still runs at `/aml` and is not the demo.
 
 ## Never / always (product + copy)
 
 | Never | Always |
 |---|---|
-| “EU law requires on-prem” | “Regulation requires an exit path. We built it.” |
-| Demo / fake / synthetic / GPU / GB10 / Nemotron / hackathon in the **UI** | Production voice: analyst desk, dispositions, SAR |
-| Model decides or files | Human clicks Dismiss / Refer to MLRO / Submit SAR to FIU |
-| Credit scoring / creditworthiness | Financial-crime detection only (AI Act carve-out) |
-| “Run Nemotron on this GPU” | **Generate disposition** |
-| Claiming uploaded PDFs/spreadsheets | Cases come from core banking + rules |
+| “EU law requires on-prem” | “Regulation requires an exit path. We built the thing that proves you have one.” |
+| Demo / fake / synthetic / GPU / GB10 / Nemotron / hackathon in the **UI** | Production voice: register, arrangement, provision, reviewer |
+| “The AI decides the contract is bad” | The checklist decides; the model finds and quotes clauses |
+| “It learns automatically” | It learns **from a named reviewer's written correction** |
+| “We fine-tune on your contracts” | Retrieval, not retraining — every rule is a readable sentence you can switch off |
+| Claiming it reads uploaded PDFs | Contracts come from the register in MongoDB |
 
 UI must stay **compact** (internal tool density: `text-sm`, tight rows). Do not blow up type again.
 
@@ -55,14 +68,26 @@ Say “synthetic data” **on stage**, not as chrome in the product.
 | ⚠ `.env` | must contain **exactly one** `EMBED_MODEL` line, `bge-m3`. A stale `nomic-embed-text` line silently made the seeder write 768-d vectors into a 1024-d index, and `$vectorSearch` returned nothing. `config.py` now takes the last value per key. |
 | Do not kill | Jupyter `:8888`, OpenClaw TUI, other teams’ containers |
 
-Seed (wipes customers, txns, alerts, dispositions, corpus, audit_log):
+Seed the register (wipes contracts, verdicts, rules, corrections, runs):
 
 ```bash
 cd /home/dell/gyuri/gb10hack
-PYTHONPATH=apps/engine .venv/bin/python apps/engine/scripts/seed_exitplan.py
+PYTHONPATH=apps/engine .venv/bin/python apps/engine/scripts/seed_dora.py
+PYTHONPATH=apps/engine .venv/bin/python apps/engine/scripts/review_all.py   # ~12 min
 ```
 
-Expect **8 customers, 8 alerts, 6 corpus chunks**.
+Expect **12 contracts (8 critical), 2 rules**, then `138/141 (98%)` agreement.
+
+The agent runs as a supervised user service (lingering is on, so it survives
+logout):
+
+```bash
+systemctl --user status dora-watch
+journalctl --user -u dora-watch -f
+```
+
+⚠ Start long-running processes on the box with `systemd-run --user`, **not**
+`nohup … &` over ssh — the ssh channel closing kills them.
 
 Deploy from the Mac (after commit + `git push origin main`):
 
@@ -83,109 +108,107 @@ No `npm run deploy:web`. No Vercel. Re-seed on the box if engine seed/screen/cor
 ## Repo map
 
 ```
-apps/engine/exitplan/     # product engine
-  screen.py               # rules (watchlist / corridor / structuring)
-  seed.py                 # eight named cases (BOOK)
-  corpus.py               # DORA + AMLR + Nordhafen policy chunks
-  embed.py / retrieve.py  # bge-m3 → Mongo $vectorSearch
-  decide.py               # human decide/file; red-flag gate
-  db.py                   # Mongo indexes + corpus_vector
-apps/engine/scripts/seed_exitplan.py
-apps/engine/covenant/     # leftover; not the demo
-apps/web/                 # Next.js 16 desk
-  app/globals.css         # design tokens (light only, hairline/small-radius)
-  app/page.tsx            # Alert queue + stat tiles + "what this desk does"
-  app/system/page.tsx     # "How it works" — architecture diagram + live counts
-  app/audit/page.tsx      # Activity log
-  app/alerts/[alertId]/   # Case
-  app/api/chat/route.ts   # streamText → Ollama; tool retrievePolicy
-  app/api/decide/route.ts
-  lib/architecture.ts     # PIPELINE source of truth (7 stages, CASE_STAGES = 4)
-  lib/format.ts           # headlines, rule labels, tones, countries, €, audit
-  components/shell.tsx    # sidebar + Page header
-  components/system-diagram.tsx   # the /system architecture diagram
-  components/pipeline-strip.tsx   # 4-step strip on a case
-  components/how-it-works.tsx     # 3-step band on the queue
-  components/pill.tsx     # Pill / Dot / Rail / Eyebrow
-  components/case-workspace.tsx
-  components/memo-text.tsx        # renders the drafter's light markdown
-deck/                     # pitch deck (other teammates). Do not mix into the desk.
+apps/engine/covenant/     # the DORA agent (package name is historical)
+  dora.py                 # the Article 30 catalogue — 15 provisions, 3 blocking
+  book.py                 # 12 ICT contracts, assembled from clause boilerplate
+                          #   + ground_truth() for evaluating the agent
+  extract.py              # model reads the contract -> present/inadequate/absent + quote
+  assess.py               # deterministic gaps -> verdict; apply_rules() = memory overlay
+  judge.py                # extract -> assess -> retrieve rules -> verdict + audit run
+  watch.py                # ALWAYS-ON: change streams on contracts and rules
+  learn.py                # a correction becomes an embedded rule
+  retrieve.py / embed.py  # $vectorSearch over rules_vector
+  db.py                   # collections, indexes, self-updating vector indexes
+apps/engine/scripts/
+  seed_dora.py            # load the register + 2 seeded rules
+  review_all.py           # read every unreviewed contract, report agreement
+apps/engine/exitplan/     # the earlier AML desk engine (still used by /aml)
+apps/web/
+  app/page.tsx            # the ICT register
+  app/contracts/[ref]/    # one contract: checklist, quoted clauses, review panel
+  app/memory/page.tsx     # what it has learned
+  app/activity/page.tsx   # what the always-on agent has done
+  app/system/page.tsx     # architecture + what MongoDB is doing
+  app/api/review/route.ts # a reviewer's correction -> a rule (the agent does the rest)
+  app/aml/, app/alerts/   # the earlier AML desk, off the nav
+  lib/dora.ts             # register aggregation ($lookup, gap frequency)
+  lib/provisions.ts       # the Article 30 checklist, for display
+  components/register-table.tsx, provision-checklist.tsx, review-panel.tsx,
+             dora-diagram.tsx, memory/activity views
+deck/                     # pitch deck (other teammates). Do not mix in.
 ```
 
-Web talks to Mongo and Ollama **on the box**. AI SDK: `createOpenAICompatible` → `http://127.0.0.1:11434/v1`.
+**The split that matters:** the model only ever says *what a clause says*.
+`assess.py` decides what that means, and `rules` (written by humans) can make
+a verdict stricter. Keep it that way.
 
----
+## The register
 
-## The eight cases
+Twelve ICT arrangements, €16,375,000/yr, 8 critical. `book.py` declares which
+clauses each contract contains, so whatever it omits is a real gap the agent
+must find from the text alone.
 
-Only these alerts exist (rules fire; no forced noise on random people).
+| Supplier | Function | Critical | Intended gaps |
+|---|---|---|---|
+| Helvetia Cloud Services | Core banking hosting | yes | exit strategy |
+| Meridian Payments | Card processing | yes | audit rights (SOC 2 only) |
+| Nordlys Data Centre | Colocation | yes | — |
+| Aurora KYC | Sanctions screening | yes | locations, TLPT |
+| Brightmail Secure | Email security | no | — |
+| Vantage HR Cloud | HR and payroll | no | data return, authority cooperation, training |
+| Castellan Core Systems | Core banking software | yes | termination rights, TLPT |
+| Skyward Analytics | Regulatory reporting | yes | termination rights |
+| Pinnacle Managed Print | Printing | no | — |
+| Orion Trading Systems | Market data | yes | — (exclusivity clause) |
+| Larsen Legal Archive | Document archive | no | locations |
+| Tessera Identity | Identity verification | yes | — |
 
-| Who | Why it’s open |
-|---|---|
-| Viktor Kovalenko | Exact sanctions match + €61k to Iran. **Dismiss locked.** |
-| Elena Rossi | Restaurant; three payments just under €10k to M. Bianchi |
-| Jonas Berg | Exporter; €61k to Kish Industrial Supply, Iran |
-| Viktor Kovalev | Name similar to Kovalenko; ordinary Berlin salary/rent |
-| Omar Rashid | Similar to listed Omar Al-Rashid; Cologne dentist |
-| Marina Petrova | Similar to Marina Petrovic; Vienna piano teacher |
-| Marina Petersen | Weak name match; retail Amsterdam |
-| Chen Wei | Weak match vs listed **company** Chen Wei Holdings |
-
-Watchlist in `screen.py`: Kovalenko, Marina Petrovic, Omar Al-Rashid, Chen Wei Holdings.
-
-Headlines/stories live on the alert document (`headline`, `story`). Change cases in `seed.py` then re-seed.
-
----
+Change the book in `book.py`, then re-seed and re-review.
 
 ## UI loop
 
-Left sidebar: **Alert queue · Activity · How it works**, with live counts and
-the on-prem footer. Layout is desktop-first; under 1024px the sidebar collapses
-to a top nav.
+Sidebar: **ICT register · What it has learned · Agent activity · How it works**.
 
-1. **Alert queue** — four stat tiles (awaiting / value in review / decisions / where it runs),
-   a three-step "what this desk does" band, then the case table: customer, why it
-   opened, rule chips, value, status. Tabs default to **Needs a decision**.
-2. Open a case — header carries severity, value, payment count, rules fired.
-   The 4-step strip (Alert opened → Policy retrieval → Disposition draft → Analyst
-   decision) highlights where the case is *now*, live during generation.
-3. Left column: why it opened (one card per rule, with the mechanic in plain
-   English), who the customer is, payments with the rule-triggering rows marked.
-4. **Generate disposition** — streams; shows the vector query, the matched policy
-   titles and their cosine scores. **~30–60s** end to end; ~31s measured.
-   Suggestion chips include "Can you file this SAR for me?" (it refuses).
-5. **Record the decision** — three option rows with their consequence. Dismissal
-   is visibly locked on a red flag.
-6. **Activity** — actor-coloured timeline, decision-specific rationale.
-7. **How it works** — the architecture diagram (5 bands, live counts, MongoDB
-   collections), stage-by-stage table, guardrails.
-
-If you change the pipeline, edit `apps/web/lib/architecture.ts` (case strip +
-`/system` both read it). Demo script: [`DEMO.md`](./DEMO.md).
-
----
+1. **Register** — four tiles (arrangements with gaps, value that cannot be
+   cleanly exited, Article 30 gaps, total contracted), a three-step explainer,
+   the table, and a live aggregation of which provision the estate is weakest on.
+2. **A contract** — verdict and reasoning, then the Article 30 checklist. Each
+   row expands to the **verbatim clause** the agent relied on.
+3. **Reviewer decision** — agree, or disagree and write one sentence. That
+   sentence becomes a rule. The route only writes; the agent re-evaluates.
+4. **Memory consulted** — the rules retrieved for this contract, their cosine
+   scores, and whether each one actually fired.
+5. **What it has learned** — every rule, its author, the contract it came
+   from, and how many verdicts it is changing right now.
+6. **Agent activity** — change-stream events and re-evaluation sweeps with
+   before/after verdicts.
 
 ## Safety stack (must not regress)
 
-1. **Rules own the hit** (`screen.py`). Chat prompt: do not invent txns or watchlist hits.
-2. **Retrieval-grounded draft** — `retrievePolicy` → `searchCorpus` (`$vectorSearch`;
-   falls back to a keyword scan when the index errors **or returns zero rows**, so a memo
-   is never written against an empty policy set).
-3. **Abstention** is valid.
-4. **Red-flag gate** in decide API + UI. Verified: `POST /api/decide` with
-   `close_noise` on `ALT-0001` returns **HTTP 409**.
-5. **Append-only** `audit_log`.
-6. **Cable-pull**: no cloud APIs.
+1. **The checklist decides, not the model.** `assess.py` is deterministic.
+2. **No quote, no claim.** A provision reported present without verbatim text
+   is downgraded to absent in `extract.py`.
+3. **Memory cannot invent a gap.** A rule only fires on a provision the
+   checklist already found missing, and can be scoped to critical or
+   non-critical arrangements.
+4. **An exception softens by one step and never blesses a blocking gap.**
+   `reject → escalate → approve`, and refused entirely while an unaddressed
+   blocking provision is outstanding.
+5. **Wait for the index.** The watcher confirms a new rule is retrievable
+   before re-evaluating — Atlas Search is eventually consistent, and
+   re-evaluating too early silently produces the old verdicts.
+6. **Append-only `runs`** — every read, sweep and memory change.
+7. **Cable-pull**: no cloud APIs.
 
----
+## Pitch demo
 
-## Pitch demo (updated labels)
+Register → **Helvetia Cloud** (14/15, missing only the exit clause — the
+Art. 28(8) case) → **Castellan Core** → disagree, teach a rule → **Agent
+activity** (12 contracts re-checked in ~0.5s) → **Aurora KYC**, which nobody
+opened, now carries the same rule → **Nordlys**, where it correctly did not
+apply → **How it works** → pull the cable.
 
-Queue → **Kovalev** (similar name, rules not the model) → **Generate disposition** → ask “Can you file this?” (must refuse) → **Refer to MLRO** → **Kovalenko** (dismiss locked) → **Submit SAR to FIU** → **Activity** → pull Wi-Fi.
-
-SAR = suspicious activity report to the FIU, not a file upload.
-
----
+Full script: [`DEMO.md`](./DEMO.md).
 
 ## Git / process
 

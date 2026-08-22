@@ -1,3 +1,12 @@
+"""Read an ICT contract and say, clause by clause, what DORA Art. 30 requires.
+
+The model does one job here: find the clause and quote it. It does not decide
+whether the arrangement is acceptable, does not add up money, and does not
+know what the bank's policy is. Those live in assess.py and in the learned
+rules, so every verdict can be traced to either a quoted clause or a written
+rule.
+"""
+
 from __future__ import annotations
 
 import json
@@ -5,39 +14,53 @@ import re
 
 import httpx
 
-from covenant.config import (
-    EXTRACT_HEAD_CHARS,
-    EXTRACT_TAIL_CHARS,
-    JUDGE_MODEL,
-    OLLAMA_URL,
-)
+from covenant.config import JUDGE_MODEL, OLLAMA_URL
+from covenant.dora import ALL_PROVISIONS, required_for
 
-SCHEMA = {
-    "vendor_name": "string, the ICT/vendor counterparty if identifiable else the issuer or unknown",
-    "governing_law": "string or null",
-    "liability_uncapped": "boolean true if liability is unlimited/uncapped/not limited",
-    "liability_cap_usd": "number or null. Convert stated cap to a USD number. null if uncapped or not stated. Do not add or subtract. Just convert the stated figure.",
-    "annual_spend_usd": "number or null. Stated fees, commitment, facility size, or annual spend if present. Convert to a number. Do not compute totals from multiple line items — use the single headline figure.",
-    "data_leaves_eea": "boolean true if personal/customer data may be processed or transferred outside the EEA/UK, else false if the contract says EEA/UK only, else false if silent",
-    "single_vendor_dependency": "boolean true if exclusive / sole-source / cannot switch without material penalty",
-    "cited_clause": "verbatim quote of the most important liability or data-transfer sentence, <= 600 chars",
-    "cited_section": "section heading or exhibit reference or null",
-}
+STATUSES = ("present", "inadequate", "absent")
 
-SYSTEM = """You extract risk-bearing terms from a vendor/ICT contract exhibit.
-Return ONLY JSON matching the schema. No markdown.
-Never add, multiply, or compare money figures. If a cap is written as "five million dollars", output 5000000.
-If liability is unlimited, set liability_uncapped=true and liability_cap_usd=null.
-"""
+SYSTEM = """You are a contract analyst reading an ICT third-party agreement for an EU bank.
+
+For each provision you are asked about, decide one of:
+  "present"     the contract contains a clause that fully satisfies the requirement
+  "inadequate"  a related clause exists but falls short of the requirement
+  "absent"      no clause addresses the requirement at all
+
+Rules you must follow:
+- Quote verbatim from the contract. Never paraphrase into the quote field.
+- If you cannot find supporting text, the status is "absent" and quote is null.
+- "inadequate" is the right answer when a clause is limited, conditional,
+  discretionary, or narrower than what was asked for. Read carefully: a clause
+  that sounds reassuring but is capped, optional or one-sided is inadequate.
+- Do not judge whether the contract as a whole is acceptable. Only report what
+  the text does and does not say.
+
+Return ONLY JSON. No markdown, no commentary."""
 
 
-def extract_fields(text: str) -> dict:
-    body = _window(text)
+def _requirements_block(critical: bool) -> str:
+    lines = []
+    for key, spec in required_for(critical).items():
+        lines.append(f'  "{key}"  (DORA Art {spec["article"]}) — {spec["looks_for"]}')
+    return "\n".join(lines)
+
+
+def extract_provisions(text: str, critical: bool) -> dict:
+    """Returns {provision_key: {status, quote, section}}."""
+    required = required_for(critical)
+    schema = {
+        key: {"status": "one of present|inadequate|absent", "quote": "verbatim text or null", "section": "clause heading or null"}
+        for key in required
+    }
     user = (
-        "Schema:\n"
-        + json.dumps(SCHEMA, indent=2)
-        + "\n\nContract text:\n"
-        + body
+        f"This arrangement {'DOES' if critical else 'does NOT'} support a critical or "
+        f"important function, so you must assess the following "
+        f"{len(required)} provisions:\n\n"
+        + _requirements_block(critical)
+        + "\n\nReturn JSON with exactly these keys:\n"
+        + json.dumps(schema, indent=2)
+        + "\n\nCONTRACT:\n"
+        + text
     )
     payload = {
         "model": JUDGE_MODEL,
@@ -49,17 +72,40 @@ def extract_fields(text: str) -> dict:
             {"role": "user", "content": user},
         ],
     }
-    with httpx.Client(timeout=300.0) as client:
+    with httpx.Client(timeout=600.0) as client:
         r = client.post(f"{OLLAMA_URL}/api/chat", json=payload)
         r.raise_for_status()
         content = r.json().get("message", {}).get("content") or ""
-    return _parse_json(content)
+    return _normalise(_parse_json(content), required)
 
 
-def _window(text: str) -> str:
-    if len(text) <= EXTRACT_HEAD_CHARS + EXTRACT_TAIL_CHARS:
-        return text
-    return text[:EXTRACT_HEAD_CHARS] + "\n\n[...truncated...]\n\n" + text[-EXTRACT_TAIL_CHARS:]
+def _normalise(data: dict, required: dict) -> dict:
+    """Never trust the shape. Missing or malformed keys read as absent."""
+    out: dict[str, dict] = {}
+    for key in required:
+        raw = data.get(key)
+        if not isinstance(raw, dict):
+            out[key] = {"status": "absent", "quote": None, "section": None}
+            continue
+        status = str(raw.get("status") or "").strip().lower()
+        if status not in STATUSES:
+            status = "absent"
+        quote = raw.get("quote")
+        quote = str(quote).strip() if quote else None
+        if quote in ("", "null", "None"):
+            quote = None
+        if status != "absent" and not quote:
+            # A claim with no text behind it is not evidence.
+            status = "absent"
+        section = raw.get("section")
+        section = str(section).strip() if section else None
+        out[key] = {
+            "status": status,
+            "quote": quote[:700] if quote else None,
+            "section": section[:120] if section else None,
+            "article": ALL_PROVISIONS[key]["article"],
+        }
+    return out
 
 
 def _parse_json(content: str) -> dict:

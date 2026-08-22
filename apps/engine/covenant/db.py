@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import time
+
 from pymongo import MongoClient
 from pymongo.collection import Collection
 from pymongo.errors import OperationFailure
@@ -43,9 +45,10 @@ def runs() -> Collection:
 
 
 def _ensure_vector_index(coll: Collection, name: str, path: str) -> None:
-    existing = {idx.get("name") for idx in coll.list_search_indexes()}
-    if name in existing:
-        return
+    current = {
+        idx.get("name"): idx.get("latestDefinition")
+        for idx in coll.list_search_indexes()
+    }
     fields: list[dict] = [
         {
             "type": "vector",
@@ -55,24 +58,64 @@ def _ensure_vector_index(coll: Collection, name: str, path: str) -> None:
         }
     ]
     if name == "rules_vector":
+        # Retired rules stay in the collection for audit but must not be
+        # retrievable, and a rule can be scoped to one DORA provision.
         fields.append({"type": "filter", "path": "active"})
-    model = SearchIndexModel(
-        definition={"fields": fields},
-        name=name,
-        type="vectorSearch",
+        fields.append({"type": "filter", "path": "provision"})
+    definition = {"fields": fields}
+    if name not in current:
+        _create(coll, name, definition)
+        return
+    if current[name] == definition:
+        return
+    # e.g. an index built before a filter field was added. update_search_index
+    # cannot carry the vectorSearch type, and after a collection drop the old
+    # entry lingers in the listing, so fall back to a rebuild.
+    try:
+        coll.update_search_index(name, definition)
+    except OperationFailure:
+        _rebuild(coll, name, definition)
+
+
+def _create(coll: Collection, name: str, definition: dict) -> None:
+    try:
+        coll.create_search_index(
+            SearchIndexModel(definition=definition, name=name, type="vectorSearch")
+        )
+    except OperationFailure as exc:
+        if "already exists" not in str(exc).lower():
+            raise
+        _rebuild(coll, name, definition)
+
+
+def _rebuild(coll: Collection, name: str, definition: dict) -> None:
+    try:
+        coll.drop_search_index(name)
+    except OperationFailure:
+        pass
+    for _ in range(60):
+        names = {i.get("name") for i in coll.list_search_indexes()}
+        if name not in names:
+            break
+        time.sleep(1)
+    coll.create_search_index(
+        SearchIndexModel(definition=definition, name=name, type="vectorSearch")
     )
-    coll.create_search_index(model)
 
 
 def ensure_indexes() -> None:
-    contracts().create_index("accession", unique=True)
+    contracts().create_index("ref", unique=True)
     contracts().create_index("status")
-    verdicts().create_index("contract_id")
+    contracts().create_index([("critical", 1), ("last_decision", 1)])
+    verdicts().create_index("ref")
+    verdicts().create_index([("ref", 1), ("created_at", -1)])
     verdicts().create_index("decision")
+    verdicts().create_index("gaps.provision")
     rules().create_index("active")
-    rules().create_index("version")
-    corrections().create_index("contract_id")
-    runs().create_index("started_at")
+    rules().create_index("provision")
+    rules().create_index([("created_at", -1)])
+    corrections().create_index("ref")
+    runs().create_index([("started_at", -1)])
     try:
         _ensure_vector_index(contracts(), "contracts_vector", "embedding")
         _ensure_vector_index(rules(), "rules_vector", "embedding")
