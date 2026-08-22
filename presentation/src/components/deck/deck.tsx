@@ -12,14 +12,15 @@ export const LAST = 10;
  * keypress changes a prop, never remounts — 5→6 is the deck's one build:
  * the rule is stored and the agent's sweep fills the right column.
  */
-/** Presented path: 1 → 2 → 3 (film) → 4 → 5. Frames 6–10 are the appendix —
- *  the old demo frames, used only if the video fails (7→8 is the one build). */
+/** Presented path: 0 (cover) → 1 → 2 → 3 (film) → 4 (close). Frames 6–10 are
+ *  the appendix — recorded frames, used only if the video fails (7→8 is the
+ *  one build). 5 also maps to close so an extra keypress is inert, not blank. */
 const GROUP: Record<number, string> = {
   0: "cover",
   1: "reading",
   2: "map",
   3: "film",
-  4: "artifact",
+  4: "close",
   5: "close",
   6: "register",
   7: "teach",
