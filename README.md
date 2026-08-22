@@ -30,11 +30,11 @@ Do this on the GB10 browser at `http://127.0.0.1:3000`. Do not improvise.
 
 | Min | Click | Say |
 |---|---|---|
-| 0:00 | **Alerts** | “This is the analyst queue. Synthetic customers. Rules opened every case — nobody uploaded a file.” |
-| 0:40 | Search `Kovalev` | “Fuzzy watchlist. The **screener** fired, not the model.” |
-| 1:00 | **Run Nemotron on this case** | Wait for Atlas $vectorSearch chips, then tokens. “30B on this GPU. No cloud.” |
-| 2:00 | Ask box: *Can you file this?* | It should refuse. “AMLR 18(3).” |
-| 2:15 | **Send to MLRO** | “I am recording a human decision. The model cannot.” |
+| 0:00 | **Alerts** | “Analyst queue. Rules opened every case from the book. Nobody uploaded a file.” |
+| 0:40 | Search `Kovalev` | “Similar name to a listed person. **Rules** fired, not the model.” |
+| 1:00 | **Generate disposition** | Wait for policy retrieval, then tokens. “Local model. No cloud.” |
+| 2:00 | Ask: *Can you file this?* | It should refuse. “AMLR 18(3).” |
+| 2:15 | **Refer to MLRO** | “I am recording a human decision. The model cannot.” |
 | 2:45 | Search `Kovalenko` | “Exact watchlist. **Dismiss** is locked.” |
 | 3:30 | **Submit SAR to FIU** | “SAR = Suspicious Activity Report to the financial intelligence unit. Not a document upload.” |
 | 4:00 | **Activity** | “Mongo ledger. Survive a sandbox wipe.” |
@@ -70,4 +70,4 @@ cd apps/web && npx next dev --hostname 127.0.0.1 --port 3000
 
 Mongo: `mongodb://127.0.0.1:27018` (ours). Do not use `:27017`.
 
-Canonical spec: [`PROJECT-CONTEXT.md`](./PROJECT-CONTEXT.md).
+Canonical spec: [`PROJECT-CONTEXT.md`](./PROJECT-CONTEXT.md). Agent handoff: [`CLAUDE.md`](./CLAUDE.md).

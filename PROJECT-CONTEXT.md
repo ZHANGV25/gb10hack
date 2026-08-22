@@ -1,8 +1,7 @@
 # ExitPlan (working name) — Project Context
 
-> **Read this first.** Canonical context for every teammate and every AI agent on this project.
-> If you pick up a task, this file tells you what we're building, why, on what, and who owns what.
-> Update it when facts change; it is the single source of truth today.
+> **Read this first** for pitch and regulation. **Running product / paths / cases / deploy** for coding agents: [`CLAUDE.md`](./CLAUDE.md).
+> Update both when facts change.
 
 ## Mission
 
@@ -140,9 +139,9 @@ alert) → abstention-capable → audit-logged.
 | 2 | Deterministic screener (rules → candidate alerts + reasons) | Gyorgy | done |
 | 3 | Regulatory corpus ingest + Mongo vector search (bge-m3) | Gyorgy | done |
 | 4 | Drafting agent + span citations + constrained generation | Gyorgy | done |
-| 5 | Analyst UI (alert queue → draft disposition → human decides) | Gyorgy | done |
+| 5 | Analyst UI (alert queue → draft disposition → human decides) | Gyorgy | done (compact desk, live pipeline chart) |
 | 6 | Audit ledger (Mongo append-only) | Gyorgy | done |
-| 7 | Demo script + deck + DORA Art 28(8) slide | all, by 17:00 | README pitch + 5-min loop done; deck TBD |
+| 7 | Demo script + deck + DORA Art 28(8) slide | all, by 17:00 | README loop + `deck/` app; keep labels in sync with UI |
 
 **Cut order if behind:** UI polish first, then the regulatory corpus (hardcode 3-4 citations), then vector
 search (keyword fallback). **Never cut:** the deterministic screener, span citations, the human-decides
@@ -150,21 +149,18 @@ step, or the cable pull. Those four *are* the pitch.
 
 ## MongoDB collections
 
-`customers` (synthetic KYC profiles) · `transactions` (synthetic ledger) · `alerts` (screener output +
-which rule fired) · `corpus` (regulation + internal policy chunks) · `embeddings` (vector index, bge-m3) ·
-`dispositions` (agent drafts + cited spans + human decision) · `audit_log` (append-only: agent, action,
-input hash, output, rationale, ts)
+`customers` · `transactions` · `alerts` (rule output, `headline`, `story`) · `corpus` (policy/reg chunks **plus** `embedding`) · `dispositions` · `audit_log`. Database `exitplan` on `:27018`. There is no separate `embeddings` collection.
 
 ## Demo arc (5 min, target)
 
-1. Alert queue — 200 synthetic alerts, 99% of them noise. *"This is a real analyst's Monday."*
-2. Open one. The **deterministic screener** shows why it fired — name + jurisdiction fuzzy match.
-3. Agent drafts the disposition: pulls the customer file, prior alerts, the policy paragraph, and the
-   regulation — **every sentence citing its source span, clickable.**
-4. A red-flag case: hard rule fires, the model's draft is overridden. *"The model never overrules the rules."*
-5. The analyst clicks **Decide** and **File**. *"The agent drafted. A human decided. That's Article 18(3),
-   and it's not optional."*
-6. **Kill the uplink on stage** → everything keeps working. *"That's Article 28(8). The exit plan, running."*
+See [`CLAUDE.md`](./CLAUDE.md) for current button labels and the eight named cases.
+
+1. Alert queue — eight readable stories (sanctions, structuring, Iran corridor, similar names, false matches).
+2. Open one. **Monitoring rules** show why it fired — the model did not pick the hit.
+3. **Generate disposition**: policy retrieval, then a cited memo. Model cannot file.
+4. Red-flag (**Kovalenko**): dismiss is locked.
+5. Analyst records Refer to MLRO or Submit SAR to FIU.
+6. Kill the uplink → queue, draft, Mongo, Nemotron still run.
 
 ## Prior work
 
