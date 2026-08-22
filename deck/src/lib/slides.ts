@@ -1,11 +1,11 @@
 /** The pitch script — single source of truth for the person at the microphone.
- *  Rendered at /script. V16 "two slides, the film, two slides": the show is
- *  slide 1 (the trap) → slide 2 (the map — why this cannot be a cloud
- *  service) → slide 3 parks while the demo video plays (narrate the four
- *  film beats over the 1:52 silent cut, or let the 3:18 narrated cut speak
- *  for itself) → slide 4 (the box) → slide 5 (close). Slides 6–10 are an
- *  appendix after the close: the old demo frames, advanced only if the video
- *  fails. Keynote voice throughout; every number traces to DEMO.md or the
+ *  Rendered at /script. V19 "two slides, the film, one slide out": the show
+ *  is slide 1 (the problem) → slide 2 (the solution, and why it cannot be a
+ *  cloud service) → slide 3 parks while the demo video plays (narrate the
+ *  four film beats over the 1:52 silent cut, or let the 3:18 narrated cut
+ *  speak for itself) → slide 4 (close; the box facts live in its one spoken
+ *  sentence). Slides 6–10 are an appendix after the close: the old demo
+ *  frames, advanced only if the video fails. Keynote voice throughout; every number traces to DEMO.md or the
  *  code; no law-requires-on-prem claim (graveyard #1); OpenClaw is
  *  builder/driver of the box, never the runtime (graveyard #4).
  *  Lines wrapped in (parens) are stage directions, not spoken. */
@@ -20,7 +20,7 @@ export type Slide = {
   narration: string[];
 };
 
-export const REVISION = 'V18 · problem and solution — hardened by adversarial review (codex xhigh)';
+export const REVISION = 'V19 · box slide removed, its facts folded into the close; beat 4 in plain words';
 
 export const SLIDES: Slide[] = [
   {
@@ -105,33 +105,20 @@ export const SLIDES: Slide[] = [
     onscreen:
       '(video: the How-it-works page — the three jobs, the live counts, the dashed boundary.) Appendix frame #10 is the fallback.',
     narration: [
-      'All of this stands on three things: a record of evidence for the regulator, a memory of every reviewer correction, and an alarm that wakes the agent when anything changes. Normally that’s three systems. Here it’s one database: MongoDB, running on the box.',
+      'And everything you just saw is stored in one database: the evidence you hand the regulator, the rules the reviewers taught, and the trigger that wakes the agent when a contract changes. That database is MongoDB, and it runs right on the box.',
     ],
     loadBearing:
-      'Normally that’s three systems. Here it’s one database: MongoDB, running on the box.',
+      'That database is MongoDB, and it runs right on the box.',
   },
   {
     n: 4,
-    act: 'III — Two slides out',
-    label: 'THE BOX',
-    onscreen:
-      'Unit spec: nemotron-3-nano · 30B (Ollama) / bge-m3 / MongoDB Atlas Local — streams + vectors / BUILT WITH: OpenClaw · driving the box / Next.js register / Dell Pro Max GB10 / uplink: NOT REQUIRED. Measured line: CLAUSE AGREEMENT 138/141 · 98%.',
-    narration: [
-      '(back to the deck — and if the GB10 is in the room, point at it)',
-      'Everything you just watched ran on this one Dell box: a thirty billion parameter model and MongoDB, built and driven by OpenClaw, ninety-eight percent measured accuracy, zero cloud calls.',
-      'The analysis of whether the bank can leave its vendors never touched a vendor.',
-    ],
-    loadBearing:
-      'The analysis of whether the bank can leave its vendors never touched a vendor.',
-  },
-  {
-    n: 5,
-    act: 'IV — Close',
+    act: 'III — One slide out',
     label: 'CLOSE',
     onscreen:
       'EXITPLAN · tan rule · It reads the contracts. It shows the way out. Nothing leaves the building. · footer: synthetic register · business analysis, not legal advice.',
     narration: [
-      'That’s ExitPlan. It reads the contracts, shows you the way out, and the way out never leaves the building. Thank you.',
+      '(back to the deck; if the GB10 is in the room, point at it)',
+      'That’s ExitPlan: ninety-eight percent measured accuracy on one Dell box, zero cloud calls, built and driven by OpenClaw. It reads the contracts, shows you the way out, and the way out never leaves the building. Thank you.',
       '(stop talking)',
     ],
   },
@@ -139,12 +126,12 @@ export const SLIDES: Slide[] = [
 
 /** Operator prep — read before going on, never spoken. Mirrors DEMO.md. */
 export const PRESHOW: string[] = [
-  'The show is five keypresses: 1 → 2 → 3 (the film plays; deck parks) → 4 → 5. Slides 6–10 sit after the close as an appendix — the old demo frames, advanced only if the video fails while you keep speaking the film beats.',
+  'The show is four keypresses: 1 → 2 → 3 (the film plays; deck parks) → 4 (close). Slides 6–10 sit after the close as an appendix — the old demo frames, advanced only if the video fails while you keep speaking the film beats.',
   'Pick the cut before you go on: the 1:52 silent video (you speak film beats 1–4 over it) or the 3:18 narrated video (you stay silent; its voiceover is cloud TTS, post-production only — say so if anyone asks how it was made). Both are on the box Desktop.',
   'If the desk is shown live instead of the video, the old run still applies: dora-watch active; reset_demo.py between runs; on Castellan the provision pre-fill is WRONG — select “Participation in threat-led penetration testing”, scope “critical functions only”, or Aurora never fires.',
   'Register sanity: 16 rows (12 curated + 4 FILED), tiles 7 with gaps · 10 gaps · €7,030,000 · €16,375,000, Castellan “Gaps to close”, Sunrise 113,731 characters · 11 passages, agreement 138/141 · 98% — update script strings if a re-run differs.',
   'Say “synthetic” out loud once (film beat 1). It appears nowhere in the product.',
-  'If the GB10 itself is in the room, point at it on slide 4 — the box beats the spec sheet.',
+  'If the GB10 itself is in the room, point at it as you land the close — the box beats the spec sheet.',
 ];
 
 /** Rehearsed Q&A — the questions this arc invites. */
