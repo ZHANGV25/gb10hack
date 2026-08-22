@@ -21,7 +21,7 @@ export type Slide = {
   narration: string[];
 };
 
-export const REVISION = 'V11 · true to the box — real SEC filings, the 113k read, the deeper memory';
+export const REVISION = 'V12 · the problem made real, the privacy made explicit';
 
 export const SLIDES: Slide[] = [
   {
@@ -31,7 +31,7 @@ export const SLIDES: Slide[] = [
     onscreen:
       'DORA Art. 28(8) — exit strategies for ICT behind critical functions, incl. reincorporation in-house — over the Art. 30 spec: 9 elements for every arrangement, +6 critical (audit, exit assistance). A shelf of contract spines, one reader.',
     narration: [
-      'Every bank in Europe is locked into its tech vendors. The law is clear: they have to be able to leave — to take any critical service back in-house. That answer lives in hundreds of contracts, and nobody has read them all.',
+      'Every bank in Europe is locked into its tech vendors, and the law says they must be able to leave — to take any critical service back in-house. The answer lives in hundreds of contracts. Banks paid lawyers to read them once, when the law came in. That snapshot went stale the day it was finished.',
       'So the exit plan is just paper. It works right up until the day you need it.',
     ],
     loadBearing:
@@ -93,7 +93,7 @@ export const SLIDES: Slide[] = [
       'Build: the right column fills. Timeline: RULE STORED → INDEX SEARCHABLE → 12 RE-CHECKED · 0 RE-READ · ~0.5s. Three evidence cards: CASTELLAN — verdict changed (origin) · AURORA KYC — rule retrieved & applied, contract never opened · NORDLYS — considered, withheld (no gap to attach to). Memory chip, verbatim UI: “changing 2 verdicts now”.',
     build: true,
     narration: [
-      'Half a second. That’s how long it took to re-check the whole register against the new standard. It caught the same flaw in a contract nobody opened, and skipped the one that was clean.',
+      'Half a second. That’s how long it took to re-check the whole register. It caught the same flaw in a contract nobody opened, and skipped the one that was clean.',
       'This used to be a yearly audit. Now it’s live.',
     ],
     loadBearing: 'This used to be a yearly audit. Now it’s live.',
@@ -132,10 +132,11 @@ export const SLIDES: Slide[] = [
     narration: [
       '(live first: pull the cable, reload, teach another rule — then back to the deck)',
       'Oh, and one more thing. The network cable came out of the wall a minute ago. Did you notice? Everything you just watched ran on this one Dell box, built and driven by OpenClaw.',
-      'Because a tool that helps you leave your vendors should never be one more vendor you can’t leave.',
+      'And that’s not a stunt. These contracts are confidential paper, and what this tool finds — where you’re weak, what you pay, where you’re trapped — is a map of the bank you could never upload.',
+      'So the analysis of whether you can leave your vendors never touches a vendor.',
     ],
     loadBearing:
-      'Because a tool that helps you leave your vendors should never be one more vendor you can’t leave.',
+      'So the analysis of whether you can leave your vendors never touches a vendor.',
   },
   {
     n: 10,
@@ -166,7 +167,7 @@ export const PRESHOW: string[] = [
 export const QA: { q: string; a: string }[] = [
   {
     q: 'Why not run this in your Azure tenant?',
-    a: 'You could — DORA doesn’t forbid it, and we don’t claim it does. But then the tool that audits your ICT third parties is itself an ICT third party — row thirteen in its own register, with its own exit clause to negotiate. We’re proving existence, not necessity: the complete agent — model, memory, event bus, evidence — fits on one machine you own.',
+    a: 'Two reasons. First, the data: these contracts carry confidentiality clauses, and the output is a map of the bank’s weak points — which vendors you can’t exit, who refuses penetration testing, what you pay. That is the last dataset to hand a third party. Second, the irony: the tool that audits your ICT third parties would itself be an ICT third party, a new row in its own register. DORA doesn’t forbid cloud and we don’t claim it does — but the complete agent fits on one machine you own, so nothing has to leave.',
   },
   {
     q: 'You wrote the contracts and the ground truth. What does 98% mean?',
