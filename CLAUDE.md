@@ -52,6 +52,7 @@ Say “synthetic data” **on stage**, not as chrome in the product.
 | Mongo **ours** | `mongodb://127.0.0.1:27018` db `exitplan` (Atlas Local `gyuri-atlas-local`) |
 | Mongo **not ours** | `:27017` (`hack-mongo`, other team) — **do not touch** |
 | Ollama | `http://127.0.0.1:11434` — chat `nemotron-3-nano:30b`, embed `bge-m3` (1024-d) |
+| ⚠ `.env` | must contain **exactly one** `EMBED_MODEL` line, `bge-m3`. A stale `nomic-embed-text` line silently made the seeder write 768-d vectors into a 1024-d index, and `$vectorSearch` returned nothing. `config.py` now takes the last value per key. |
 | Do not kill | Jupyter `:8888`, OpenClaw TUI, other teams’ containers |
 
 Seed (wipes customers, txns, alerts, dispositions, corpus, audit_log):
@@ -92,16 +93,22 @@ apps/engine/exitplan/     # product engine
 apps/engine/scripts/seed_exitplan.py
 apps/engine/covenant/     # leftover; not the demo
 apps/web/                 # Next.js 16 desk
-  app/page.tsx            # Alert queue
-  app/system/page.tsx     # Full pipeline chart + live counts
+  app/globals.css         # design tokens (light only, hairline/small-radius)
+  app/page.tsx            # Alert queue + stat tiles + "what this desk does"
+  app/system/page.tsx     # "How it works" — architecture diagram + live counts
   app/audit/page.tsx      # Activity log
   app/alerts/[alertId]/   # Case
   app/api/chat/route.ts   # streamText → Ollama; tool retrievePolicy
   app/api/decide/route.ts
-  lib/architecture.ts     # PIPELINE source of truth for the chart
-  lib/format.ts           # headlines, countries, €, audit labels
-  components/architecture-chart.tsx
+  lib/architecture.ts     # PIPELINE source of truth (7 stages, CASE_STAGES = 4)
+  lib/format.ts           # headlines, rule labels, tones, countries, €, audit
+  components/shell.tsx    # sidebar + Page header
+  components/system-diagram.tsx   # the /system architecture diagram
+  components/pipeline-strip.tsx   # 4-step strip on a case
+  components/how-it-works.tsx     # 3-step band on the queue
+  components/pill.tsx     # Pill / Dot / Rail / Eyebrow
   components/case-workspace.tsx
+  components/memo-text.tsx        # renders the drafter's light markdown
 deck/                     # pitch deck (other teammates). Do not mix into the desk.
 ```
 
@@ -132,24 +139,41 @@ Headlines/stories live on the alert document (`headline`, `story`). Change cases
 
 ## UI loop
 
-1. **Alerts** — compact list: name, one-line why, status.
-2. Open a case — **How a case moves** strip highlights: rules → alert → draft → decide.
-3. Why / who / payments (plain English, counterparties, country names, euros).
-4. **Generate disposition** — streams; shows policy retrieval chips; first tokens can take 10–20s.
-5. **Record**: Dismiss as false positive / Refer to MLRO / Submit SAR to FIU.
-6. **Activity** — monitoring / drafter / analyst events.
-7. **System** — full chart with live counts from Mongo.
+Left sidebar: **Alert queue · Activity · How it works**, with live counts and
+the on-prem footer. Layout is desktop-first; under 1024px the sidebar collapses
+to a top nav.
 
-If you change the pipeline, edit `apps/web/lib/architecture.ts` (queue + case strip + `/system` all read it).
+1. **Alert queue** — four stat tiles (awaiting / value in review / decisions / where it runs),
+   a three-step "what this desk does" band, then the case table: customer, why it
+   opened, rule chips, value, status. Tabs default to **Needs a decision**.
+2. Open a case — header carries severity, value, payment count, rules fired.
+   The 4-step strip (Alert opened → Policy retrieval → Disposition draft → Analyst
+   decision) highlights where the case is *now*, live during generation.
+3. Left column: why it opened (one card per rule, with the mechanic in plain
+   English), who the customer is, payments with the rule-triggering rows marked.
+4. **Generate disposition** — streams; shows the vector query, the matched policy
+   titles and their cosine scores. **~30–60s** end to end; ~31s measured.
+   Suggestion chips include "Can you file this SAR for me?" (it refuses).
+5. **Record the decision** — three option rows with their consequence. Dismissal
+   is visibly locked on a red flag.
+6. **Activity** — actor-coloured timeline, decision-specific rationale.
+7. **How it works** — the architecture diagram (5 bands, live counts, MongoDB
+   collections), stage-by-stage table, guardrails.
+
+If you change the pipeline, edit `apps/web/lib/architecture.ts` (case strip +
+`/system` both read it). Demo script: [`DEMO.md`](./DEMO.md).
 
 ---
 
 ## Safety stack (must not regress)
 
 1. **Rules own the hit** (`screen.py`). Chat prompt: do not invent txns or watchlist hits.
-2. **Retrieval-grounded draft** — `retrievePolicy` → `searchCorpus` (`$vectorSearch`, keyword fallback).
+2. **Retrieval-grounded draft** — `retrievePolicy` → `searchCorpus` (`$vectorSearch`;
+   falls back to a keyword scan when the index errors **or returns zero rows**, so a memo
+   is never written against an empty policy set).
 3. **Abstention** is valid.
-4. **Red-flag gate** in decide API + UI.
+4. **Red-flag gate** in decide API + UI. Verified: `POST /api/decide` with
+   `close_noise` on `ALT-0001` returns **HTTP 409**.
 5. **Append-only** `audit_log`.
 6. **Cable-pull**: no cloud APIs.
 

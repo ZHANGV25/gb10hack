@@ -8,14 +8,23 @@ ENV_FILE = ROOT / ".env"
 
 
 def _load_env() -> None:
+    """Load .env without overriding the real environment.
+
+    A repeated key takes its last value, the way dotenv does. Reading the
+    first one silently pointed the seeder at a 768-dim embedding model while
+    the vector index expected 1024, and retrieval returned nothing.
+    """
     if not ENV_FILE.exists():
         return
+    values: dict[str, str] = {}
     for line in ENV_FILE.read_text().splitlines():
         line = line.strip()
         if not line or line.startswith("#") or "=" not in line:
             continue
         key, _, value = line.partition("=")
-        os.environ.setdefault(key.strip(), value.strip())
+        values[key.strip()] = value.strip()
+    for key, value in values.items():
+        os.environ.setdefault(key, value)
 
 
 _load_env()

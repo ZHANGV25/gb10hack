@@ -18,6 +18,14 @@ export async function POST(req: Request) {
       { status: 409 },
     );
   }
+  const RATIONALE: Record<string, string> = {
+    close_noise:
+      "Analyst dismissed the case as a false positive. No report to the FIU.",
+    escalate:
+      "Analyst referred the case to the MLRO for a second review.",
+    file_sar:
+      "Analyst submitted a suspicious activity report to the FIU.",
+  };
   const filed = decision === "file_sar";
   const now = new Date();
   await database.collection("dispositions").updateOne(
@@ -42,7 +50,9 @@ export async function POST(req: Request) {
     alert_id: alertId,
     input_hash: `${alertId}:${decision}`,
     rationale:
+      RATIONALE[decision] ??
       "Analyst recorded a decision. Assisted drafting cannot file.",
+    decision,
     ts: now,
   });
   return NextResponse.json({ ok: true, decision, filed });

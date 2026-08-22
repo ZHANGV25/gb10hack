@@ -16,6 +16,8 @@ export const COUNTRY_NAMES: Record<string, string> = {
   CU: "Cuba",
 };
 
+export const HIGH_RISK_COUNTRIES = new Set(["IR", "KP", "SY", "CU"]);
+
 export function countryName(code: string) {
   return COUNTRY_NAMES[code] ?? code;
 }
@@ -66,6 +68,70 @@ export function caseHeadline(ruleId: string, fallback: string) {
   }
 }
 
+/** Short chip label for the rule that opened the case. */
+export function ruleLabel(ruleId: string) {
+  switch (ruleId) {
+    case "RED_FLAG_SANCTIONS":
+      return "Sanctions list";
+    case "WATCHLIST_FUZZY":
+      return "Name match";
+    case "WATCHLIST_WEAK":
+      return "Weak name match";
+    case "HIGH_RISK_CORRIDOR":
+      return "Country risk";
+    case "STRUCTURING":
+      return "Threshold pattern";
+    default:
+      return "Monitoring rule";
+  }
+}
+
+/** What the rule actually measured, in one line an outsider can read. */
+export function ruleMechanic(ruleId: string) {
+  switch (ruleId) {
+    case "RED_FLAG_SANCTIONS":
+      return "Account name compared letter-by-letter against the sanctions list.";
+    case "WATCHLIST_FUZZY":
+      return "Account name scored against the sanctions list; above the review threshold.";
+    case "WATCHLIST_WEAK":
+      return "Account name scored against the sanctions list; below the review threshold.";
+    case "HIGH_RISK_CORRIDOR":
+      return "Outgoing payment over €25,000 to a jurisdiction on the high-risk list.";
+    case "STRUCTURING":
+      return "Three or more payments between €9,000 and €9,999 in a short window.";
+    default:
+      return "Deterministic monitoring rule.";
+  }
+}
+
+export type Tone = "flag" | "watch" | "clear";
+
+export function severityTone(severity: string): Tone {
+  if (severity === "red_flag") return "flag";
+  if (severity === "review") return "watch";
+  return "clear";
+}
+
+export function severityLabel(severity: string) {
+  if (severity === "red_flag") return "Red flag";
+  if (severity === "review") return "Needs review";
+  return "Likely false alert";
+}
+
+export function decisionLabel(decision: string | null, severity: string) {
+  if (decision === "close_noise") return "Dismissed";
+  if (decision === "escalate") return "Referred to MLRO";
+  if (decision === "file_sar") return "SAR submitted";
+  return severityLabel(severity);
+}
+
+export function decisionShort(decision: string) {
+  if (decision === "close_noise") return "Dismissed as false positive";
+  if (decision === "escalate") return "Referred to MLRO";
+  if (decision === "file_sar") return "SAR submitted to FIU";
+  return decision;
+}
+
 export function auditActor(agent: string) {
   if (agent === "human") return "Analyst";
   if (agent === "drafter") return "Drafter";
@@ -79,4 +145,10 @@ export function auditAction(action: string) {
   if (action === "decide") return "Decision recorded";
   if (action === "file") return "SAR submitted";
   return action;
+}
+
+export function auditTone(agent: string): Tone {
+  if (agent === "human") return "flag";
+  if (agent === "drafter") return "watch";
+  return "clear";
 }

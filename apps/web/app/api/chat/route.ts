@@ -24,6 +24,14 @@ export async function POST(req: Request) {
         `${t.ts.slice(0, 10)} | ${t.counterparty} | EUR ${Math.round(t.amount)} | ${t.country}`,
     )
     .join("\n");
+  const ruleHits = data?.view.hits
+    .map(
+      (h) =>
+        `${h.ruleId} (${h.severity})${
+          typeof h.score === "number" ? ` score ${h.score.toFixed(2)}` : ""
+        }: ${h.reason}`,
+    )
+    .join("\n");
 
   const result = streamText({
     model: ollama(judgeModel),
@@ -33,11 +41,14 @@ export async function POST(req: Request) {
       "You never decide a case and never file a SAR. A human analyst must take those actions.",
       "Always call retrievePolicy first. Only cite spans it returns. If evidence is thin, recommend abstention and MLRO referral.",
       "Do not invent transactions or watchlist hits. Monitoring has already determined that an alert exists.",
+      "The only rule scores are the ones given below under 'Rules that fired'. The numbers beside retrieved policy passages are search-relevance scores — never quote them as case evidence.",
+      `Today is ${new Date().toISOString().slice(0, 10)}. Use that date if the memo needs one; never invent a different date.`,
       data
         ? [
             `Customer ${data.view.customerName} (${data.view.occupation}, ${data.view.city}).`,
             data.view.story,
             `Alert ${data.view.alertId}: ${data.view.headline}. ${data.view.reason}`,
+            ruleHits ? `Rules that fired:\n${ruleHits}` : "",
             payments ? `Payments:\n${payments}` : "",
           ]
             .filter(Boolean)
