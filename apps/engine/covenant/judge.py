@@ -17,7 +17,7 @@ from covenant.assess import apply_rules, assess
 from covenant.db import contracts, runs, verdicts
 from covenant.embed import embed_text
 from covenant.extract import extract_provisions
-from covenant.retrieve import similar_rules
+from covenant.retrieve import similar_rules, unscoped_rules
 
 
 def gap_query(doc: dict, assessment: dict) -> str:
@@ -33,6 +33,32 @@ def gap_query(doc: dict, assessment: dict) -> str:
             " ".join(g["provision"] for g in assessment["gaps"]),
         ]
     ).strip() or "ict contract"
+
+
+def retrieve_memory(doc: dict, assessment: dict, query_vec: list[float]) -> list[dict]:
+    """Ask memory about each gap separately, then about the case as a whole.
+
+    One search per gap, filtered to that provision, so a deep memory cannot
+    bury the rule that decides the case. Results are deduplicated and kept in
+    score order.
+    """
+    found: dict[str, dict] = {}
+    for gap in assessment["gaps"]:
+        text = " ".join(
+            [
+                str(doc.get("vendor") or ""),
+                str(doc.get("function") or ""),
+                "critical function" if doc.get("critical") else "non-critical",
+                gap["label"],
+                gap["status"],
+                str(gap.get("quote") or "")[:300],
+            ]
+        )
+        for rule in similar_rules(embed_text(text), k=3, provision=gap["provision"]):
+            found.setdefault(str(rule["_id"]), rule)
+    for rule in unscoped_rules(query_vec, k=3):
+        found.setdefault(str(rule["_id"]), rule)
+    return sorted(found.values(), key=lambda r: -float(r.get("score") or 0))
 
 
 def judge_contract(
@@ -52,6 +78,7 @@ def judge_contract(
     started = datetime.now(timezone.utc)
 
     provisions = None
+    reading: dict = {}
     if reuse_extraction:
         previous = verdicts().find_one(
             {"ref": ref, "provisions": {"$exists": True}},
@@ -59,9 +86,10 @@ def judge_contract(
         )
         if previous:
             provisions = previous.get("provisions")
+            reading = previous.get("reading") or {}
     if provisions is None:
-        provisions = extract_provisions(
-            doc.get("text") or "", bool(doc.get("critical"))
+        provisions, reading = extract_provisions(
+            doc.get("text") or "", bool(doc.get("critical")), ref=ref
         )
         extracted_fresh = True
     else:
@@ -74,7 +102,7 @@ def judge_contract(
 
     query = gap_query(doc, assessment)
     query_vec = embed_text(query)
-    retrieved = similar_rules(query_vec, k=5)
+    retrieved = retrieve_memory(doc, assessment, query_vec)
     final, rule_ids = apply_rules(assessment, retrieved)
 
     now = datetime.now(timezone.utc)
@@ -87,6 +115,7 @@ def judge_contract(
         "critical": bool(doc.get("critical")),
         "annual_value_eur": float(doc.get("annual_value_eur") or 0),
         "provisions": provisions,
+        "reading": reading,
         "gaps": final["gaps"],
         "blocking_gaps": final["blocking_gaps"],
         "material_gaps": final["material_gaps"],

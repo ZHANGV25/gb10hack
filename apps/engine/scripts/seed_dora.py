@@ -24,40 +24,12 @@ from covenant.db import (
     verdicts,
 )
 from covenant.embed import embed_text
+from covenant.precedent import PRECEDENT
 
-# Precedent from earlier reviews. The bank knows things the checklist does
-# not, and those judgements live here as retrievable rules rather than as
-# code. The reviewer finds them by vector similarity, not by keyword.
-SEEDED_MEMORY = [
-    {
-        "text": (
-            "Where a critical or important arrangement lets the supplier move processing "
-            "between countries at its own discretion, the bank cannot evidence where its "
-            "data is held and cannot answer a supervisor. Treat an undisclosed or "
-            "discretionary processing location on a critical arrangement as a rejection, "
-            "not an escalation."
-        ),
-        "action": "reject",
-        "provision": "locations_disclosed",
-        "critical_only": True,
-        "author": "M. Halvorsen, Third-Party Risk",
-        "days_ago": 96,
-    },
-    {
-        "text": (
-            "A missing security awareness participation clause on a non-critical "
-            "arrangement is a real gap but not a material one: the supplier's staff do not "
-            "touch a critical or important function. Record it and approve, provided no "
-            "blocking provision is also missing."
-        ),
-        "action": "accept_exception",
-        "provision": "security_training",
-        "non_critical_only": True,
-        "author": "M. Halvorsen, Third-Party Risk",
-        "days_ago": 61,
-    },
-]
-
+# Precedent from earlier reviews lives in covenant/precedent.py — twelve
+# judgements from three reviewers. A deep memory is what makes retrieval
+# selective: with two rules a top-5 search returns everything and the ranking
+# decides nothing.
 
 def main() -> None:
     # Drop rather than empty: the earlier EDGAR-shaped documents have no `ref`
@@ -95,14 +67,15 @@ def main() -> None:
             }
         )
 
-    for rule in SEEDED_MEMORY:
+    for rule in PRECEDENT:
+        scope = rule.get("scope", "all")
         rules().insert_one(
             {
                 "text": rule["text"],
                 "action": rule["action"],
                 "provision": rule["provision"],
-                "critical_only": rule.get("critical_only", False),
-                "non_critical_only": rule.get("non_critical_only", False),
+                "critical_only": scope == "critical",
+                "non_critical_only": scope == "non_critical",
                 "active": True,
                 "source": "analyst_review",
                 "author": rule["author"],

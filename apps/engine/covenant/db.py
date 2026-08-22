@@ -44,6 +44,10 @@ def runs() -> Collection:
     return db()["runs"]
 
 
+def chunks() -> Collection:
+    return db()["chunks"]
+
+
 def _ensure_vector_index(coll: Collection, name: str, path: str) -> None:
     current = {
         idx.get("name"): idx.get("latestDefinition")
@@ -57,6 +61,9 @@ def _ensure_vector_index(coll: Collection, name: str, path: str) -> None:
             "similarity": "cosine",
         }
     ]
+    if name == "chunks_vector":
+        # so a provision search stays inside one contract
+        fields.append({"type": "filter", "path": "ref"})
     if name == "rules_vector":
         # Retired rules stay in the collection for audit but must not be
         # retrievable, and a rule can be scoped to one DORA provision.
@@ -116,9 +123,11 @@ def ensure_indexes() -> None:
     rules().create_index([("created_at", -1)])
     corrections().create_index("ref")
     runs().create_index([("started_at", -1)])
+    chunks().create_index([("ref", 1), ("n", 1)])
     try:
         _ensure_vector_index(contracts(), "contracts_vector", "embedding")
         _ensure_vector_index(rules(), "rules_vector", "embedding")
+        _ensure_vector_index(chunks(), "chunks_vector", "embedding")
         _ensure_vector_index(verdicts(), "verdicts_vector", "embedding")
     except OperationFailure as exc:
         raise RuntimeError(f"vector index create failed (Atlas Local required): {exc}") from exc

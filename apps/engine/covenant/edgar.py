@@ -20,14 +20,23 @@ def _headers() -> dict[str, str]:
     }
 
 
-def search_exhibits(query: str, start: str, end: str, size: int = 80) -> list[dict]:
+def search_exhibits(
+    query: str, start: str, end: str, size: int = 80, forms: str | None = None
+) -> list[dict]:
+    """EDGAR full-text search for EX-10 material contracts.
+
+    Do not pin this to 8-K. Material contracts are filed as exhibits to
+    whatever form happens to carry them — 10-K, 10-Q, S-1 — and restricting
+    the form returned current-report cover pages instead of agreements.
+    """
     params = {
         "q": query,
-        "forms": "8-K",
         "dateRange": "custom",
         "startdt": start,
         "enddt": end,
     }
+    if forms:
+        params["forms"] = forms
     url = f"{SEARCH}?{ '&'.join(f'{k}={quote_plus(str(v))}' for k,v in params.items()) }"
     with httpx.Client(timeout=60.0, headers=_headers(), follow_redirects=True) as client:
         r = client.get(url)

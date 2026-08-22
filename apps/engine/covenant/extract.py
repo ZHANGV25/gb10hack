@@ -14,6 +14,7 @@ import re
 
 import httpx
 
+from covenant.chunks import context_for
 from covenant.config import JUDGE_MODEL, OLLAMA_URL
 from covenant.dora import ALL_PROVISIONS, required_for
 
@@ -45,9 +46,15 @@ def _requirements_block(critical: bool) -> str:
     return "\n".join(lines)
 
 
-def extract_provisions(text: str, critical: bool) -> dict:
-    """Returns {provision_key: {status, quote, section}}."""
+def extract_provisions(text: str, critical: bool, ref: str = "") -> tuple[dict, dict]:
+    """Read a contract against the provisions it must carry.
+
+    Returns ({provision_key: {status, quote, section}}, reading_metadata).
+    A contract too long for the context window is read through retrieval:
+    only the passages most likely to contain each provision are shown.
+    """
     required = required_for(critical)
+    body, passages, mode = context_for(ref, text, list(required))
     schema = {
         key: {"status": "one of present|inadequate|absent", "quote": "verbatim text or null", "section": "clause heading or null"}
         for key in required
@@ -59,8 +66,14 @@ def extract_provisions(text: str, critical: bool) -> dict:
         + _requirements_block(critical)
         + "\n\nReturn JSON with exactly these keys:\n"
         + json.dumps(schema, indent=2)
-        + "\n\nCONTRACT:\n"
-        + text
+        + (
+            "\n\nThese are the passages of the contract most relevant to those "
+            "provisions, in document order. Passages you were not shown may "
+            "exist; judge only on what is here.\n\n"
+            if mode == "retrieved"
+            else "\n\nCONTRACT:\n"
+        )
+        + body
     )
     payload = {
         "model": JUDGE_MODEL,
@@ -76,7 +89,13 @@ def extract_provisions(text: str, critical: bool) -> dict:
         r = client.post(f"{OLLAMA_URL}/api/chat", json=payload)
         r.raise_for_status()
         content = r.json().get("message", {}).get("content") or ""
-    return _normalise(_parse_json(content), required)
+    reading = {
+        "mode": mode,
+        "passages": passages,
+        "chars_read": len(body),
+        "chars_total": len(text),
+    }
+    return _normalise(_parse_json(content), required), reading
 
 
 def _normalise(data: dict, required: dict) -> dict:
