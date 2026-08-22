@@ -175,14 +175,66 @@ Agent log: `journalctl --user -u dora-watch -f`
 
 ---
 
+## Answering the three judging criteria
+
+Have these ready — each one is a click, not a claim.
+
+### "The agent survives its own sandbox"
+
+Stop it, change policy while it is dead, start it again:
+
+```bash
+ssh -S /tmp/dell.sock dell@10.0.0.166 'systemctl --user stop dora-watch'
+# teach a rule in the UI, or edit one directly — the agent is not running
+ssh -S /tmp/dell.sock dell@10.0.0.166 'systemctl --user start dora-watch'
+ssh -S /tmp/dell.sock dell@10.0.0.166 'journalctl --user -u dora-watch -n 5 --no-pager -o cat'
+```
+
+It replays the change it missed from the resume token in `watch_state` and
+re-evaluates without being asked. Nothing lives in process memory: memory,
+verdicts, cached readings and the stream position are all in MongoDB.
+
+### "A retriever that changes behaviour"
+
+Two retrievers, both load-bearing.
+
+**It decides what the model reads.** Open **Sunrise Communications AG**. The
+agreement is 113,731 characters. The page says it was split into passages and
+eleven were retrieved by vector search — the model never saw the rest. Without
+retrieval this contract cannot be read at all.
+
+**It decides what the bank makes of it.** Teach the Castellan rule and watch
+the verdict flip, then retire it and watch it revert. On **Vantage HR** the
+memory panel shows the data-return rule *Applied* at 0.767 and others
+*Considered, did not apply*.
+
+If asked whether the ranking matters: memory holds twelve precedents from
+three reviewers, and search is scoped per gap. A blended query put the
+deciding rule seventh of twelve — that is why it is scoped.
+
+### "Real business data"
+
+Four genuine EX-10 material contracts pulled from SEC EDGAR full-text search —
+Sunrise Communications, Edgemode, Platinum Analytics, NuScale Power — 58k to
+114k characters, marked **filed** in the register with a link to the filing.
+
+> The bank's own twelve are synthetic, and deliberately so: they have known
+> ground truth, which is the only reason the 98% clause figure means anything.
+> These four are the control. Nobody wrote them for us, they carry no ground
+> truth, and the same checks run over them unchanged.
+
+---
+
 ## Numbers worth knowing
 
 | | |
 |---|---|
-| Contracts in the register | 12 (8 critical), €16,375,000/yr |
+| Contracts in the register | 12 curated (8 critical), €16,375,000/yr + 4 real SEC filings |
 | Provisions checked | 15 per critical arrangement, 9 otherwise |
 | Clause agreement vs ground truth | **138/141 (98%)** |
-| Reading one contract | 35–95s (local model) |
+| Reading a curated contract | 35–95s (local model) |
+| Reading a 113k-char real filing | ~77s, via 11 retrieved passages |
+| Rules in memory | 12 precedents, 3 reviewers |
 | Re-checking all 12 after a correction | **~0.5s** |
 | Cloud API calls | 0 |
 

@@ -8,9 +8,14 @@ export const dynamic = "force-dynamic";
 
 const MONGO = [
   {
-    feature: "$vectorSearch with pre-filters",
+    feature: "$vectorSearch over the agent's memory",
     where: "rules_vector — 1024-dimension cosine kNN, filtered on active and provision",
-    why: "The agent's memory is retrieved by meaning, so a rule written about one supplier surfaces on another with the same weakness. Retired rules stay for audit but are filtered out of retrieval.",
+    why: "A rule written about one supplier surfaces on another with the same weakness. Searched once per gap and scoped to that provision: a single blended query across every gap dilutes, and the rule that should decide the case ranks below the cut.",
+  },
+  {
+    feature: "$vectorSearch over the contract itself",
+    where: "chunks_vector — each contract split into passages, filtered on ref",
+    why: "A real filed agreement runs past 100,000 characters and will not fit in the context window. Truncating loses the middle, where the operative clauses are. Instead each provision retrieves the passages most likely to contain its clause, and the model reads only those — so retrieval decides what is read as well as what it means.",
   },
   {
     feature: "Change streams",
@@ -119,6 +124,8 @@ export default async function SystemPage() {
               ["It cannot bless an un-exitable contract", "An accepted exception softens a verdict by one step and never turns a rejection into approval on its own."],
               ["Its memory is legible", "Every rule is a sentence in plain language with an author and a date, and any of it can be switched off."],
               ["Nothing leaves the building", "Reading, embedding, retrieval and storage all run on the bank's own hardware."],
+            ["It is not tuned to its own data", "The register holds real agreements filed with the SEC alongside the bank's own book. They were written by other people for other purposes and carry no ground truth."],
+            ["It survives being switched off", "Memory, verdicts, cached readings and the change-stream position all live in the database. A policy change made while the agent is down is replayed when it comes back."],
             ].map(([title, body]) => (
               <li key={title} className="rounded-lg border border-hairline bg-surface px-3.5 py-2.5">
                 <p className="flex items-start gap-2 text-[13px] font-medium">

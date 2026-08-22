@@ -30,7 +30,16 @@ Pitch in one line: DORA Art. 28(8) requires a bank to be able to pull an ICT
 service back in-house — this is the agent that tells it, contract by contract,
 whether it actually can. Cable-pull is the demo closer.
 
-Measured: **138/141 (98%)** clause agreement against the book's ground truth.
+Measured: **138/141 (98%)** clause agreement against the curated book's ground
+truth. The register also holds **four real EX-10 contracts pulled from SEC
+EDGAR** (58k–114k chars) which carry no ground truth — they are the control
+that the checks are not tuned to our own data.
+
+A contract too long for the context window is **chunked, embedded and
+vector-searched against itself**: for each provision the agent retrieves the
+passages most likely to hold that clause and reads only those. So retrieval
+decides what the model sees (`chunks_vector`) as well as what the bank makes of
+it (`rules_vector`).
 
 **Not** FieldMedic (git tag `pre-bank-pivot`). The **AML disposition desk** —
 the earlier financial-crime build — still runs at `/aml` and is not the demo.
@@ -123,11 +132,18 @@ apps/engine/covenant/     # the DORA agent (package name is historical)
   judge.py                # extract -> assess -> retrieve rules -> verdict + audit run
   watch.py                # ALWAYS-ON: change streams on contracts and rules
   learn.py                # a correction becomes an embedded rule
+  precedent.py            # 12 seeded rules from 3 reviewers — memory deep
+                          #   enough that top-k ranking actually selects
+  chunks.py               # split/embed a long contract; retrieve per provision
+  edgar.py                # SEC full-text search for real EX-10 contracts
   retrieve.py / embed.py  # $vectorSearch over rules_vector
   db.py                   # collections, indexes, self-updating vector indexes
 apps/engine/scripts/
   seed_dora.py            # load the register + 2 seeded rules
   review_all.py           # read every unreviewed contract, report agreement
+  seed_memory.py          # reload precedent only (agent re-evaluates itself)
+  reset_demo.py           # retire what a demo taught — one second, no re-read
+  ingest_real.py          # pull real SEC EX-10 ICT contracts into the register
 apps/engine/exitplan/     # the earlier AML desk engine (still used by /aml)
 apps/web/
   app/page.tsx            # the ICT register
@@ -204,7 +220,11 @@ Sidebar: **ICT register · What it has learned · Agent activity · How it works
    before re-evaluating — Atlas Search is eventually consistent, and
    re-evaluating too early silently produces the old verdicts.
 6. **Append-only `runs`** — every read, sweep and memory change.
-7. **Cable-pull**: no cloud APIs.
+7. **Memory is searched per gap**, scoped to that provision. A single blended
+   query across every gap dilutes: on Vantage HR the rule that decides the
+   case ranked seventh of twelve.
+8. **Cable-pull**: no cloud APIs at runtime. Ingesting real SEC filings needs
+   the network; reviewing them does not.
 
 ## Pitch demo
 
