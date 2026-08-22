@@ -211,7 +211,7 @@ export function SceneClose() {
           transition={{ delay: 1.5, duration: 0.7 }}
           className="mark-label mt-[2.4vmin] text-[1.8vmin] text-g600"
         >
-          It reads the contracts. People stay in charge. Nothing leaves the building.
+          It reads the contracts. It shows the way out. Nothing leaves the building.
         </motion.div>
       </div>
       <motion.div
