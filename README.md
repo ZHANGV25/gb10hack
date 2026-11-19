@@ -64,13 +64,3 @@ The pitch site: live at [exitplan-deck.vercel.app](https://exitplan-deck.vercel.
 ## The film
 
 A ~2-minute screen recording of the live desk (in `presentation/public/film.mp4`): the register and the trapped €7M → the Helvetia contract one exit clause short of freedom → a risk officer overruling the machine in two sentences → the half-second sweep catching a contract nobody opened → the real SEC filing read by retrieval → one database, three jobs.
-
-## Say / never say
-
-- Say: **"Regulation requires a tested exit path. We built the artifact."**
-- Say "synthetic" out loud once; it appears nowhere in the product.
-- Never: "EU law requires on-prem" (false — the duty is exit *capability*).
-- Never: invented scale or dollar ROI from synthetic data.
-- Never: OpenClaw as the runtime — it built and drove the box; the harness is bespoke.
-
-Canonical framing: [`docs/PITCH.md`](./docs/PITCH.md). Narration source of truth: `deck/src/lib/slides.ts`. Agent handoff: [`CLAUDE.md`](./CLAUDE.md).
